@@ -7,3 +7,11 @@
     width: 100px;
     text-align: center;
 }
+
+#message {
+    border: thin black solid;
+    background-color: azure;
+    text-align: left;
+    padding: 5px;
+    margin: 10px;
+}

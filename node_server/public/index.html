@@ -3,16 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;,">
+    <!-- Include jQuery from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Include Socket.IO library -->
+    <script src="/socket.io/socket.io.js"></script>
     </head>
     
     <body>
         <div>
             <form>
-                <input id="messages" type="text"/>
-                <br/>
-                <input id="send-command" type="text"/>
-                <button id="send-button" onclick="yaClickedBox()" >Click me!</button>
+                <div>
+                    <textarea id="messages" rows="4" cols="50"></textarea>
+                </div>
+                <div>
+                    <input id="send-command" type="text"/>
+                    <button id="send-button">Send</button>
+                </div>
             </form>
             <br/>
         </div>

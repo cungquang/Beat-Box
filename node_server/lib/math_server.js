@@ -1,4 +1,4 @@
-const SocketIo = require('socket.io');
+const { Server } = require('socket.io');
 var iosocket;
 
 const handleCommand = (socket) => {
@@ -24,7 +24,7 @@ const doDaAddition = (x, y) => {
 }
 
 exports.listen = function(server) {
-    iosocket = SocketIo.listen(server);
+    iosocket = new Server(server);
     iosocket.sockets.on('connection', function(socket) {
         handleCommand(socket);
     });

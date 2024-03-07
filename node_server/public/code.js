@@ -8,7 +8,7 @@ $(document).ready(() => {
         readUserInput();
 
         return false;
-    })
+    });
 
     //Read data come from server
     socket.on('daAnswer', function(result) {
@@ -17,7 +17,7 @@ $(document).ready(() => {
 })
 
 function readUserInput() {
-    var message = $('#send-command').val;
+    var message = $('#send-command').val();
     $('#messages').append(divMessage(message));
     var errMsg = processCommand(message);
     if(errMsg) {
