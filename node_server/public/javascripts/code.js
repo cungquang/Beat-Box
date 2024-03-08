@@ -1,43 +1,101 @@
-const socketio = require('socket.io');
+var socket = io.connect();
 
-//Export function listen() -> listen to connection
-exports.listen = function(server) {
-    const io = new socketio.Server(server);
+$(document).ready(function() {
+    //Select beat
+
+
+    //Volume
+    increaseVolume();    
+
+    decreaseVolume();
     
-    //On connection 
-    io.on('connection', function(socket) {
+    //Tempo
+    increaseTempo();
+    
+    decreaseTempo();
 
-        //Select beat
-        socket.on('beat', () => {
+    //Select play drum
 
-        });
 
-        //Adjust volume
-        socket.on('volume', () => {
+    //Terminate button
 
-        })
+})
 
-        //Adjust tempo
-        socket.on('tempo', () => {
 
-        });
 
-        //Select play drum
-        socket.on('hit-hat', () => {
+/*
+#####################
+#      HELPER       #
+#####################
+*/
 
-        });
 
-        socket.on('snare', () => {
+function increaseVolume() {
+    //click add-vol button
+    $('#add-vol').click(function(event) {
+        event.preventDefault();
+        var currVol = parseInt($('#vol-text').val());
+        var maxVol = parseInt($('#vol-text').attr('max'));
 
-        });
+        //Upadte value
+        if(currVol < maxVol) {
+            currVol += 1;
+            $('#vol-text').val(currVol);
+        }
 
-        socket.on('base', () => {
-
-        });
-
-        //Terminate button
-        socket.on('terminate', () => {
-
-        });
+        //Send data to server
+        socket.emit('volume', currVol);
     });
-};
+}
+
+function decreaseVolume() {
+    $('#subtract-vol').click(function(event) {
+        event.preventDefault();
+        var currVol = parseInt($('#vol-text').val());
+        var minVol = parseInt($('#vol-text').attr('min'));
+
+        //Upadte value
+        if(currVol > minVol) {
+            currVol -= 1
+            $('#vol-text').val(currVol);
+        }
+
+        //Send data to server
+        socket.emit('volume', currVol);
+    });
+}
+
+function increaseTempo() {
+    //click add button
+    $('#add-tempo').click(function(event) {
+        event.preventDefault(); 
+        var currTempo = parseInt($('#tempo-text').val());
+        var maxTempo = parseInt($('#tempo-text').attr('max')); 
+
+        //Update 
+        if(currTempo < maxTempo) {
+            currTempo += 1;
+            $('#tempo-text').val(currTempo);
+        }
+        
+        //Send data to server
+        socket.emit('tempo', currTempo);
+    });
+}
+
+function decreaseTempo() {
+    //substract button click
+    $('#subtract-tempo').click(function(event) {
+        event.preventDefault(); 
+        var currTempo = parseInt($('#tempo-text').val());
+        var maxTempo = parseInt($('#tempo-text').attr('min')); 
+
+        if(currTempo > maxTempo) {
+            currTempo -= 1;
+            $('#tempo-text').val(currTempo);
+        }
+
+        //Send to server
+        socket.emit('tempo', currTempo);
+    });
+}
