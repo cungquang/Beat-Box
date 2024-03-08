@@ -5,30 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css" type="text/css"/>
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;,">
-    <!-- Include jQuery from CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <!-- Include Socket.IO library -->
-    <script src="/socket.io/socket.io.js"></script>
     </head>
     
     <body>
         <div>
-            <form>
-                <div>
-                    <textarea id="messages" rows="4" cols="50"></textarea>
-                </div>
+            <div>
+                <textarea id="textarea" rows="4" cols="50"></textarea>
+            </div>
+            <form id="send-form">
                 <div>
                     <input id="send-command" type="text"/>
                     <button id="send-button">Send</button>
                 </div>
+                <div id="messages"></div>
             </form>
+
             <br/>
         </div>
         
 
         <!-- END OF HTML CONTENT -->
+        <!-- Include Socket.IO library -->
+        <script src="/socket.io/socket.io.js"></script>
 
-        <script type="text/javascript" src="./code.js">
+        <!-- Include jQuery from CDN -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script type="text/javascript" src="/javascripts/math_ui.js">
 
         </script>
     </body>
