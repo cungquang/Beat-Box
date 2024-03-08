@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css" type="text/css"/>
-    <link rel="icon" type="image/x-icon" href="data:image/x-icon;,">
 </head>
     
     <body>
         <div id="container">
+            <!--Title Box-->
             <div id="title-box">
                 <h1>BeagleBone Beat-Box</h1>
                 <p>by Hong Quang Cung</p>
             </div>
 
+            <!--Main Box-->
             <div id="main-box">
                 <div id="operation-box">
                     <div id="line-item"><h2>Drum Beat Selection</h2></div>
@@ -21,18 +22,17 @@
                     <div id="line-item">
                         <div>Current drum beat mode is: <span id="beat-mode">None</span></div>
                         <div id="beat-list">
-                            <li><button>None</button></li>
-                            <li><button>Rock #1</button></li>
-                            <li><button>Rock #2</button></li>
+                            <li><button id="none-button">None</button></li>
+                            <li><button id="rock1-button">Rock #1</button></li>
+                            <li><button id="rock2-button">Rock #2</button></li>
                         </div>
                     </div>
     
                     <div id="line-item">
                         <div><h3>Volume</h3></div>
-                        
                         <form id="vol-form">
                             <button id="subtract-vol">-</button>
-                            <input type="text" id="vol-text" value="???" size="5" max="0" min="100" readonly>
+                            <input id="vol-text" type="number" value="80" size="5" min="0" max="100" readonly>
                             <button id="subtract-vol">+</button>
                             <span>0-100</span>
                         </form>
@@ -40,11 +40,10 @@
     
                     <div id="line-item">
                         <div><h3>Tempo</h3></div>
-                        
                         <form id="tempo-form">
                             <button id="subtract-tempo">-</button>
-                            <input type="text" id="tempo-text" value="???" size="5" max="40" min="300" readonly>
-                            <button id="subtract-tempo">+</button>
+                            <input id="tempo-text" type="number" value="120" size="5" min="40" max="300" readonly>
+                            <button id="add-tempo">+</button>
                             <span>(BPM)</span>
                         </form>
                     </div>
@@ -53,15 +52,15 @@
     
                     <div id="line-item">
                         <div id="beat-list">
-                            <li><button>Hit-Hat</button></li>
-                            <li><button>Snare</button></li>
-                            <li><button>Base</button></li>
+                            <li><button id="hit-button">Hit-Hat</button></li>
+                            <li><button id="snare-button">Snare</button></li>
+                            <li><button id="base-button">Base</button></li>
                         </div>
                     </div>
     
                     <div id="line-item">
                         <form id="terminate-but">
-                            <button>Terminate Program</button>
+                            <button id="terminate-button">Terminate Program</button>
                         </form>
                     </div>
                 </div>
@@ -71,6 +70,8 @@
                     <div id="status-txt">Device up for: <span>5234</span>(H:M:S)</div>
                 </div>
             </div>
+
+            <!--Error Box-->
             <div id="error-box">
                 <div id="error-title"><h2>Server Error</h2></div>
                 <div id="error-text1">Server error detected. Please resolve error before continuing.</div>
@@ -85,7 +86,7 @@
 
         <!-- Include jQuery from CDN -->
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script type="text/javascript" src="/javascripts/math_ui.js">
+        <script type="text/javascript" src="/javascripts/code.js">
 
         </script>
     </body>
