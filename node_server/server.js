@@ -4,7 +4,13 @@ const mime = require('mime-types');
 const path = require('path');
 const mathServer = require('./lib/math_server');
 
-// Setup server
+/*
+#####################
+#       MAIN        #
+#####################
+*/
+
+//Create a server
 const server = http.createServer((request, response) => {
     var filePath = false;
     
@@ -19,14 +25,21 @@ const server = http.createServer((request, response) => {
     serverStatic(response, absPath);
 });
 
+//Open the socket listen on the same server PORT
 mathServer.listen(server);
 
-// Basic configuration
-const PORT = 3042;
+// Configuration
+const PORT = 8088;
 server.listen(PORT, function() {
     console.log("Server listening on PORT " + PORT);  
 });
 
+
+/*
+#####################
+#      HELPER       #
+#####################
+*/
 function send404(response) {
     response.writeHead(404, {'Content-Type':'text/plain'});
     response.write('Error 404: resource not found');

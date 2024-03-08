@@ -1,14 +1,16 @@
 const socketio = require('socket.io');
 
+//Export function listen() -> listen to connection
 exports.listen = function(server) {
     const io = new socketio.Server(server);
-
+    
+    //On connection 
     io.on('connection', function(socket) {
         handleCommand(socket);
     });
 };
 
-
+//Handle command from client
 function handleCommand(socket) {
     //socket.on(eventName, callback)
     //eventName: a string represent the name of the event to listen for
@@ -25,6 +27,13 @@ function handleCommand(socket) {
         socket.emit('daAnswer', message);
     })
 }
+
+
+/*
+#####################
+#      HELPER       #
+#####################
+*/
 
 const doDaAddition = (x, y) => {
     return x + y;
