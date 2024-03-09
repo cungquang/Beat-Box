@@ -26,9 +26,6 @@ function handleCommand(socket) {
         //build & send solution
         socket.emit('daAnswer', message);
     });
-
-
-    socket.on('')
 }
 
 

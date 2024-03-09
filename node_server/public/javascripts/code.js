@@ -1,5 +1,8 @@
 var socket = io.connect();
 
+var beat = [false, false, false];
+var drum = [false, false, false];
+
 $(document).ready(function() {
 
     //Select beat
@@ -23,7 +26,7 @@ $(document).ready(function() {
 
 
     //Select play drum
-    select_hitButton();
+    select_hithatButton();
 
     select_snareButton();
 
@@ -47,24 +50,61 @@ $(document).ready(function() {
 function select_noneButton() {
     $('#none-button').click(function(event) {
         event.preventDefault();
+        beat[0] = !beat[0];
+        $('#none-button').toggleClass('button-active');
 
-        socket.emit('beat', 'noneButton');
+        if(beat[0]) {
+            //Other button must be unpressed
+            for(let i = 1; i < beat.length; i++){
+                beat[i] = false;
+                $(`#rock${i}-button`).removeClass('button-active');
+            }
+
+            //none-button get pressed -> send to 
+            socket.emit('beat', 'noneButton');
+        }
     });
 }
 
 function select_rock1Button() {
     $('#rock1-button').click(function(event) {
         event.preventDefault();
+        beat[1] = !beat[1];
 
-        socket.emit('beat', 'rock1Button');
+        //the beat is turned on
+        if(beat[1]){
+            $('#rock1-button').toggleClass('button-active');
+
+            //Remove 
+            beat[0] = false;
+            $('#none-button').removeClass('button-active');
+
+            //Send message
+            socket.emit('beat', 'rock1Button');
+        } else {
+            $('#rock1-button').removeClass('button-active');
+        }
     });
 }
 
 function select_rock2Button() {
     $('#rock2-button').click(function(event) {
         event.preventDefault();
+        beat[2] = !beat[2];
 
-        socket.emit('beat', 'rock2Button');
+        //the beat is turned on
+        if(beat[2]){
+            $('#rock2-button').toggleClass('button-active');
+
+            //Remove 
+            beat[0] = false;
+            $('#none-button').removeClass('button-active');
+
+            //Send message
+            socket.emit('beat', 'rock1Button');
+        } else {
+            $('#rock2-button').removeClass('button-active');
+        }
     });
 }
 
@@ -144,10 +184,12 @@ function decrease_tempo() {
 
 
 //Select drum
-function select_hitButton() {
-    $('#hit-button').click(function(event) {
+function select_hithatButton() {
+    $('#hithat-button').click(function(event) {
         event.preventDefault();
-
+        drum[0] = !drum[0];
+        $('#hithat-button').toggleClass('button-active');
+        
         socket.emit('drum', 'hitButton');
     });
 }
@@ -156,6 +198,8 @@ function select_hitButton() {
 function select_snareButton() {
     $('#snare-button').click(function(event) {
         event.preventDefault();
+        drum[1] = !drum[1];
+        $('#snare-button').toggleClass('button-active');
 
         socket.emit('drum', 'snareButton');
     });
@@ -165,6 +209,8 @@ function select_snareButton() {
 function select_baseButton() {
     $('#base-button').click(function(event) {
         event.preventDefault();
+        drum[2] = !drum[2];
+        $('#base-button').toggleClass('button-active');
 
         socket.emit('drum', 'baseButton');
     });
