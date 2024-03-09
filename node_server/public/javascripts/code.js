@@ -190,7 +190,9 @@ function select_hithatButton() {
         drum[0] = !drum[0];
         $('#hithat-button').toggleClass('button-active');
         
-        socket.emit('drum', 'hitButton');
+        if(drum[0]){
+            socket.emit('drum', 'hitButton');
+        }
     });
 }
 
@@ -201,7 +203,9 @@ function select_snareButton() {
         drum[1] = !drum[1];
         $('#snare-button').toggleClass('button-active');
 
-        socket.emit('drum', 'snareButton');
+        if(drum[1]){
+            socket.emit('drum', 'snareButton');
+        }
     });
 }
 
@@ -212,7 +216,9 @@ function select_baseButton() {
         drum[2] = !drum[2];
         $('#base-button').toggleClass('button-active');
 
-        socket.emit('drum', 'baseButton');
+        if(drum[2]){
+            socket.emit('drum', 'baseButton');
+        }
     });
 }
 
