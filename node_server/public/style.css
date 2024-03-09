@@ -54,3 +54,7 @@
     padding: 10px;
     gap: 20px;
 }
+
+#hit-button :active {
+    background-color: #ccc;
+}
