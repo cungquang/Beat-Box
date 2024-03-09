@@ -35,7 +35,6 @@ $(document).ready(function() {
 
     //Terminate button
     select_terminateButton();
-
 })
 
 
@@ -228,6 +227,6 @@ function select_terminateButton() {
     $('#terminate-button').click(function(event) {
         event.preventDefault();
 
-        socket.emit('drum', 'terminateButton');
+        socket.emit('terminate', 'terminateButton');
     });
 }
