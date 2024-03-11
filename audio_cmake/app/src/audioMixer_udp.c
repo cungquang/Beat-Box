@@ -3,37 +3,38 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <stdbool.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
 #define SERVER_IP "192.168.7.2"
 #define SERVER_PORT 12345
-#define PREV_MESSAGE_SIZE 200
 #define MAX_BUFFER_SIZE 1501                        // 1500 bytes and 1 bytes for null pointer
 #define WRITE_UP_TO (MAX_BUFFER_SIZE - 2)           // Last - \0 & second last - \n
+#define MAX_PARTS 3                                 // Number of parts from request message
 
 //flag
 static int *isTerminated;
 
 //Sokcet setup
 static int serverSock;
-static char previousMessage[PREV_MESSAGE_SIZE];
-static int previousMessageSize;
 
 //Response message
 static const char *responseMessage;
-//static char command_buffer[MAX_BUFFER_SIZE];
 
 //Thread
 static pthread_t udpSever_id;
 
 //Declare functions
 void *UDP_serverThread();
-const char *UDP_commandBeat(void);
-const char *UDP_commandVolume(void);
-const char *UDP_commandTempo(void);
-const char *UDP_commandDrum(void);
-const char *UDP_commandTerminate(void);
+
+static bool stringToBoolean(const char *input);
+static void splitStringToParts(const char *input, const char *intoParts[]);
+static const char *UDP_commandBeat(const char* target, bool value);
+static const char *UDP_commandVolume(const char* target, int value);
+static const char *UDP_commandTempo(const char* target, int value);
+static const char *UDP_commandDrum(const char* target, bool value);
+static const char *UDP_commandTerminate(const char* target, bool value);
 
 /*-------------------------- Public -----------------------------*/
 
@@ -49,7 +50,6 @@ void UDP_cleanup(void)
     }
 
     isTerminated = NULL;
-    memset(previousMessage, 0, sizeof(previousMessage));
 }
 
 void UDP_initServer(int *terminate_flag)
@@ -71,6 +71,7 @@ void *UDP_serverThread()
     socklen_t client_len = sizeof(client_addr);
     int recv_len;
     char receiv_buffer[MAX_BUFFER_SIZE];
+    const char *msgParts[MAX_PARTS];
 
     // Create a UDP socket
     if ((serverSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
@@ -100,39 +101,31 @@ void *UDP_serverThread()
             perror("recvfrom");
             exit(EXIT_FAILURE);
         }
-
-        //Add null terminate
         receiv_buffer[recv_len] = '\0'; 
-        
-        // Message is not empty -> update previous; otherwise leave it as is
-        if(recv_len != 1)
-        {
-            memset((char *)&previousMessage, 0, sizeof(previousMessage));
-            memcpy(previousMessage, receiv_buffer, recv_len - 1);
-            previousMessageSize = recv_len;
-            previousMessage[previousMessageSize - 1] = '\0';
-        }
+
+        //Break the string into part
+        splitStringToParts(receiv_buffer, msgParts);
 
         // Execute command according to request from client
-        if(strcmp("beat", previousMessage))
+        if(strcmp("beat", msgParts[0]))
         {
-            responseMessage = UDP_commandBeat();
+            responseMessage = UDP_commandBeat(msgParts[1], stringToBoolean(msgParts[2]));
         } 
-        else if (strcmp("volume", previousMessage) == 0)
+        else if (strcmp("volume", msgParts[0]) == 0)
         {
-            responseMessage = UDP_commandVolume();
+            responseMessage = UDP_commandVolume(msgParts[2], atoi(msgParts[2]));
         }
-        else if (strcmp("tempo", previousMessage) == 0)
+        else if (strcmp("tempo", msgParts[0]) == 0)
         {
-            responseMessage = UDP_commandTempo();
+            responseMessage = UDP_commandTempo(msgParts[2], atoi(msgParts[2]));
         }
-        else if (strcmp("drum", previousMessage) == 0)
+        else if (strcmp("drum", msgParts[0]) == 0)
         {
-            responseMessage = UDP_commandDrum();
+            responseMessage = UDP_commandDrum(msgParts[2], stringToBoolean(msgParts[2]));
         }
-        else if (strcmp("terminate", previousMessage) == 0)
+        else if (strcmp("terminate", msgParts[0]) == 0)
         {
-            responseMessage = UDP_commandTerminate();
+            responseMessage = UDP_commandTerminate(msgParts[2], atoi(msgParts[2]));
         }
 
 
@@ -155,33 +148,69 @@ void *UDP_serverThread()
     return NULL;
 }
 
-const char *UDP_commandBeat(void)
+// Source chatGPT
+static void splitStringToParts(const char *input, const char *intoParts[]) {
+    const char *delimiter = ",";
+    const char *token;
+    int count = 0;
+    char *input_copy = strdup(input);
+    if (input_copy == NULL) {
+        return;
+    }
+
+    // Tokenize the input string
+    token = strtok(input_copy, delimiter);
+    while (token != NULL && count < MAX_PARTS) {
+        intoParts[count++] = token;
+        token = strtok(NULL, delimiter);
+    }
+
+    free(input_copy);
+}
+
+static bool stringToBoolean(const char *input) 
 {
-    printf("Hi Beat");
+    if(strcmp(input, "true") == 0)
+    {
+        return true;
+    } 
+    else
+    {
+        return false;
+    }
+}
+
+static const char *UDP_commandBeat(const char* target, bool value)
+{
+    // Call and upgrade audioMixer_template
+    printf("Message: %s - %d\n", target, value);
     return "Hi Beat";
 }
 
-const char *UDP_commandVolume(void)
+static const char *UDP_commandVolume(const char* target, int value)
 {
-    printf("Hi Volume");
+    printf("Message: %s - %d\n", target, value);
     return "Hi Volume\n";
 }
 
-const char *UDP_commandTempo(void)
+static const char *UDP_commandTempo(const char* target, int value)
 {
-    printf("Hi Tempo");
+    printf("Message: %s - %d\n", target, value);
     return "Hi Tempo\n";
 }
 
-const char *UDP_commandDrum(void)
+static const char *UDP_commandDrum(const char* target, bool value)
 {
-    printf("Hi Drum");
+    printf("Message: %s - %d\n", target, value);
     return "Hi Drum\n";
 }
 
-const char *UDP_commandTerminate(void)
+static const char *UDP_commandTerminate(const char* target, bool value)
 {
+    printf("Message: %s - %d\n", target, value);
     *isTerminated = 1;
     return NULL;
 }
+
+
 

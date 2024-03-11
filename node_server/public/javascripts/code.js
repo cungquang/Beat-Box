@@ -126,7 +126,7 @@ function increase_volume() {
         }
 
         //Send data to server
-        socket.emit('volume', currVol);
+        socket.emit('volume',`up,${currVol}`);
     });
 }
 
@@ -143,7 +143,7 @@ function decrease_volume() {
         }
 
         //Send data to server
-        socket.emit('volume', currVol);
+        socket.emit('volume',`down,${currVol}`);
     });
 }
 
@@ -163,7 +163,7 @@ function increase_tempo() {
         }
         
         //Send data to server
-        socket.emit('tempo', currTempo);
+        socket.emit('tempo',`up,${currTempo}`);
     });
 }
 
@@ -180,7 +180,7 @@ function decrease_tempo() {
         }
 
         //Send to server
-        socket.emit('tempo', currTempo);
+        socket.emit('tempo',`down,${currTempo}`);
     });
 }
 
@@ -236,6 +236,6 @@ function select_terminateButton() {
     $('#terminate-button').click(function(event) {
         event.preventDefault();
 
-        socket.emit('terminate', '1');
+        socket.emit('terminate','true,1');
     });
 }
