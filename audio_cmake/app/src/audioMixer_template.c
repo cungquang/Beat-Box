@@ -8,7 +8,6 @@
 #include <limits.h>
 #include <alloca.h> // needed for mixer
 
-
 static snd_pcm_t *handle;
 
 #define OVERFLOW_BOUND	32000
@@ -46,6 +45,15 @@ static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_t playbackThreadId;
 
 static int volume = 0;
+
+void printPlayback(void)
+{
+	for(int i = 0; i < playbackBufferSize; i++)
+	{
+		printf("index-%d ---> %li\n", i, playbackBuffer[i]);
+	}
+}
+
 
 void AudioMixer_init(void)
 {
@@ -165,9 +173,10 @@ void AudioMixer_queueSound(wavedata_t *pSound)
 
 	// Access critical section
 	pthread_mutex_lock(&audioMutex);
+
+	//Search for empty slot in soundBites
 	for(int i = 0; i < MAX_SOUND_BITES; i++)
 	{
-		// Found the first emtpy slot in soundBites
 		if(soundBites[i].pSound == NULL)
 		{
 			empty = i;
@@ -300,11 +309,11 @@ static void fillPlaybackBuffer(short *buff, int size)
 	 *
 	 */
 
-	//Reset the playbackBuffer -> number element * data type of each (short)
-	memset(buff, 0, size*SAMPLE_SIZE);
-
 	//Criticals ection
  	pthread_mutex_lock(&audioMutex);
+	
+	//Reset the playbackBuffer -> number element * data type of each (short)
+	memset(buff, 0, size*SAMPLE_SIZE);
 
 	// Loop through entire buffer -> to add sound
 	for(int sound = 0; sound < MAX_SOUND_BITES; sound ++) 
@@ -342,8 +351,9 @@ static void fillPlaybackBuffer(short *buff, int size)
 				soundBites[sound].location = atIndex;
 			}
 		}
-
 	}
+
+	printPlayback();
 
 	pthread_mutex_unlock(&audioMutex);
 }
