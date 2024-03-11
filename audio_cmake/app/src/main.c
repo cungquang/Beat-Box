@@ -26,7 +26,9 @@ int main() {
 
     //Write to buffer
     printPlaybackBuffer();
+    printf("start writing\n");
     testPlaybackBuffer();
+    printf("finish writing\n");
     printPlaybackBuffer();
 
     //Free other service

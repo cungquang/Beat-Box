@@ -350,7 +350,14 @@ static void fillPlaybackBuffer(short *buff, int size)
 				int temp = buff[i] + dataToWrite[atIndex];
 
 				//Avoid overflow & underflow - Source for this line: ChatGPT
-				temp = (temp > OVERFLOW_BOUND) ? OVERFLOW_BOUND : (temp < UNDERFLOW_BOUND) ? UNDERFLOW_BOUND : temp;
+				if(temp < UNDERFLOW_BOUND) {
+					temp = UNDERFLOW_BOUND;
+				}
+
+				if(temp > OVERFLOW_BOUND) {
+					temp = OVERFLOW_BOUND;
+				}
+
 				buff[i] = (short)temp;
 			}
 
