@@ -1,9 +1,8 @@
-#ifndef _HAL_HELPER_H_
-#define _HAL_HELPER_H_
+#ifndef _HAL_BUTTONUP_H_
+#define _HAL_BUTTONUP_H_
 
 #include <stdio.h>
 #include <sys/stat.h>
-#include <time.h>
 
 void runCommand(char* command);
 static void sleepForMs(long long delayInMs);

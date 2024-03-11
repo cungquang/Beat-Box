@@ -45,6 +45,16 @@ static long long getTimeInMs(void)
     return milliSeconds;
 }
 
+int folderExists(const char *folderPath) {
+    struct stat info;
+
+    // Folder does not exist
+    if (stat(folderPath, &info) != 0) return 0; 
+
+    //Folder exist
+    return S_ISDIR(info.st_mode);
+}
+
 //Read from file to screen
 void readFromFileToScreen(char *fileName)
 {
