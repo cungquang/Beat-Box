@@ -56,7 +56,7 @@ int folderExists(const char *folderPath) {
 }
 
 //Read from file to screen
-void readFromFileToScreen(char *fileName)
+void readFromFileToScreen(char *fileName, char *buff, int maxLength)
 {
     FILE *pFile = fopen(fileName, "r");
     if (pFile == NULL) {
@@ -64,9 +64,7 @@ void readFromFileToScreen(char *fileName)
         exit(-1);
     }
     // Read string (line)
-    const int MAX_LENGTH = 1024;
-    char buff[MAX_LENGTH];
-    fgets(buff, MAX_LENGTH, pFile);
+    fgets(buff, maxLength, pFile);
     
     // Close
     fclose(pFile);
