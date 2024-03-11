@@ -51,6 +51,7 @@ function select_noneButton() {
         event.preventDefault();
         beat[0] = !beat[0];
         $('#none-button').toggleClass('button-active');
+        $('#none-button').removeClass('button-active');
 
         if(beat[0]) {
             //Other button must be unpressed
@@ -60,7 +61,7 @@ function select_noneButton() {
             }
 
             //none-button get pressed -> send to 
-            socket.emit('beat', 'noneButton');
+            socket.emit('beat', 'noneButton,true');
         }
     });
 }
@@ -79,9 +80,10 @@ function select_rock1Button() {
             $('#none-button').removeClass('button-active');
 
             //Send message
-            socket.emit('beat', 'rock1Button');
+            socket.emit('beat', 'rock1Button,true');
         } else {
             $('#rock1-button').removeClass('button-active');
+            socket.emit('beat', 'rock1Button,false');
         }
     });
 }
@@ -100,9 +102,10 @@ function select_rock2Button() {
             $('#none-button').removeClass('button-active');
 
             //Send message
-            socket.emit('beat', 'rock1Button');
+            socket.emit('beat', 'rock2Button,true');
         } else {
             $('#rock2-button').removeClass('button-active');
+            socket.emit('beat', 'rock2Button,false');
         }
     });
 }
@@ -190,7 +193,9 @@ function select_hithatButton() {
         $('#hithat-button').toggleClass('button-active');
         
         if(drum[0]){
-            socket.emit('drum', 'hitButton');
+            socket.emit('drum', 'hitButton,true');
+        } else {
+            socket.emit('drum', 'hitButton,false');
         }
     });
 }
@@ -203,7 +208,9 @@ function select_snareButton() {
         $('#snare-button').toggleClass('button-active');
 
         if(drum[1]){
-            socket.emit('drum', 'snareButton');
+            socket.emit('drum', 'snareButton,true');
+        } else {
+            socket.emit('drum', 'snareButton,false');
         }
     });
 }
@@ -216,7 +223,9 @@ function select_baseButton() {
         $('#base-button').toggleClass('button-active');
 
         if(drum[2]){
-            socket.emit('drum', 'baseButton');
+            socket.emit('drum', 'baseButton,true');
+        } else {
+            socket.emit('drum', 'baseButton,false');
         }
     });
 }
@@ -227,6 +236,6 @@ function select_terminateButton() {
     $('#terminate-button').click(function(event) {
         event.preventDefault();
 
-        socket.emit('terminate', 'terminateButton');
+        socket.emit('terminate', '1');
     });
 }

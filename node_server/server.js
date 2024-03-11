@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const mime = require('mime-types');
 const path = require('path');
-const mathServer = require('./lib/math_server');
+const socketServer = require('./lib/socket_server');
 
 //Host address: http://192.168.6.2:8088/
 
@@ -28,7 +28,7 @@ const server = http.createServer((request, response) => {
 });
 
 //Open the socket listen on the same server PORT
-mathServer.listen(server);
+socketServer.listen(server);
 
 // Configuration
 const PORT = 8088;

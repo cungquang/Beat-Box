@@ -13,6 +13,16 @@ exports.listen = function(server) {
     //On connection 
     io.on('connection', function(socket) {
         handle_beat(socket);
+
+        handle_volume(socket);
+
+        handle_tempo(socket);
+
+        handle_drum(socket);
+
+        handle_volume(socket);
+
+        handle_terminate(socket);
     });
 };
 
@@ -44,6 +54,7 @@ function handle_beat(socket) {
 
     socket.on('beat', function(data) {
         message = 'beat';
+        console.log(data);
         sendToUDPServer(message);
     });
 }
@@ -54,6 +65,7 @@ function handle_volume(socket) {
 
     socket.on('volume', function(data) {
         message = 'volume';
+        console.log(data);
         sendToUDPServer(message);
     });
 }
@@ -63,6 +75,7 @@ function handle_volume(socket) {
 function handle_tempo(socket) {
     socket.on('tempo', function(data) {
         message = 'hi volume';
+        console.log(data);
         sendToUDPServer(message);
     });
 }
@@ -72,6 +85,7 @@ function handle_drum(socket) {
 
     socket.on('drum', function(data) {
         message = 'drum';
+        console.log(data);
         sendToUDPServer(message);
     });
 }
@@ -81,6 +95,7 @@ function handle_terminate(socket) {
 
     socket.on('terminate', function(data) {
         message = 'teriminate';
+        console.log(data);
         sendToUDPServer(message);
     });
 }
