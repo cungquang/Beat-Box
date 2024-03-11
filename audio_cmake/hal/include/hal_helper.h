@@ -10,5 +10,6 @@ static void sleepForMs(long long delayInMs);
 static long long getTimeInMs(void);
 void readFromFileToScreen(char *fileName);
 void writeToFile(char * fileName);
+int folderExists(const char *folderPath);
 
 #endif
