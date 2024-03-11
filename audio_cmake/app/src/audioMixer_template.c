@@ -180,6 +180,10 @@ void AudioMixer_queueSound(wavedata_t *pSound)
 	{
 		soundBites[empty].pSound = pSound;
 	}
+	else
+	{
+		printf("%s\n", error_message);
+	}
 
 	pthread_mutex_unlock(&audioMutex);
 }
