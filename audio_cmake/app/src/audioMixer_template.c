@@ -11,8 +11,8 @@
 
 static snd_pcm_t *handle;
 
-#define OVERFLOW_BOUND	32000
-#define UNDERFLOW_BOUND -32000
+#define OVERFLOW_BOUND	3200
+#define UNDERFLOW_BOUND -3200
 #define DEFAULT_VOLUME 80
 
 #define SAMPLE_RATE 44100
@@ -59,7 +59,7 @@ void printSoundBites(void)
 	for(int i = 0; i < MAX_SOUND_BITES; i++) 
 	{
 		if(soundBites[i].pSound != NULL) {
-			printf("Sound:%d - %d\n", i, soundBites[i].pSound->numSamples);
+			printf("Sound:%d - %d\n", i, soundBites[i].location);
 		}
 	}
 }
@@ -68,7 +68,7 @@ void printPlaybackBuffer(void)
 {
 	for(long unsigned int i = 0; i < playbackBufferSize; i++)
 	{
-		printf("Value at index %lu: %hu\n", (unsigned long)i, playbackBuffer[i]);
+		printf("Value at index %lu: %hi\n", (unsigned long)i, playbackBuffer[i]);
 	}
 }
 
@@ -341,17 +341,21 @@ static void fillPlaybackBuffer(short *buff, int size)
 		{
 			int atIndex = soundBites[sound].location;
 			int soundSize = soundBites[sound].pSound->numSamples;
-
 			short* dataToWrite = soundBites[sound].pSound->pData;
 
 			// Loop through buffer to add alue
 			for(int i = 0; i < size && atIndex < soundSize; i++, atIndex++) 
 			{
 				int temp = buff[i] + dataToWrite[atIndex];
-				//Avoid overflow & underflow - Source for this line: ChatGPT
-				if(temp < UNDERFLOW_BOUND) temp = UNDERFLOW_BOUND;
 
-				if(temp > OVERFLOW_BOUND) temp = OVERFLOW_BOUND;
+				// Avoid overflow
+				if (temp > OVERFLOW_BOUND) {
+					temp = OVERFLOW_BOUND;
+				}
+				// Avoid underflow
+				if (temp < UNDERFLOW_BOUND) {
+					temp = UNDERFLOW_BOUND;
+				}
 
 				buff[i] = (short)temp;
 			}
@@ -361,6 +365,8 @@ static void fillPlaybackBuffer(short *buff, int size)
 			{
 				soundBites[sound].pSound = NULL;
 				soundBites[sound].location = 0;
+			} else{
+				soundBites[sound].location = atIndex;
 			}
 		}
 
