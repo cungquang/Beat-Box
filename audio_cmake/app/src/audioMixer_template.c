@@ -48,12 +48,11 @@ static int volume = 0;
 
 void printPlayback(void)
 {
-	for(int i = 0; i < playbackBufferSize; i++)
+	for(long unsigned i = 0; i < playbackBufferSize; i++)
 	{
-		printf("index-%d ---> %li\n", i, playbackBuffer[i]);
+		printf("index-%lu ---> %hi\n", i, playbackBuffer[i]);
 	}
 }
-
 
 void AudioMixer_init(void)
 {
@@ -353,7 +352,7 @@ static void fillPlaybackBuffer(short *buff, int size)
 		}
 	}
 
-	printPlayback();
+	//printPlayback();
 
 	pthread_mutex_unlock(&audioMutex);
 }
