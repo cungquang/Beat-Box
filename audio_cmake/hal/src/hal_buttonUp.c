@@ -9,7 +9,6 @@
 
 #define MAX_BUFFER_SIZE 1024
 
-
 int isExported_gpio27()
 {
     return folderExists(GPIO27);
