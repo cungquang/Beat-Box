@@ -327,7 +327,7 @@ static void fillPlaybackBuffer(short *buff, int size)
 	 *
 	 */
 
-	//Reset the playbackBuffer
+	//Reset the playbackBuffer -> number element * data type of each (short)
 	memset(buff, 0, size*SAMPLE_SIZE);
 
 	//Criticals ection
