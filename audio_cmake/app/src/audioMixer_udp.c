@@ -29,7 +29,7 @@ static pthread_t udpSever_id;
 void *UDP_serverThread();
 
 static bool stringToBoolean(const char *input);
-static void splitStringToParts(const char *input, const char *intoParts[]);
+static void splitStringToParts(char *input, char *intoParts[]);
 static const char *UDP_commandBeat(const char* target, bool value);
 static const char *UDP_commandVolume(const char* target, int value);
 static const char *UDP_commandTempo(const char* target, int value);
@@ -71,7 +71,7 @@ void *UDP_serverThread()
     socklen_t client_len = sizeof(client_addr);
     int recv_len;
     char receiv_buffer[MAX_BUFFER_SIZE];
-    const char *msgParts[MAX_PARTS];
+    char *msgParts[MAX_PARTS];
 
     // Create a UDP socket
     if ((serverSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
@@ -107,7 +107,7 @@ void *UDP_serverThread()
         splitStringToParts(receiv_buffer, msgParts);
 
         // Execute command according to request from client
-        if(strcmp("beat", msgParts[0]))
+        if(strcmp("beat", msgParts[0]) == 0)
         {
             responseMessage = UDP_commandBeat(msgParts[1], stringToBoolean(msgParts[2]));
         } 
@@ -149,23 +149,25 @@ void *UDP_serverThread()
 }
 
 // Source chatGPT
-static void splitStringToParts(const char *input, const char *intoParts[]) {
-    const char *delimiter = ",";
-    const char *token;
-    int count = 0;
-    char *input_copy = strdup(input);
-    if (input_copy == NULL) {
-        return;
+static void splitStringToParts(char *input, char *intoParts[]) {
+    char *token;
+    int partNum = 0;
+
+    // Get the first token
+    token = strtok(input, ",");
+
+    // Continue getting tokens until NULL or 3 parts are found
+    while (token != NULL && partNum < 3) {
+        intoParts[partNum] = token;
+        token = strtok(NULL, ",");
+        partNum++;
     }
 
-    // Tokenize the input string
-    token = strtok(input_copy, delimiter);
-    while (token != NULL && count < MAX_PARTS) {
-        intoParts[count++] = token;
-        token = strtok(NULL, delimiter);
+    // If there are fewer than three parts, set the remaining parts as NULL
+    while (partNum < 3) {
+        intoParts[partNum] = NULL;
+        partNum++;
     }
-
-    free(input_copy);
 }
 
 static bool stringToBoolean(const char *input) 
