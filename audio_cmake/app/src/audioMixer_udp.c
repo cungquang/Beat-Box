@@ -27,7 +27,6 @@ static pthread_t udpSever_id;
 
 //Declare functions
 void *UDP_serverThread();
-
 static bool stringToBoolean(const char *input);
 static void splitStringToParts(char *input, char *intoParts[]);
 static const char *UDP_commandBeat(const char* target, bool value);
@@ -94,7 +93,7 @@ void *UDP_serverThread()
     //Print server start
     printf("Server starting...\n");
 
-    while(*isTerminated == 0)
+    while(!*isTerminated)
     {
         // Receive message
         if ((recv_len = recvfrom(serverSock, receiv_buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr *)&client_addr, &client_len)) == -1) {

@@ -236,6 +236,6 @@ function select_terminateButton() {
     $('#terminate-button').click(function(event) {
         event.preventDefault();
 
-        socket.emit('terminate','true,1');
+        socket.emit('terminate','terminate,1');
     });
 }
