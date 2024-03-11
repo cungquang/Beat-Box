@@ -22,7 +22,7 @@ static int previousMessageSize;
 
 //Response message
 static const char *responseMessage;
-static char command_buffer[MAX_BUFFER_SIZE];
+//static char command_buffer[MAX_BUFFER_SIZE];
 
 //Thread
 static pthread_t udpSever_id;
@@ -30,9 +30,10 @@ static pthread_t udpSever_id;
 //Declare functions
 void *UDP_serverThread();
 const char *UDP_commandBeat(void);
-const char *UDP_commandUnsupport(void);
-const char *UDP_commandStop(void);
-const char *UDP_commandCount(void);
+const char *UDP_commandVolume(void);
+const char *UDP_commandTempo(void);
+const char *UDP_commandDrum(void);
+const char *UDP_commandTerminate(void);
 
 /*-------------------------- Public -----------------------------*/
 
@@ -115,19 +116,23 @@ void *UDP_serverThread()
         // Execute command according to request from client
         if(strcmp("beat", previousMessage))
         {
-            responseMessage = UDP_commandHelp();
+            responseMessage = UDP_commandBeat();
         } 
         else if (strcmp("volume", previousMessage) == 0)
         {
-            responseMessage = UDP_commandStop();
+            responseMessage = UDP_commandVolume();
         }
         else if (strcmp("tempo", previousMessage) == 0)
         {
-            responseMessage = UDP_commandDips();
+            responseMessage = UDP_commandTempo();
         }
         else if (strcmp("drum", previousMessage) == 0)
         {
-            responseMessage = UDP_commandLength();
+            responseMessage = UDP_commandDrum();
+        }
+        else if (strcmp("terminate", previousMessage) == 0)
+        {
+            responseMessage = UDP_commandTerminate();
         }
 
 

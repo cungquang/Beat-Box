@@ -4,6 +4,8 @@ const mime = require('mime-types');
 const path = require('path');
 const mathServer = require('./lib/math_server');
 
+//Host address: http://192.168.6.2:8088/
+
 /*
 #####################
 #       MAIN        #
