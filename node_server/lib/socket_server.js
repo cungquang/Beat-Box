@@ -90,7 +90,7 @@ function handle_drum(socket) {
 function handle_terminate(socket) {
 
     socket.on('terminate', function(data) {
-        message = 'teriminate';
+        message = 'terminate';
         sendToUDPServer(`${message},${data}`);
     });
 }

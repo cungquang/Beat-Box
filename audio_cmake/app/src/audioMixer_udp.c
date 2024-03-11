@@ -210,7 +210,7 @@ static const char *UDP_commandTerminate(const char* target, bool value)
 {
     printf("Message: %s - %d\n", target, value);
     *isTerminated = 1;
-    return NULL;
+    return target;
 }
 
 
