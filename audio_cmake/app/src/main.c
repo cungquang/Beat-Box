@@ -9,8 +9,6 @@
 #define SOURCE_FILE_4 "wave-files/100055__menegass__gui-drum-co.wav"
 
 int main() {
-    AudioMixer_init();
-
     // Load wave file we want to play:
 	wavedata_t sampleFile_1;
 	wavedata_t sampleFile_2;
@@ -18,8 +16,10 @@ int main() {
 	AudioMixer_readWaveFileIntoMemory(SOURCE_FILE_1, &sampleFile_1);
 	AudioMixer_readWaveFileIntoMemory(SOURCE_FILE_2, &sampleFile_2);
 
+    AudioMixer_init();
+
+    //add to queue
     AudioMixer_queueSound(&sampleFile_1);
-    //AudioMixer_queueSound(&sampleFile_2);
 
     //Free other service
     AudioMixer_cleanup();

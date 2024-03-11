@@ -11,8 +11,8 @@
 
 static snd_pcm_t *handle;
 
-#define OVERFLOW_BOUND	3200
-#define UNDERFLOW_BOUND -3200
+#define OVERFLOW_BOUND	32000
+#define UNDERFLOW_BOUND -32000
 #define DEFAULT_VOLUME 80
 
 #define SAMPLE_RATE 44100
@@ -46,32 +46,6 @@ static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_t playbackThreadId;
 
 static int volume = 0;
-
-static void fillPlaybackBuffer(short *buff, int size);
-
-void testPlaybackBuffer(void)
-{
-	fillPlaybackBuffer(playbackBuffer, playbackBufferSize);
-}
-
-void printSoundBites(void) 
-{
-	for(int i = 0; i < MAX_SOUND_BITES; i++) 
-	{
-		if(soundBites[i].pSound != NULL) {
-			printf("Sound:%d - %d\n", i, soundBites[i].location);
-		}
-	}
-}
-
-void printPlaybackBuffer(void)
-{
-	for(long unsigned int i = 0; i < playbackBufferSize; i++)
-	{
-		printf("Value at index %lu: %hi\n", (unsigned long)i, playbackBuffer[i]);
-	}
-}
-
 
 void AudioMixer_init(void)
 {
@@ -378,8 +352,9 @@ static void fillPlaybackBuffer(short *buff, int size)
 
 void* playbackThread()
 {
-
+	printf("start the thread\n");
 	while (!stopping) {
+		printf("inside the thread\n");
 		// Generate next block of audio
 		fillPlaybackBuffer(playbackBuffer, playbackBufferSize);
 
