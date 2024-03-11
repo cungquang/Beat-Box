@@ -59,7 +59,6 @@ void AudioMixer_init(void)
 		soundBites[i].location = 0;
 	}
 
-
 	// Open the PCM output
 	int err = snd_pcm_open(&handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
 	if (err < 0) {
@@ -192,11 +191,11 @@ void AudioMixer_queueSound(wavedata_t *pSound)
 
 void AudioMixer_cleanup(void)
 {
+	pthread_join(playbackThreadId, NULL);
 	printf("Stopping audio...\n");
 
 	// Stop the PCM generation thread
 	stopping = true;
-	pthread_join(playbackThreadId, NULL);
 
 	// Shutdown the PCM output, allowing any pending sound to play out (drain)
 	snd_pcm_drain(handle);
@@ -352,9 +351,7 @@ static void fillPlaybackBuffer(short *buff, int size)
 
 void* playbackThread()
 {
-	printf("start the thread\n");
 	while (!stopping) {
-		printf("inside the thread\n");
 		// Generate next block of audio
 		fillPlaybackBuffer(playbackBuffer, playbackBufferSize);
 

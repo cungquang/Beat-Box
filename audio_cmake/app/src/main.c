@@ -12,14 +12,18 @@ int main() {
     // Load wave file we want to play:
 	wavedata_t sampleFile_1;
 	wavedata_t sampleFile_2;
+    wavedata_t sampleFile_3;
 
 	AudioMixer_readWaveFileIntoMemory(SOURCE_FILE_1, &sampleFile_1);
 	AudioMixer_readWaveFileIntoMemory(SOURCE_FILE_2, &sampleFile_2);
+    AudioMixer_readWaveFileIntoMemory(SOURCE_FILE_3, &sampleFile_3);
 
     AudioMixer_init();
 
     //add to queue
     AudioMixer_queueSound(&sampleFile_1);
+    AudioMixer_queueSound(&sampleFile_2);
+    AudioMixer_queueSound(&sampleFile_3);
 
     //Free other service
     AudioMixer_cleanup();
