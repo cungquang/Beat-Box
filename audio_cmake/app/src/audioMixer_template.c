@@ -40,7 +40,7 @@ typedef struct {
 static playbackSound_t soundBites[MAX_SOUND_BITES];
 
 // Playback threading
-void* playbackThread(void* arg);
+void* playbackThread();
 static bool stopping = false;
 static pthread_t playbackThreadId;
 static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
@@ -333,7 +333,7 @@ static void fillPlaybackBuffer(short *buff, int size)
 }
 
 
-void* playbackThread(void* arg)
+void* playbackThread()
 {
 
 	while (!stopping) {
@@ -354,7 +354,7 @@ void* playbackThread(void* arg)
 					frames);
 			exit(EXIT_FAILURE);
 		}
-		if (frames > 0 && frames < playbackBufferSize) {
+		if (frames > 0 && (long unsigned int)frames < playbackBufferSize) {
 			printf("Short write (expected %li, wrote %li)\n",
 					playbackBufferSize, frames);
 		}
