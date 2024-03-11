@@ -10,7 +10,7 @@
 
 int main() {
     AudioMixer_init();
-    
+
     // Load wave file we want to play:
 	wavedata_t sampleFile_1;
 	wavedata_t sampleFile_2;
@@ -26,8 +26,7 @@ int main() {
 
     //Write to buffer
     testPlaybackBuffer();
-    printSoundBites();
-    printPlaybackBuffer();
+    //printPlaybackBuffer();
 
     //Free other service
     AudioMixer_cleanup();

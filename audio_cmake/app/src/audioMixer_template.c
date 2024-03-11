@@ -42,8 +42,8 @@ static playbackSound_t soundBites[MAX_SOUND_BITES];
 // Playback threading
 void* playbackThread();
 static bool stopping = false;
-//static pthread_t playbackThreadId;
 static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
+//static pthread_t playbackThreadId;
 
 static int volume = 0;
 
@@ -66,9 +66,9 @@ void printSoundBites(void)
 
 void printPlaybackBuffer(void)
 {
-	for(int i = 0; i < playbackBufferSize; i++)
+	for(long unsigned int i = 0; i < playbackBufferSize; i++)
 	{
-		printf("Node:%d - %hd", i, playbackBuffer[i]);
+		printf("Node:%lu - %hd\n", i, playbackBuffer[i]);
 	}
 }
 
@@ -328,33 +328,43 @@ static void fillPlaybackBuffer(short *buff, int size)
 	 */
 
 	//Reset the playbackBuffer
-	memset(buff, 0, sizeof(buff)*size);
+	memset(buff, 0, size);
 
 	//Criticals ection
  	pthread_mutex_lock(&audioMutex);
 
 	// Loop through entire buffer -> to add sound
+	printf("write the buffer outter loop\n");
 	for(int sound = 0; sound < MAX_SOUND_BITES; sound ++) 
 	{
-		int atIndex = soundBites[sound].location;
-		int soundSize = soundBites[sound].pSound->numSamples;
-		short *dataToWrite = soundBites[sound].pSound->pData;
-
-		// Loop through buffer to add alue
-		for(int i = 0; i < size && atIndex < soundSize; i++, atIndex++) 
+		// Write if exist data
+		if(soundBites[sound].pSound != NULL) 
 		{
-			int temp = buff[i] + dataToWrite[atIndex];
+			int atIndex = soundBites[sound].location;
+			int soundSize = soundBites[sound].pSound->numSamples;
 
-			//Avoid overflow & underflow - Source for this line: ChatGPT
-			buff[i] = (temp > OVERFLOW_BOUND) ? OVERFLOW_BOUND : (temp < UNDERFLOW_BOUND) ? UNDERFLOW_BOUND : temp;
+			short* dataToWrite = soundBites[sound].pSound->pData;
+
+			printf("write the buffer inner loop\n");
+			// Loop through buffer to add alue
+			for(int i = 0; i < size && atIndex < soundSize; i++, atIndex++) 
+			{
+				int temp = buff[i] + dataToWrite[atIndex];
+
+				//Avoid overflow & underflow - Source for this line: ChatGPT
+				temp = (temp > OVERFLOW_BOUND) ? OVERFLOW_BOUND : (temp < UNDERFLOW_BOUND) ? UNDERFLOW_BOUND : temp;
+				buff[i] = (short)temp;
+			}
+			print("complete the inner loop\n");
+
+			// Finish the sound -> free the node for another sound & reset location = 0
+			if(atIndex >= soundSize) 
+			{
+				soundBites[sound].pSound = NULL;
+				soundBites[sound].location = 0;
+			}
 		}
 
-		// Finish the sound -> free the node for another sound & reset location = 0
-		if(atIndex >= soundSize) 
-		{
-			soundBites[sound].pSound = NULL;
-			soundBites[sound].location = 0;
-		}
 	}
 
 	pthread_mutex_unlock(&audioMutex);
