@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <unistd.h> // For sleep function
+#include <alsa/asoundlib.h>
 #include "audioMixer_template.h"
 
 #define SOURCE_FILE_1 "wave-files/100060__menegass__gui-drum-splash-hard.wav"
@@ -19,17 +21,14 @@ int main() {
     AudioMixer_queueSound(&sampleFile_1);
     AudioMixer_queueSound(&sampleFile_2);
 
-    //Free file after complete
-    AudioMixer_freeWaveFileData(&sampleFile_1);
-    AudioMixer_freeWaveFileData(&sampleFile_2);
-
-    AudioMixer_queueSound(&sampleFile_1);
-    AudioMixer_queueSound(&sampleFile_2);
-
     getSoundBites();
 
     //Free other service
     AudioMixer_cleanup();
+    
+    //Free file after complete
+    AudioMixer_freeWaveFileData(&sampleFile_1);
+    AudioMixer_freeWaveFileData(&sampleFile_2);
 
     return 0;
 }

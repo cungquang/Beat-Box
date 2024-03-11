@@ -42,7 +42,7 @@ static playbackSound_t soundBites[MAX_SOUND_BITES];
 // Playback threading
 void* playbackThread();
 static bool stopping = false;
-static pthread_t playbackThreadId;
+//static pthread_t playbackThreadId;
 static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
 
 static int volume = 0;
@@ -52,7 +52,7 @@ void getSoundBites(void)
 	for(int i = 0; i < MAX_SOUND_BITES; i++) 
 	{
 		if(soundBites[i].pSound != NULL) {
-			printf("Sound:%d - %d", i, soundBites[i].pSound->numSamples);
+			printf("Sound:%d - %d\n", i, soundBites[i].pSound->numSamples);
 		}
 	}
 }
@@ -142,6 +142,8 @@ void AudioMixer_readWaveFileIntoMemory(char *fileName, wavedata_t *pSound)
 				pSound->numSamples, fileName, samplesRead);
 		exit(EXIT_FAILURE);
 	}
+
+	fclose(file);
 }
 
 void AudioMixer_freeWaveFileData(wavedata_t *pSound)
