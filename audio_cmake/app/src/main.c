@@ -25,8 +25,9 @@ int main() {
     printSoundBites();
 
     //Write to buffer
+    printPlaybackBuffer();
     testPlaybackBuffer();
-    //printPlaybackBuffer();
+    printPlaybackBuffer();
 
     //Free other service
     AudioMixer_cleanup();

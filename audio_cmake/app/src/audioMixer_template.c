@@ -334,7 +334,6 @@ static void fillPlaybackBuffer(short *buff, int size)
  	pthread_mutex_lock(&audioMutex);
 
 	// Loop through entire buffer -> to add sound
-	printf("write the buffer outter loop\n");
 	for(int sound = 0; sound < MAX_SOUND_BITES; sound ++) 
 	{
 		// Write if exist data
@@ -345,7 +344,6 @@ static void fillPlaybackBuffer(short *buff, int size)
 
 			short* dataToWrite = soundBites[sound].pSound->pData;
 
-			printf("write the buffer inner loop\n");
 			// Loop through buffer to add alue
 			for(int i = 0; i < size && atIndex < soundSize; i++, atIndex++) 
 			{
@@ -355,7 +353,6 @@ static void fillPlaybackBuffer(short *buff, int size)
 				temp = (temp > OVERFLOW_BOUND) ? OVERFLOW_BOUND : (temp < UNDERFLOW_BOUND) ? UNDERFLOW_BOUND : temp;
 				buff[i] = (short)temp;
 			}
-			print("complete the inner loop\n");
 
 			// Finish the sound -> free the node for another sound & reset location = 0
 			if(atIndex >= soundSize) 
