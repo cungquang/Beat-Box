@@ -47,6 +47,8 @@ static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
 
 static int volume = 0;
 
+static void fillPlaybackBuffer(short *buff, int size);
+
 void testPlaybackBuffer(void)
 {
 	fillPlaybackBuffer(playbackBuffer, playbackBufferSize);
