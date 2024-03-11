@@ -12,7 +12,7 @@
 static snd_pcm_t *handle;
 
 #define OVERFLOW_BOUND	32000
-#define UNDERFLOW_BOUND 32000
+#define UNDERFLOW_BOUND -32000
 #define DEFAULT_VOLUME 80
 
 #define SAMPLE_RATE 44100
@@ -68,7 +68,7 @@ void printPlaybackBuffer(void)
 {
 	for(long unsigned int i = 0; i < playbackBufferSize; i++)
 	{
-		printf("Node:%lu - %hd\n", i, playbackBuffer[i]);
+		printf("Value at index %lu: %hu\n", (unsigned long)i, playbackBuffer[i]);
 	}
 }
 
@@ -328,7 +328,9 @@ static void fillPlaybackBuffer(short *buff, int size)
 	 */
 
 	//Reset the playbackBuffer
-	memset(buff, 0, size);
+	memset(buff, 0, size*SAMPLE_SIZE);
+
+	printPlaybackBuffer();
 
 	//Criticals ection
  	pthread_mutex_lock(&audioMutex);
@@ -348,7 +350,7 @@ static void fillPlaybackBuffer(short *buff, int size)
 			for(int i = 0; i < size && atIndex < soundSize; i++, atIndex++) 
 			{
 				int temp = buff[i] + dataToWrite[atIndex];
-
+				printf("test temp - %d\n", temp);
 				//Avoid overflow & underflow - Source for this line: ChatGPT
 				if(temp < UNDERFLOW_BOUND) {
 					temp = UNDERFLOW_BOUND;

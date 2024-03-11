@@ -19,13 +19,11 @@ int main() {
 	AudioMixer_readWaveFileIntoMemory(SOURCE_FILE_2, &sampleFile_2);
 
     AudioMixer_queueSound(&sampleFile_1);
-    AudioMixer_queueSound(&sampleFile_2);
+    //AudioMixer_queueSound(&sampleFile_2);
 
     //Before write
     printSoundBites();
 
-    //Write to buffer
-    printPlaybackBuffer();
     printf("start writing\n");
     testPlaybackBuffer();
     printf("finish writing\n");
