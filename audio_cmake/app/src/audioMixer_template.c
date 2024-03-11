@@ -11,6 +11,8 @@
 
 static snd_pcm_t *handle;
 
+#define OVERFLOW_BOUND	32000
+#define UNDERFLOW_BOUND 32000
 #define DEFAULT_VOLUME 80
 
 #define SAMPLE_RATE 44100
@@ -52,7 +54,10 @@ void AudioMixer_init(void)
 	// Initialize the currently active sound-bites being played
 	// REVISIT:- Implement this. Hint: set the pSound pointer to NULL for each
 	//     sound bite.
-
+	for(int i = 0; i < MAX_SOUND_BITES; i++) {
+		soundBites[i].pSound = NULL;
+		soundBites[i].location = 0;
+	}
 
 
 
@@ -142,6 +147,7 @@ void AudioMixer_queueSound(wavedata_t *pSound)
 	assert(pSound->numSamples > 0);
 	assert(pSound->pData);
 
+	char error_message[] = "Error, the soundBites is full.";
 	// Insert the sound by searching for an empty sound bite spot
 	/*
 	 * REVISIT: Implement this:
@@ -155,11 +161,27 @@ void AudioMixer_queueSound(wavedata_t *pSound)
 	 *    because the application most likely doesn't want to crash just for
 	 *    not being able to play another wave file.
 	 */
+	int empty = -1;
 
+	// Access critical section
+	pthread_mutex_lock(&audioMutex);
+	for(int i = 0; i < MAX_SOUND_BITES; i++)
+	{
+		// Found the first emtpy slot in soundBites
+		if(soundBites[i].pSound == NULL)
+		{
+			empty = i;
+			break;
+		}
+	}
 
+	// Add new sound to queue - if found new empty 
+	if (empty > -1)
+	{
+		soundBites[empty].pSound = pSound;
+	}
 
-
-
+	pthread_mutex_unlock(&audioMutex);
 }
 
 void AudioMixer_cleanup(void)
@@ -273,12 +295,37 @@ static void fillPlaybackBuffer(short *buff, int size)
 	 *
 	 */
 
+	//Reset the playbackBuffer
+	memset(buff, 0, sizeof(buff)*size);
 
+	//Criticals ection
+ 	pthread_mutex_lock(&audioMutex);
 
+	// Loop through entire buffer -> to add sound
+	for(int sound = 0; sound < MAX_SOUND_BITES; sound ++) 
+	{
+		int atIndex = soundBites[sound].location;
+		int soundSize = soundBites[sound].pSound->numSamples;
+		short *dataToWrite = soundBites[sound].pSound->pData;
 
+		// Loop through buffer to add alue
+		for(int i = 0; i < size && atIndex < soundSize; i++, atIndex++) 
+		{
+			int temp = buff[i] + dataToWrite[atIndex];
 
+			//Avoid overflow & underflow - Source for this line: ChatGPT
+			buff[i] = (temp > OVERFLOW_BOUND) ? OVERFLOW_BOUND : (temp < UNDERFLOW_BOUND) ? UNDERFLOW_BOUND : temp;
+		}
 
+		// Finish the sound -> free the node for another sound & reset location = 0
+		if(atIndex >= soundSize) 
+		{
+			soundBites[sound].pSound = NULL;
+			soundBites[sound].location = 0;
+		}
+	}
 
+	pthread_mutex_unlock(&audioMutex);
 }
 
 
@@ -288,7 +335,6 @@ void* playbackThread(void* arg)
 	while (!stopping) {
 		// Generate next block of audio
 		fillPlaybackBuffer(playbackBuffer, playbackBufferSize);
-
 
 		// Output the audio
 		snd_pcm_sframes_t frames = snd_pcm_writei(handle,
