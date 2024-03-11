@@ -26,7 +26,7 @@ int main() {
     AudioMixer_queueSound(&sampleFile_1);
     AudioMixer_queueSound(&sampleFile_2);
 
-    getSoundBites(void);
+    getSoundBites();
 
     //Free other service
     AudioMixer_cleanup();
