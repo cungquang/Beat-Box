@@ -8,5 +8,6 @@ int main() {
  
     UDP_initServer(&terminate_flag);
     UDP_join();
+    UDP_cleanup();
     return 0;
 }
