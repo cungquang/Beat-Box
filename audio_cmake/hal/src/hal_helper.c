@@ -24,7 +24,7 @@ void runCommand(char* command)
 }
 
 //Sleep for miliseconds
-static void sleepForMs(long long delayInMs)
+void sleepForMs(long long delayInMs)
 {
     const long long NS_PER_MS = 1000 * 1000;
     const long long NS_PER_SECOND = 1000000000;
@@ -35,7 +35,7 @@ static void sleepForMs(long long delayInMs)
     nanosleep(&reqDelay, (struct timespec *) NULL);
 }
 
-static long long getTimeInMs(void)
+long long getTimeInMs(void)
 {
     struct timespec spec;
     clock_gettime(CLOCK_REALTIME, &spec);
@@ -56,7 +56,7 @@ int folderExists(const char *folderPath) {
 }
 
 //Read from file to screen
-void readFromFileToScreen(char *fileName, char *buff, int maxLength)
+void readFromFileToBuffer(char *fileName, char *buff, int maxLength)
 {
     FILE *pFile = fopen(fileName, "r");
     if (pFile == NULL) {
@@ -68,7 +68,6 @@ void readFromFileToScreen(char *fileName, char *buff, int maxLength)
     
     // Close
     fclose(pFile);
-    printf("Read: '%s'\n", buff);
 }
 
 

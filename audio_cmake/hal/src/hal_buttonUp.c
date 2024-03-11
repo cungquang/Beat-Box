@@ -22,10 +22,7 @@ void configure_gpio27()
 int readValue_gpio27()
 {
     char buffer[MAX_BUFFER_SIZE];
-    if (!readFromFileToBuffer(GPIO27_VALUE, buffer, MAX_BUFFER_SIZE)) {
-        fprintf(stderr, "Failed to read GPIO 27 value\n");
-        exit(EXIT_FAILURE);
-    }
+    readFromFileToBuffer(GPIO27_VALUE, buffer, MAX_BUFFER_SIZE);
 
     return atoi(buffer);
 }

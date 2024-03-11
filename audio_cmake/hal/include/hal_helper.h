@@ -2,13 +2,15 @@
 #define _HAL_HELPER_H_
 
 #include <stdio.h>
-#include <sys/stat.h>
+#include <stdlib.h>
 #include <time.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
 
 void runCommand(char* command);
-static void sleepForMs(long long delayInMs);
-static long long getTimeInMs(void);
-void readFromFileToScreen(char *fileName, char *buff, int maxLength);
+void sleepForMs(long long delayInMs);
+long long getTimeInMs(void);
+void readFromFileToBuffer(char *fileName, char *buff, int maxLength);
 void writeToFile(char * fileName);
 int folderExists(const char *folderPath);
 
