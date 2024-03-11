@@ -38,9 +38,9 @@ function sendToUDPServer(message) {
     const buffer = Buffer.from(message);
     udpClient.send(buffer, 0, buffer.length, SERVER_PORT, SERVER_ADDRESS, function(err) {
         if (err) {
-        console.error('Error sending message to UDP server:', err);
+            console.error('Error sending message to UDP server:', err);
         } else {
-        console.log('Message sent to UDP server:', message);
+            console.log('Message sent to UDP server:', message);
         }
     });
 }
@@ -54,8 +54,7 @@ function handle_beat(socket) {
 
     socket.on('beat', function(data) {
         message = 'beat';
-        console.log(data);
-        sendToUDPServer(message);
+        sendToUDPServer(`${message},${data}`);
     });
 }
 
@@ -65,8 +64,7 @@ function handle_volume(socket) {
 
     socket.on('volume', function(data) {
         message = 'volume';
-        console.log(data);
-        sendToUDPServer(message);
+        sendToUDPServer(`${message},${data}`);
     });
 }
 
@@ -75,8 +73,7 @@ function handle_volume(socket) {
 function handle_tempo(socket) {
     socket.on('tempo', function(data) {
         message = 'hi volume';
-        console.log(data);
-        sendToUDPServer(message);
+        sendToUDPServer(`${message},${data}`);
     });
 }
 
@@ -85,8 +82,7 @@ function handle_drum(socket) {
 
     socket.on('drum', function(data) {
         message = 'drum';
-        console.log(data);
-        sendToUDPServer(message);
+        sendToUDPServer(`${message},${data}`);
     });
 }
 
@@ -95,7 +91,6 @@ function handle_terminate(socket) {
 
     socket.on('terminate', function(data) {
         message = 'teriminate';
-        console.log(data);
-        sendToUDPServer(message);
+        sendToUDPServer(`${message},${data}`);
     });
 }
