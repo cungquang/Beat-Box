@@ -21,7 +21,13 @@ int main() {
     AudioMixer_queueSound(&sampleFile_1);
     AudioMixer_queueSound(&sampleFile_2);
 
-    getSoundBites();
+    //Before write
+    printSoundBites();
+
+    //Write to buffer
+    testPlaybackBuffer();
+    printSoundBites();
+    printPlaybackBuffer();
 
     //Free other service
     AudioMixer_cleanup();

@@ -47,13 +47,26 @@ static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
 
 static int volume = 0;
 
-void getSoundBites(void) 
+void testPlaybackBuffer(void)
+{
+	fillPlaybackBuffer(playbackBuffer, playbackBufferSize);
+}
+
+void printSoundBites(void) 
 {
 	for(int i = 0; i < MAX_SOUND_BITES; i++) 
 	{
 		if(soundBites[i].pSound != NULL) {
 			printf("Sound:%d - %d\n", i, soundBites[i].pSound->numSamples);
 		}
+	}
+}
+
+void printPlaybackBuffer(void)
+{
+	for(int i = 0; i < playbackBufferSize; i++)
+	{
+		printf("Node:%d - %hd", i, playbackBuffer[i]);
 	}
 }
 

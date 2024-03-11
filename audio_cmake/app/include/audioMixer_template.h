@@ -10,7 +10,9 @@ typedef struct {
 
 #define AUDIOMIXER_MAX_VOLUME 100
 
-void getSoundBites(void);
+void printSoundBites(void);
+void printPlaybackBuffer(void);
+void testPlaybackBuffer(void);
 
 // init() must be called before any other functions,
 // cleanup() must be called last to stop playback threads and free memory.s
