@@ -43,7 +43,7 @@ static playbackSound_t soundBites[MAX_SOUND_BITES];
 void* playbackThread();
 static bool stopping = false;
 static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
-//static pthread_t playbackThreadId;
+static pthread_t playbackThreadId;
 
 static int volume = 0;
 
@@ -115,7 +115,7 @@ void AudioMixer_init(void)
 	playbackBuffer = malloc(playbackBufferSize * sizeof(*playbackBuffer));
 
 	// Launch playback thread:
-	//pthread_create(&playbackThreadId, NULL, playbackThread, NULL);
+	pthread_create(&playbackThreadId, NULL, playbackThread, NULL);
 }
 
 
@@ -222,7 +222,7 @@ void AudioMixer_cleanup(void)
 
 	// Stop the PCM generation thread
 	stopping = true;
-	//pthread_join(playbackThreadId, NULL);
+	pthread_join(playbackThreadId, NULL);
 
 	// Shutdown the PCM output, allowing any pending sound to play out (drain)
 	snd_pcm_drain(handle);
