@@ -72,7 +72,7 @@ function handle_volume(socket) {
 //Handle tempo 
 function handle_tempo(socket) {
     socket.on('tempo', function(data) {
-        message = 'hi volume';
+        message = 'volume';
         sendToUDPServer(`${message},${data}`);
     });
 }
