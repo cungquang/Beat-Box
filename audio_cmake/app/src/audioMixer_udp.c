@@ -5,8 +5,6 @@
 #include <pthread.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#include "app_helper.h"
-#include "app_sampler.h"
 
 #define SERVER_IP "192.168.7.2"
 #define SERVER_PORT 12345
@@ -31,13 +29,10 @@ static pthread_t udpSever_id;
 
 //Declare functions
 void *UDP_serverThread();
-const char *UDP_commandHelp(void);
+const char *UDP_commandBeat(void);
 const char *UDP_commandUnsupport(void);
 const char *UDP_commandStop(void);
 const char *UDP_commandCount(void);
-const char *UDP_commandDips(void);
-const char *UDP_commandLength(void);
-const char *UDP_commandHistory(struct sockaddr_in *client_addr, socklen_t *client_len);
 
 /*-------------------------- Public -----------------------------*/
 
@@ -116,37 +111,25 @@ void *UDP_serverThread()
             previousMessageSize = recv_len;
             previousMessage[previousMessageSize - 1] = '\0';
         }
-        
+
         // Execute command according to request from client
-        if(strcmp("help", previousMessage) == 0 || strcmp("?", previousMessage) == 0)
+        if(strcmp("beat", previousMessage))
         {
             responseMessage = UDP_commandHelp();
         } 
-        else if (strcmp("stop", previousMessage) == 0)
+        else if (strcmp("volume", previousMessage) == 0)
         {
             responseMessage = UDP_commandStop();
         }
-        else if (strcmp("dips", previousMessage) == 0)
+        else if (strcmp("tempo", previousMessage) == 0)
         {
             responseMessage = UDP_commandDips();
         }
-        else if (strcmp("length", previousMessage) == 0)
+        else if (strcmp("drum", previousMessage) == 0)
         {
             responseMessage = UDP_commandLength();
         }
-        else if (strcmp("count", previousMessage) == 0)
-        {
-            responseMessage = UDP_commandCount();
-        }
-        else if (strcmp("history", previousMessage) == 0)
-        {
-            //Send the remaining message
-            responseMessage = UDP_commandHistory(&client_addr, &client_len);
-        }
-        else
-        {
-            responseMessage = UDP_commandUnsupport();
-        }
+
 
         // Reply to the sender
         if(responseMessage)
@@ -167,108 +150,33 @@ void *UDP_serverThread()
     return NULL;
 }
 
-const char *UDP_commandHelp(void)
+const char *UDP_commandBeat(void)
 {
-    return "Accepted command examples:\n"
-           "count\t\t-- get the total number of samples taken.\n"
-           "length\t\t-- get the number of samples taken in the previously completed second.\n"
-           "dips\t\t-- get the number of dips in the previously completed second.\n"
-           "history\t\t-- get all the samples in the previously completed second.\n"
-           "stop\t\t-- cause the server program to end.\n"
-           "<enter>\t\t-- repeat last command.\n";
+    printf("Hi Beat");
+    return "Hi Beat";
 }
 
-const char *UDP_commandUnsupport(void)
+const char *UDP_commandVolume(void)
 {
-    return "Opps, command is unsupported. Please type \"help\" or \"?\" for supporting command\n";
+    printf("Hi Volume");
+    return "Hi Volume\n";
 }
 
-const char *UDP_commandStop(void)
+const char *UDP_commandTempo(void)
+{
+    printf("Hi Tempo");
+    return "Hi Tempo\n";
+}
+
+const char *UDP_commandDrum(void)
+{
+    printf("Hi Drum");
+    return "Hi Drum\n";
+}
+
+const char *UDP_commandTerminate(void)
 {
     *isTerminated = 1;
     return NULL;
 }
 
-const char *UDP_commandCount(void)
-{
-    //Clear data from previous call
-    memset(command_buffer, 0, sizeof(command_buffer));
-    double num = SAMPLER_getCount();
-    snprintf(command_buffer, sizeof(command_buffer), "# samples taken total: %5.3f\n", num);
-    return command_buffer;
-}
-
-const char *UDP_commandDips(void)
-{
-    //Clear data from previous call
-    memset(command_buffer, 0, sizeof(command_buffer));
-    int dips = SAMPLER_getDips();
-    snprintf(command_buffer, sizeof(command_buffer), "# Dips: %d\n", dips);
-    return command_buffer;
-}
-
-const char *UDP_commandLength(void) 
-{
-    //Clear data from previous call
-    memset(command_buffer, 0, sizeof(command_buffer)); 
-    long long length = SAMPLER_getLength();
-    snprintf(command_buffer, sizeof(command_buffer), "# samples taken last second: %lld\n", length);
-    return command_buffer;
-}
-
-const char *UDP_commandHistory(struct sockaddr_in *client_addr, socklen_t *client_len)
-{
-    int temp_size;
-    int history_size;
-    int current_buffer_size = 0;
-    const char *temp_response;
-
-    //Clear data from previous call
-    memset(command_buffer, 0, sizeof(command_buffer));
-    
-    //Get history data
-    double *history = SAMPLER_getHistory(&history_size);
-    int itemPerLine = 0;
-
-    //UDP Packet should include 20 number per line
-    for(int i = 0; i < history_size; i++)
-    {
-        //Convert doubles -> string
-        temp_size = 0;
-        temp_response = convertDataToString(&temp_size, history[i]);
-
-        //if fit into current size - need to + 1 for ', '
-        if(itemPerLine < 20)
-        {
-            mergeToBuffer(command_buffer, &current_buffer_size, temp_response, temp_size);
-            itemPerLine++;
-        }
-        //if oversize -> send data
-        else
-        {
-            //need to cast type (struct sockaddr *) for client_addr
-            command_buffer[current_buffer_size] = '\n';
-            sendto(serverSock, command_buffer, strlen(command_buffer), 0, (struct sockaddr *)client_addr, *client_len);
-
-            //reset data
-            memset(command_buffer, 0, sizeof(command_buffer));
-            current_buffer_size = 0;
-
-            //merge to buffer 
-			mergeToBuffer(command_buffer, &current_buffer_size, temp_response, temp_size);
-            itemPerLine = 1;
-        }
-
-        //free temp_response each time completing merge
-        free((void *)temp_response);
-        temp_response = NULL;
-    }
-
-    //Set history = NULL
-    free((void *) history);
-    history = NULL;
-
-    //Return the remaining string -> to send to user
-    command_buffer[current_buffer_size] = '\n';
-    return command_buffer;
-}
