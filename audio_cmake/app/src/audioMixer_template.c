@@ -330,8 +330,6 @@ static void fillPlaybackBuffer(short *buff, int size)
 	//Reset the playbackBuffer
 	memset(buff, 0, size*SAMPLE_SIZE);
 
-	printPlaybackBuffer();
-
 	//Criticals ection
  	pthread_mutex_lock(&audioMutex);
 
@@ -350,15 +348,10 @@ static void fillPlaybackBuffer(short *buff, int size)
 			for(int i = 0; i < size && atIndex < soundSize; i++, atIndex++) 
 			{
 				int temp = buff[i] + dataToWrite[atIndex];
-				printf("test temp - %d\n", temp);
 				//Avoid overflow & underflow - Source for this line: ChatGPT
-				if(temp < UNDERFLOW_BOUND) {
-					temp = UNDERFLOW_BOUND;
-				}
+				if(temp < UNDERFLOW_BOUND) temp = UNDERFLOW_BOUND;
 
-				if(temp > OVERFLOW_BOUND) {
-					temp = OVERFLOW_BOUND;
-				}
+				if(temp > OVERFLOW_BOUND) temp = OVERFLOW_BOUND;
 
 				buff[i] = (short)temp;
 			}
