@@ -74,7 +74,7 @@ void AudioMixerControl_cleanup(void)
     cleanUpBeatInMemory();
 }
 
-void AudioMixerControl_Addrum(int drumIndex)
+void AudioMixerControl_AddDrum(int drumIndex)
 {
     AudioMixer_queueSound(&accBeat[drumIndex]);
 }

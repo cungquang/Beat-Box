@@ -21,8 +21,8 @@ static pthread_t volumeTrigger_id;
 static pthread_t volumeExecute_id;
 static pthread_t tempoTrigger_id;
 static pthread_t tempoExecute_id;
-static pthread_t pressTrigger_id;
-static pthread_t pressExecute_id;
+//static pthread_t pressTrigger_id;
+//static pthread_t pressExecute_id;
 
 //Mutex
 static pthread_mutex_t volumeMutex = PTHREAD_MUTEX_INITIALIZER;
@@ -71,6 +71,10 @@ void JoystickControl_init(int* terminate_flag)
     sem_init(&press_empty, 0, 1);
     sem_init(&press_full, 0, 0);
 
+    //Create and start pressTrigger_id
+
+    //Create and start pressExecute_id;
+
     //Create & start volumeTrigger thread
     if(pthread_create(&volumeTrigger_id, NULL, volume_up_down_thread, NULL) != 0) {
         exit(EXIT_FAILURE);
@@ -95,12 +99,12 @@ void JoystickControl_init(int* terminate_flag)
 
 void JoystickControl_join()
 {
+    //pthread_join(pressTrigger_id, NULL);
+    //pthread_join(pressExecute_id, NULL);
     pthread_join(volumeTrigger_id, NULL);
     pthread_join(volumeExecute_id, NULL);
     pthread_join(tempoTrigger_id, NULL);
     pthread_join(tempoExecute_id, NULL);
-    pthread_join(pressTrigger_id, NULL);
-    pthread_join(pressExecute_id, NULL);
 }
 
 void JoystickControl_cleanup()
@@ -172,7 +176,7 @@ void* press_execute_thread()
             //Clean all the queue
 
             //Standard rock beat
-
+            printf("isPress ----> %d", prevPressDir);
         }
 
         pthread_mutex_unlock(&pressMutex);
@@ -239,6 +243,7 @@ void* volume_execute_thread()
             AudioMixerControl_setVolume(AudioMixerControl_getVolume()+1);
 
             //Send data -> update frontend
+            printf("change Volume ---> %d\n", AudioMixerControl_getVolume());
         }
         //Down => decrease the volume
         else if(volumeContinue >= MAX_BOUNCING && prevVolumeDir == 3)
@@ -247,6 +252,7 @@ void* volume_execute_thread()
             AudioMixerControl_setVolume(AudioMixerControl_getVolume()-1);
 
             //Send data -> update frontend
+            printf("change Volume ---> %d\n", AudioMixerControl_getVolume());
         }
 
         pthread_mutex_unlock(&volumeMutex);
@@ -313,6 +319,7 @@ void* tempo_execute_thread()
             AudioMixerControl_setTempo(AudioMixerControl_getTempo() - 1);
 
             //Send to Server -> update on frontend
+            printf("change Volume ---> %d\n", AudioMixerControl_getTempo());
         }
         //Right => increase the tempo
         else if(tempoContinue >= MAX_BOUNCING && prevTempoDir == 3)
@@ -321,7 +328,7 @@ void* tempo_execute_thread()
             AudioMixerControl_setTempo(AudioMixerControl_getTempo() + 1);
 
             //Send to Server -> update on frontend
-
+            printf("change Volume ---> %d\n", AudioMixerControl_getTempo());
         }
 
         pthread_mutex_unlock(&tempoMutex);

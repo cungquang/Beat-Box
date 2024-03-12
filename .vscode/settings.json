@@ -8,6 +8,7 @@
         "inet.h": "c",
         "audiomixer_upd.h": "c",
         "hal_helper.h": "c",
-        "joystick_gpioup.h": "c"
+        "joystick_gpioup.h": "c",
+        "joystick_gpioright.h": "c"
     }
 }

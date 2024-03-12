@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include "../include/audioMixer_upd.h"
-#include "../../hal/include/joystick_gpioPress.h"
-#include "../../hal/include/joystick_gpioUp.h"
-#include "../../hal/include/joystick_gpioDown.h"
-#include "../../hal/include/joystick_gpioLeft.h"
-#include "../../hal/include/joystick_gpioRight.h"
+#include "../include/joystick_control.h"
 
 
 int terminate_flag = 0;
@@ -16,7 +12,8 @@ void UDP_Server()
     UDP_cleanup();
 }
 
-int main() {
+void test()
+{
 
     int gpio = readValue_gpioPress();
     printf("value from gpio press: %d\n", gpio);
@@ -32,5 +29,15 @@ int main() {
 
     gpio = readValue_gpioRight();
     printf("value from gpio right: %d\n", gpio);
+}
+
+
+int main() 
+{
+    void JoystickControl_init(int* terminate_flag);
+
+    void JoystickControl_join();
+    void JoystickControl_cleanup();
+
     return 0;
 }
