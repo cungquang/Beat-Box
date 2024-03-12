@@ -2,6 +2,7 @@
 #include <alsa/asoundlib.h>
 #include "../include/audioMixer_template.h"
 
+
 #define SOURCE_FILE_1 "wave-files/100060__menegass__gui-drum-splash-hard.wav"
 #define SOURCE_FILE_2 "wave-files/100066__menegass__gui-drum-tom-mid-hard.wav"
 #define SOURCE_FILE_3 "wave-files/100062__menegass__gui-drum-tom-hi-hard.wav"
@@ -30,7 +31,6 @@ void testOperation()
         AudioMixer_queueSound(&sampleFile_2);
         sleep(0.5);
         AudioMixer_queueSound(&sampleFile_3);
-        //AudioMixer_queueSound(&sampleFile_4);
         sleep(1);
     }
 

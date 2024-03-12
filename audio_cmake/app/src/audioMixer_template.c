@@ -13,6 +13,8 @@ static snd_pcm_t *handle;
 #define OVERFLOW_BOUND	32000
 #define UNDERFLOW_BOUND -32000
 #define DEFAULT_VOLUME 80
+#define DEFAULT_TEMPO 120
+#define AUDIO_MAX_TEMPO 250
 
 #define SAMPLE_RATE 44100
 #define NUM_CHANNELS 1
@@ -45,6 +47,7 @@ static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_t playbackThreadId;
 
 static int volume = 0;
+static int tempo = 0;
 
 void printPlayback(void)
 {
@@ -219,6 +222,20 @@ void AudioMixer_cleanup(void)
 	fflush(stdout);
 }
 
+int AudioMixer_getTempo()
+{
+	return tempo;
+}
+
+void AudioMixer_setTempo(int newTempo)
+{
+	if(newTempo < 40 || newTempo > AUDIO_MAX_TEMPO)
+	{
+		printf("ERROR: Tempo must be between 40 and 250.\n");
+		return; 
+	}
+	tempo = newTempo;
+}
 
 int AudioMixer_getVolume()
 {
@@ -260,6 +277,7 @@ void AudioMixer_setVolume(int newVolume)
 
     snd_mixer_close(volHandle);
 }
+
 
 
 // Fill the `buff` array with new PCM values to output.

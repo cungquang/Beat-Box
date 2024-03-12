@@ -30,4 +30,8 @@ void AudioMixer_queueSound(wavedata_t *pSound);
 int  AudioMixer_getVolume(void);
 void AudioMixer_setVolume(int newVolume);
 
+// Get/set the tempo
+int AudioMixer_getTempo();
+void AudioMixer_setTempo(int newTempo);
+
 #endif
