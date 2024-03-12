@@ -34,10 +34,10 @@ void test()
 
 int main() 
 {
-    void JoystickControl_init(int* terminate_flag);
+    JoystickControl_init(&terminate_flag);
 
-    void JoystickControl_join();
-    void JoystickControl_cleanup();
+    JoystickControl_join();
+    JoystickControl_cleanup();
 
     return 0;
 }
