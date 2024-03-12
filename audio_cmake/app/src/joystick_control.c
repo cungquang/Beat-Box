@@ -123,6 +123,9 @@ void JoystickControl_join()
 
 void JoystickControl_cleanup()
 {
+    //End AudioMixer
+    AudioMixer_stop();
+
     //Free semaphore
     sem_destroy(&press_full);
     sem_destroy(&press_empty);

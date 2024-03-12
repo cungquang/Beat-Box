@@ -14,6 +14,7 @@ typedef struct {
 // cleanup() must be called last to stop playback threads and free memory.s
 void AudioMixer_init(void);
 void AudioMixer_cleanup(void);
+void AudioMixer_stop(void);
 
 // Read the contents of a wave file into the pSound structure. Note that
 // the pData pointer in this structure will be dynamically allocated in

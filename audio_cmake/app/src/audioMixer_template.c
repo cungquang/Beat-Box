@@ -191,16 +191,18 @@ void AudioMixer_queueSound(wavedata_t *pSound)
 	pthread_mutex_unlock(&audioMutex);
 }
 
+void AudioMixer_stop(void)
+{
+	// Stop the PCM generation thread
+	stopping = true;
+	printf("Stopping audio...\n");	
+}
 
 //Clean up function 
 void AudioMixer_cleanup(void)
 {
 	pthread_join(playbackThreadId, NULL);
-	printf("Stopping audio...\n");
-
-	// Stop the PCM generation thread
-	stopping = true;
-
+	
 	// Shutdown the PCM output, allowing any pending sound to play out (drain)
 	snd_pcm_drain(handle);
 	snd_pcm_close(handle);
