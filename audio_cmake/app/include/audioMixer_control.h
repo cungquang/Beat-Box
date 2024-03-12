@@ -25,7 +25,7 @@ void AudioMixerControl_setTempo(int newTempo);
 int AudioMixerControl_getTempo();
 
 //Drum control - add drum to queue
-void AudioMixerControl_AddDrum(int drumIndex);
+void AudioMixerControl_AddDrum(char drumFile, int value);
 
 //User selection control
 void AudioMixerControl_setUserSelection(int newSelect);
