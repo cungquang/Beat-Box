@@ -50,7 +50,10 @@ void AudioMixerControl_init(int *terminateFlag)
     AudioMixer_init();
 
     // Launch playback thread:
-	pthread_create(&audioThreadId, NULL, addThemeToQueue_thread, NULL);
+	if(pthread_create(&audioThreadId, NULL, addThemeToQueue_thread, NULL) != 0)
+    {
+        exit(EXIT_FAILURE);
+    }
 }
 
 void AudioMixerControl_join(void)

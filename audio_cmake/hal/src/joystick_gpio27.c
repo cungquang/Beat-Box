@@ -1,4 +1,4 @@
-#include "../include/hal_gpio27.h"
+#include "../include/joystick_gpio27.h"
 
 #define GPIO27 "/sys/class/gpio/gpio27"
 #define GPIO27_VALUE "/sys/class/gpio/gpio27/value"

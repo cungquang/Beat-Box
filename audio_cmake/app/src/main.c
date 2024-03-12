@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "../../hal/include/hal_gpio27.h"
+#include "../../hal/include/joystick_gpio27.h"
 #include "../include/audioMixer_upd.h"
 
 int terminate_flag = 0;

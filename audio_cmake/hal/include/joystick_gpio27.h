@@ -1,5 +1,5 @@
-#ifndef _HAL_GPIO27_H_
-#define _HAL_GPIO27_H_
+#ifndef _JOYSTICK_GPIO27_H_
+#define _JOYSTICK_GPIO27_H_
 
 #include <stdio.h>
 #include <stdio.h>

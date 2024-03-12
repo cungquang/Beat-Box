@@ -6,6 +6,7 @@
         "stdbool.h": "c",
         "socket.h": "c",
         "inet.h": "c",
-        "audiomixer_upd.h": "c"
+        "audiomixer_upd.h": "c",
+        "hal_helper.h": "c"
     }
 }
