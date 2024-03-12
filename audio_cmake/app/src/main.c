@@ -11,11 +11,9 @@ void Operation()
     AudioMixerControl_init(&terminate_flag);
     JoystickControl_init(&terminate_flag);
 
-    AudioMixerControl_setUserSelection(2);
-
-    UDP_join();
     AudioMixerControl_join();
     JoystickControl_join();
+    UDP_join();
 
     //Cleanup -> later move to shutdown thread
     UDP_cleanup();
@@ -23,10 +21,15 @@ void Operation()
     JoystickControl_cleanup();
 }
 
+void test()
+{
+    UDP_initServer(&terminate_flag);
+    UDP_join();
+    UDP_cleanup();
+}
 
 int main() 
 {
-    
     test();
     return 0;
 }

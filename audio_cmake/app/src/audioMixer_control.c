@@ -16,7 +16,7 @@
 static int* isTerminate;
 
 //User selection
-static int userSelection;
+static int userSelection = 1;
 
 //Wave file
 static wavedata_t stdBeat[MAX_STD_BEAT];
@@ -245,45 +245,35 @@ static void playback_customBeats()
     AudioMixer_queueSound(&stdBeat[1]);
     AudioMixer_queueSound(&stdBeat[0]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
-    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 1.5 - Hit-hat
     AudioMixer_queueSound(&stdBeat[0]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
-    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 2 - Hit-hat, snare
-    AudioMixer_queueSound(&stdBeat[0]);
     AudioMixer_queueSound(&stdBeat[1]);
-    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 2.5 - Hit-hat
     AudioMixer_queueSound(&stdBeat[0]);
     AudioMixer_queueSound(&stdBeat[2]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
-    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 3
     AudioMixer_queueSound(&stdBeat[1]);
     AudioMixer_queueSound(&stdBeat[0]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
-    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 3.5
     AudioMixer_queueSound(&stdBeat[0]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
-    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 4
-    AudioMixer_queueSound(&stdBeat[0]);
     AudioMixer_queueSound(&stdBeat[1]);
-    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 4.5
     AudioMixer_queueSound(&stdBeat[0]);
     AudioMixer_queueSound(&stdBeat[2]);
-    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 }
