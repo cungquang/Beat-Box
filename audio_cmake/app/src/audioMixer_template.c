@@ -14,7 +14,7 @@ static snd_pcm_t *handle;
 #define UNDERFLOW_BOUND -32000
 #define DEFAULT_VOLUME 80
 #define DEFAULT_TEMPO 120
-#define AUDIO_MAX_TEMPO 250
+#define AUDIO_MAX_TEMPO 300
 
 #define SAMPLE_RATE 44100
 #define NUM_CHANNELS 1
@@ -46,13 +46,11 @@ static bool stopping = false;
 static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_t playbackThreadId;
 
-static int volume = 0;
-static int tempo = 0;
+static int volume = DEFAULT_VOLUME;
+static int tempo = DEFAULT_TEMPO;
 
 void AudioMixer_init(void)
 {
-	AudioMixer_setVolume(DEFAULT_VOLUME);
-
 	// Initialize the currently active sound-bites being played
 	// REVISIT:- Implement this. Hint: set the pSound pointer to NULL for each
 	//     sound bite.
