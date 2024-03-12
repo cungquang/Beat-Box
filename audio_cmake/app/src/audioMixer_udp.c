@@ -46,7 +46,7 @@ void UDP_cleanup(void)
     }
 
     if(targetSock) {
-        clos(targetSock);
+        close(targetSock);
     }
 
     isTerminated = NULL;
