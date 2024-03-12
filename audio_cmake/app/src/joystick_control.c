@@ -1,6 +1,6 @@
 #include "../include/joystick_control.h"
 
-#define MAX_BOUNCING 5
+#define MAX_BOUNCING 10
 #define MAX_BUFFER_SIZE 250
 
 static int *isTerminate;
@@ -206,12 +206,12 @@ void* press_execute_thread()
         if(mode == 1)
         {
             //Do something
-            printf("pressContinue: %d - pressValue: %d - mode: %d", pressContinue, prevPressDir, mode);
+            printf("pressContinue: %d - pressValue: %d - mode: %d\n", pressContinue, prevPressDir, mode);
         }
         else if(mode == 2)
         {
             //Do something
-            printf("pressContinue: %d - pressValue: %d - mode: %d", pressContinue, prevPressDir, mode);
+            printf("pressContinue: %d - pressValue: %d - mode: %d]n", pressContinue, prevPressDir, mode);
         }
 
 
