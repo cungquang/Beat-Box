@@ -19,6 +19,9 @@ static int volumeContinue;
 static int prevTempoDir;      
 static int tempoContinue;
 
+//Mode 
+static int mode = 0;
+
 //Thread
 static pthread_t volumeTrigger_id;
 static pthread_t volumeExecute_id;
@@ -148,7 +151,7 @@ void *press_trigger_thread()
         if(prevPressDir == currPressDir)
         {
             pressContinue++;
-            pressContinue = pressContinue >= MAX_BOUNCING ? MAX_BOUNCING : pressContinue;
+            pressContinue = pressContinue > MAX_BOUNCING ? MAX_BOUNCING + 1 : pressContinue;
         }
         //Does not match with previous
         else{
@@ -165,7 +168,7 @@ void *press_trigger_thread()
     return NULL;
 }
 
-//Thread execute command -> "None" - "Beat1" - "Beat2" - "Beat3"
+//Thread execute command -> "None" -> "Beat1" -> "None" -> "Beat2"
 void* press_execute_thread()
 {
     while(!*isTerminate)
@@ -173,14 +176,37 @@ void* press_execute_thread()
         sem_wait(&press_full);
         pthread_mutex_lock(&pressMutex);
 
-        //User press button
+        //User press button - continously
         if(pressContinue >= MAX_BOUNCING && prevPressDir == 0)
         {
-            //Clean all the queue
-
-            //Standard rock beat
-            printf("isPress ----> %d", prevPressDir);
+            //mode == 0
+            if(mode == 0) 
+            {
+                mode = 1;
+            } 
+            else if (mode == 1)
+            {
+                mode = 2;
+            }
+        } 
+        //Prev is not 0
+        else
+        {
+            mode = 0;
         }
+
+        //Take action based on mode value
+        if(mode == 1)
+        {
+            //Do something
+            printf("pressContinue: %d - pressValue: %d - mode: %d", pressContinue, prevPressDir, mode);
+        }
+        else if(mode == 2)
+        {
+            //Do something
+            printf("pressContinue: %d - pressValue: %d - mode: %d", pressContinue, prevPressDir, mode);
+        }
+
 
         pthread_mutex_unlock(&pressMutex);
         sem_post(&press_empty);
@@ -248,7 +274,7 @@ void* volume_execute_thread()
             //Send data -> update frontend
             snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,increase,%d", AudioMixerControl_getVolume());
             printf("change Volume ---> %d\n", volumeBuffer);
-            //UDP_sendToTarget(volumeBuffer);
+            UDP_sendToTarget(volumeBuffer);
         }
         //Down => decrease the volume
         else if(volumeContinue >= MAX_BOUNCING && prevVolumeDir == 3)
@@ -259,7 +285,7 @@ void* volume_execute_thread()
             //Send to Server -> update on frontend
             snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,decrease,%d", AudioMixerControl_getVolume());
             printf("change Volume ---> %d\n", volumeBuffer);
-            //UDP_sendToTarget(volumeBuffer);
+            UDP_sendToTarget(volumeBuffer);
         }
 
         pthread_mutex_unlock(&volumeMutex);
@@ -327,8 +353,8 @@ void* tempo_execute_thread()
 
             //Send to Server -> update on frontend
             snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,decrease,%d", AudioMixerControl_getTempo());
-            printf("change Volume ---> %d\n", tempoBuffer);
-            //UDP_sendToTarget(tempoBuffer);
+            printf("change Tempo ---> %d\n", tempoBuffer);
+            UDP_sendToTarget(tempoBuffer);
         }
         //Right => increase the tempo
         else if(tempoContinue >= MAX_BOUNCING && prevTempoDir == 3)
@@ -338,8 +364,8 @@ void* tempo_execute_thread()
 
             //Send to Server -> update on frontend
             snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,increase,%d", AudioMixerControl_getTempo());
-            printf("change Volume ---> %d\n", tempoBuffer);
-            //UDP_sendToTarget(tempoBuffer);
+            printf("change Tempo ---> %d\n", tempoBuffer);
+            UDP_sendToTarget(tempoBuffer);
         }
 
         pthread_mutex_unlock(&tempoMutex);
