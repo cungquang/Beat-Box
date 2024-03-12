@@ -15,6 +15,9 @@
 //Manage operation
 static int* isTerminate;
 
+//User selection
+static int userSelection;
+
 //Wave file
 static wavedata_t stdBeat[MAX_STD_BEAT];
 static wavedata_t accBeat[MAX_STD_BEAT];
@@ -26,10 +29,10 @@ static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
 
 //Initiate private function
 void* addThemeToQueue_thread();
-static void addThemeBeatToQueue();
 static int convertTempoIntoTime(int tempo);
 static void loadBeatIntoMemory();
 static void cleanUpBeatInMemory();
+static void playback_stdRockBeat();
 
 
 /*
@@ -71,7 +74,7 @@ void AudioMixerControl_cleanup(void)
     cleanUpBeatInMemory();
 }
 
-void AudioMixerControl_Adddrum(int drumIndex)
+void AudioMixerControl_Addrum(int drumIndex)
 {
     AudioMixer_queueSound(&accBeat[drumIndex]);
 }
@@ -112,6 +115,19 @@ int AudioMixerControl_getTempo()
     return AudioMixer_getTempo();
 }
 
+/////////////////// User Selection ///////////////////
+
+int AudioMixerControl_getUserSelection()
+{
+    return userSelection;
+}
+
+void AudioMixerControl_setUserSelection(int newSelect)
+{
+    userSelection = newSelect;
+}
+
+
 /*
 #########################
 #       PRIVATE         #
@@ -122,30 +138,21 @@ void* addThemeToQueue_thread()
 {
     while(!*isTerminate)
     {
-        //add to queue
-        addThemeBeatToQueue();
-
-        //Sleep based on tempo value
-        sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+        //Play standard rock beat
+        if(userSelection == 1)
+        {
+            playback_stdRockBeat();
+        }
+        else
+        {
+            AudioMixer_CleanUpQueue();
+            AudioMixer_CleanUpBuffer();
+        }
     }
 
     return NULL;
 }
 
-static void addThemeBeatToQueue()
-{
-    for(int i = 0; i < MAX_STD_BEAT; i++)
-    {
-        //Critical section
-        pthread_mutex_lock(&audioMutex);    
-        if(selectedBeats[i] == 1)
-        {
-            AudioMixer_queueSound(&stdBeat[i]);
-        }
-        pthread_mutex_unlock(&audioMutex);
-        sleepForMs(700);
-    }
-}
 
 static int convertTempoIntoTime(int tempo) 
 {
@@ -177,4 +184,47 @@ static void cleanUpBeatInMemory()
     AudioMixer_freeWaveFileData(&accBeat[0]);
     AudioMixer_freeWaveFileData(&accBeat[1]);
     AudioMixer_freeWaveFileData(&accBeat[2]);
+}
+
+
+/////////////////////////// MUSIC THEME /////////////////////////// 
+
+//Standard Rock Beat
+static void playback_stdRockBeat()
+{
+    //beat 1 - Hit-hat, base
+    AudioMixer_queueSound(&stdBeat[1]);
+    AudioMixer_queueSound(&stdBeat[0]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //beat 1.5 - Hit-hat
+    AudioMixer_queueSound(&stdBeat[1]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //beat 2 - Hit-hat, snare
+    AudioMixer_queueSound(&stdBeat[1]);
+    AudioMixer_queueSound(&stdBeat[2]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //beat 2.5 - Hit-hat
+    AudioMixer_queueSound(&stdBeat[1]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //beat 3
+    AudioMixer_queueSound(&stdBeat[1]);
+    AudioMixer_queueSound(&stdBeat[0]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //beat 3.5
+    AudioMixer_queueSound(&stdBeat[1]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //beat 4
+    AudioMixer_queueSound(&stdBeat[1]);
+    AudioMixer_queueSound(&stdBeat[0]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //beat 4.5
+    AudioMixer_queueSound(&stdBeat[1]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 }

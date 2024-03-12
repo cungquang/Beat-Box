@@ -34,4 +34,8 @@ void AudioMixer_setVolume(int newVolume);
 int AudioMixer_getTempo();
 void AudioMixer_setTempo(int newTempo);
 
+//Manually clean up - Queue & playbackBuffer
+void AudioMixer_CleanUpQueue();
+void AudioMixer_CleanUpBuffer();
+
 #endif

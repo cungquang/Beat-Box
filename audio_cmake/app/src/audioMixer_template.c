@@ -272,6 +272,43 @@ void AudioMixer_setVolume(int newVolume)
     snd_mixer_close(volHandle);
 }
 
+//Reset playbackBuffer
+void AudioMixer_CleanUpBuffer()
+{
+	//Criticals ection
+ 	pthread_mutex_lock(&audioMutex);
+	
+	//Reset the playbackBuffer -> number element * data type of each (short)
+	memset(playbackBuffer, 0, playbackBufferSize*SAMPLE_SIZE);
+
+	pthread_mutex_unlock(&audioMutex);
+}
+
+//Reset soundBites
+void AudioMixer_CleanUpQueue()
+{
+	//Criticals ection
+ 	pthread_mutex_lock(&audioMutex);
+	
+	//Search for empty slot in soundBites
+	for(int i = 0; i < MAX_SOUND_BITES; i++)
+	{
+		if(soundBites[i].pSound)
+		{
+			soundBites[i].pSound = NULL;
+			soundBites[i].location = 0;
+		}
+	}
+
+	pthread_mutex_unlock(&audioMutex);
+}
+
+
+/*
+#########################
+#       PRIVATE         #
+#########################
+*/
 
 
 // Fill the `buff` array with new PCM values to output.
