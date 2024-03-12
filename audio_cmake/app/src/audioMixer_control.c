@@ -32,7 +32,10 @@ void* addThemeToQueue_thread();
 static int convertTempoIntoTime(int tempo);
 static void loadBeatIntoMemory();
 static void cleanUpBeatInMemory();
+
+//Music theme
 static void playback_stdRockBeat();
+static void playback_customBeats();
 
 
 /*
@@ -143,6 +146,12 @@ void* addThemeToQueue_thread()
         {
             playback_stdRockBeat();
         }
+        //Play custom beat
+        else if(userSelection == 2)
+        {
+            playback_customBeats();
+        }
+        //Play None
         else
         {
             AudioMixer_CleanUpQueue();
@@ -226,5 +235,45 @@ static void playback_stdRockBeat()
 
     //beat 4.5
     AudioMixer_queueSound(&stdBeat[1]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+}
+
+//Standard Rock Beat
+static void playback_customBeats()
+{
+    //beat 1 - base
+    AudioMixer_queueSound(&stdBeat[0]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //beat 1.5 - Hit-hat
+    AudioMixer_queueSound(&stdBeat[0]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //beat 2 - Hit-hat, snare
+    AudioMixer_queueSound(&stdBeat[0]);
+    AudioMixer_queueSound(&stdBeat[1]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //beat 2.5 - Hit-hat
+    AudioMixer_queueSound(&stdBeat[0]);
+    AudioMixer_queueSound(&stdBeat[2]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //beat 3
+    AudioMixer_queueSound(&stdBeat[0]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //beat 3.5
+    AudioMixer_queueSound(&stdBeat[0]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //beat 4
+    AudioMixer_queueSound(&stdBeat[0]);
+    AudioMixer_queueSound(&stdBeat[1]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //beat 4.5
+    AudioMixer_queueSound(&stdBeat[0]);
+    AudioMixer_queueSound(&stdBeat[2]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 }
