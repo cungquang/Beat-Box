@@ -20,27 +20,17 @@ void Operation()
 
 void test()
 {
+    AudioMixerControl_init(&terminate_flag);
+    AudioMixerControl_setUserSelection(1);
 
-    int gpio = readValue_gpioPress();
-    printf("value from gpio press: %d\n", gpio);
-
-    gpio = readValue_gpioUp();
-    printf("value from gpio up: %d\n", gpio);
-
-    gpio = readValue_gpioDown();
-    printf("value from gpio down: %d\n", gpio);
-
-    gpio = readValue_gpioLeft();
-    printf("value from gpio left: %d\n", gpio);
-
-    gpio = readValue_gpioRight();
-    printf("value from gpio right: %d\n", gpio);
+    AudioMixerControl_join();
+    AudioMixerControl_cleanup();
 }
 
 
 int main() 
 {
     
-    Operation();
+    test();
     return 0;
 }
