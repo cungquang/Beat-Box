@@ -192,6 +192,8 @@ void AudioMixer_queueSound(wavedata_t *pSound)
 	pthread_mutex_unlock(&audioMutex);
 }
 
+
+//Clean up function 
 void AudioMixer_cleanup(void)
 {
 	pthread_join(playbackThreadId, NULL);

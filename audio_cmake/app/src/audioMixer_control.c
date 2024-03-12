@@ -68,9 +68,9 @@ void AudioMixerControl_cleanup(void)
     cleanUpBeatInMemory();
 }
 
-void AudioMixerControl_AddSound(int soundIndex)
+void AudioMixerControl_Adddrum(int drumIndex)
 {
-    AudioMixer_queueSound(&accBeat[soundIndex]);
+    AudioMixer_queueSound(&accBeat[drumIndex]);
 }
 
 void AudioMixerControl_modifyBeat(int beatIndex, int value)

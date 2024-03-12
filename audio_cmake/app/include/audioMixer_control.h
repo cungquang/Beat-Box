@@ -12,8 +12,8 @@ void AudioMixerControl_init(int *terminateFlag);
 void AudioMixerControl_join(void);
 void AudioMixerControl_cleanup(void);
 
-//Drum control - add random drum to queue
-void AudioMixerControl_AddSound(int soundIndex);
+//Drum control - add drum to queue
+void AudioMixerControl_Adddrum(int drumIndex);
 
 //Beat control - Select or unselect beats
 void AudioMixerControl_modifyBeat(int beatIndex, int value);
