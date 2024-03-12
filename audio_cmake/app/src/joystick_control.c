@@ -240,7 +240,7 @@ void* volume_execute_thread()
         if(volumeContinue >= MAX_BOUNCING && prevVolumeDir == 2)
         {
             //Increase volume
-            AudioMixerControl_setVolume(AudioMixerControl_getVolume()+1);
+            AudioMixerControl_setVolume(AudioMixerControl_getVolume() + 5);
 
             //Send data -> update frontend
             printf("change Volume ---> %d\n", AudioMixerControl_getVolume());
@@ -249,7 +249,7 @@ void* volume_execute_thread()
         else if(volumeContinue >= MAX_BOUNCING && prevVolumeDir == 3)
         {
             //Decrease volume
-            AudioMixerControl_setVolume(AudioMixerControl_getVolume()-1);
+            AudioMixerControl_setVolume(AudioMixerControl_getVolume() - 5);
 
             //Send data -> update frontend
             printf("change Volume ---> %d\n", AudioMixerControl_getVolume());
@@ -316,7 +316,7 @@ void* tempo_execute_thread()
         if(tempoContinue >= MAX_BOUNCING && prevTempoDir == 2)
         {
             //Decrease the tempo
-            AudioMixerControl_setTempo(AudioMixerControl_getTempo() - 1);
+            AudioMixerControl_setTempo(AudioMixerControl_getTempo() - 5);
 
             //Send to Server -> update on frontend
             printf("change Volume ---> %d\n", AudioMixerControl_getTempo());
@@ -325,7 +325,7 @@ void* tempo_execute_thread()
         else if(tempoContinue >= MAX_BOUNCING && prevTempoDir == 3)
         {
             //Increase the tempo
-            AudioMixerControl_setTempo(AudioMixerControl_getTempo() + 1);
+            AudioMixerControl_setTempo(AudioMixerControl_getTempo() + 5);
 
             //Send to Server -> update on frontend
             printf("change Volume ---> %d\n", AudioMixerControl_getTempo());
