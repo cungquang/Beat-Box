@@ -21,14 +21,18 @@ static wavedata_t accBeat[MAX_STD_BEAT];
 
 static int selectedBeats[MAX_STD_BEAT];
 
+static pthread_t audioThreadId;
+
 //Initiate private function
+void* addThemeToQueue_thread();
 static void addThemeBeatToQueue();
 static int convertTempoIntoTime(int tempo);
 static void loadBeatIntoMemory();
 
 
-void AudioMixer_control_startup(int *terminateFlag)
+void AudioMixerControl_init(int *terminateFlag)
 {
+    //Init trigger flag
     isTerminate = terminateFlag;
 
     //Load beats into memory
@@ -37,30 +41,43 @@ void AudioMixer_control_startup(int *terminateFlag)
     //Init Audio Mixer
     AudioMixer_init();
 
+    // Launch playback thread:
+	pthread_create(&audioThreadId, NULL, addThemeToQueue_thread, NULL);
 }
 
-void AudioMixer_control_cleanup(void)
+void AudioMixerControl_join(void)
+{
+    //Join the thread
+    pthread_join(audioThreadId, NULL);
+}
+
+void AudioMixerControl_cleanup(void)
 {
     //Free other service
     AudioMixer_cleanup();
-
 }
 
-void *AudioMixer_control_addToQueue(void)
+void AudioMixerControl_AddSound(int indexSound)
 {
-    //add to queue
-    addThemeBeatToQueue();
-
-    //Sleep based on tempo value
-    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+    AudioMixer_queueSound(&accBeat[indexSound]);
 }
-
 
 /*
 #########################
 #       PRIVATE         #
 #########################
 */
+
+void* addThemeToQueue_thread()
+{
+    //add to queue
+    addThemeBeatToQueue();
+
+    //Sleep based on tempo value
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+
+    return NULL;
+}
 
 static void addThemeBeatToQueue()
 {

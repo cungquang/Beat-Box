@@ -49,14 +49,6 @@ static pthread_t playbackThreadId;
 static int volume = 0;
 static int tempo = 0;
 
-void printPlayback(void)
-{
-	for(long unsigned i = 0; i < playbackBufferSize; i++)
-	{
-		printf("index-%lu ---> %hi\n", i, playbackBuffer[i]);
-	}
-}
-
 void AudioMixer_init(void)
 {
 	AudioMixer_setVolume(DEFAULT_VOLUME);
@@ -370,8 +362,6 @@ static void fillPlaybackBuffer(short *buff, int size)
 		}
 	}
 
-	//printPlayback();
-
 	pthread_mutex_unlock(&audioMutex);
 }
 
@@ -405,7 +395,14 @@ void* playbackThread()
 	return NULL;
 }
 
-
+//Debugging purpose
+void printPlayback(void)
+{
+	for(long unsigned i = 0; i < playbackBufferSize; i++)
+	{
+		printf("index-%lu ---> %hi\n", i, playbackBuffer[i]);
+	}
+}
 
 
 
