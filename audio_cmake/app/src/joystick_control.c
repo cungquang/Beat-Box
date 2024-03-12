@@ -273,7 +273,7 @@ void* volume_execute_thread()
 
             //Send data -> update frontend
             snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,increase,%d", AudioMixerControl_getVolume());
-            printf("change Volume ---> %d\n", volumeBuffer);
+            printf("change Volume ---> %s\n", volumeBuffer);
             UDP_sendToTarget(volumeBuffer);
         }
         //Down => decrease the volume
@@ -284,7 +284,7 @@ void* volume_execute_thread()
 
             //Send to Server -> update on frontend
             snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,decrease,%d", AudioMixerControl_getVolume());
-            printf("change Volume ---> %d\n", volumeBuffer);
+            printf("change Volume ---> %s\n", volumeBuffer);
             UDP_sendToTarget(volumeBuffer);
         }
 
@@ -353,7 +353,7 @@ void* tempo_execute_thread()
 
             //Send to Server -> update on frontend
             snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,decrease,%d", AudioMixerControl_getTempo());
-            printf("change Tempo ---> %d\n", tempoBuffer);
+            printf("change Tempo ---> %s\n", tempoBuffer);
             UDP_sendToTarget(tempoBuffer);
         }
         //Right => increase the tempo
@@ -364,7 +364,7 @@ void* tempo_execute_thread()
 
             //Send to Server -> update on frontend
             snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,increase,%d", AudioMixerControl_getTempo());
-            printf("change Tempo ---> %d\n", tempoBuffer);
+            printf("change Tempo ---> %s\n", tempoBuffer);
             UDP_sendToTarget(tempoBuffer);
         }
 

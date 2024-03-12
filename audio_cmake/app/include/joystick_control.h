@@ -11,6 +11,7 @@
 #include "../../hal/include/joystick_gpioLeft.h"
 #include "../../hal/include/joystick_gpioRight.h"
 #include "../include/audioMixer_control.h"
+#include "../include/audioMixer_upd.h"
 
 void JoystickControl_init(int* terminate_flag);
 

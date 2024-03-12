@@ -27,6 +27,7 @@ static pthread_t udpSever_id;
 static pthread_mutex_t sendMutex = PTHREAD_MUTEX_INITIALIZER;
 
 //Declare functions
+void setupForSendingMessage();
 void *UDP_serverThread();
 static bool stringToBoolean(const char *input);
 static void splitStringToParts(char *input, char *intoParts[]);
@@ -35,6 +36,8 @@ static const char *UDP_commandVolume(const char* target, int value);
 static const char *UDP_commandTempo(const char* target, int value);
 static const char *UDP_commandDrum(const char* target, bool value);
 static const char *UDP_commandTerminate(const char* target, bool value);
+
+
 
 /*-------------------------- Public -----------------------------*/
 
