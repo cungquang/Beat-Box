@@ -23,12 +23,13 @@ static int tempoContinue;
 static int mode = 0;
 
 //Thread
+static pthread_t pressTrigger_id;
+static pthread_t pressExecute_id;
 static pthread_t volumeTrigger_id;
 static pthread_t volumeExecute_id;
 static pthread_t tempoTrigger_id;
 static pthread_t tempoExecute_id;
-//static pthread_t pressTrigger_id;
-//static pthread_t pressExecute_id;
+
 
 //Mutex
 static pthread_mutex_t volumeMutex = PTHREAD_MUTEX_INITIALIZER;
@@ -36,23 +37,23 @@ static pthread_mutex_t tempoMutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t pressMutex = PTHREAD_MUTEX_INITIALIZER;
 
 //Semaphore
+sem_t press_full;
+sem_t press_empty;
 sem_t volume_full;
 sem_t volume_empty;
 sem_t tempo_full;
 sem_t tempo_empty;
-sem_t press_full;
-sem_t press_empty;
 
 
 //Initiate private function
-void *press_trigger_thread();
+void* press_trigger_thread();
 void* press_execute_thread();
 
-void* volume_up_down_thread();
+void* volume_up_down_trigger_thread();
 void* volume_execute_thread();
 int isLeftOrRight(int left, int right);
 
-void* tempo_left_right_thread();
+void* tempo_left_right_trigger_thread();
 void* tempo_execute_thread();
 int isUpOrDown(int up, int down);
 
@@ -78,11 +79,17 @@ void JoystickControl_init(int* terminate_flag)
     sem_init(&press_full, 0, 0);
 
     //Create and start pressTrigger_id
+    if(pthread_create(&pressTrigger_id, NULL, press_trigger_thread, NULL) != 0) {
+        exit(EXIT_FAILURE);
+    }
 
     //Create and start pressExecute_id;
+    if(pthread_create(&pressExecute_id, NULL, press_execute_thread, NULL) != 0) {
+        exit(EXIT_FAILURE);
+    }
 
     //Create & start volumeTrigger thread
-    if(pthread_create(&volumeTrigger_id, NULL, volume_up_down_thread, NULL) != 0) {
+    if(pthread_create(&volumeTrigger_id, NULL, volume_up_down_trigger_thread, NULL) != 0) {
         exit(EXIT_FAILURE);
     }
 
@@ -92,7 +99,7 @@ void JoystickControl_init(int* terminate_flag)
     }
 
     //Create & start tempoTrigger_id thread
-    if(pthread_create(&tempoTrigger_id, NULL, tempo_left_right_thread, NULL) != 0) {
+    if(pthread_create(&tempoTrigger_id, NULL, tempo_left_right_trigger_thread, NULL) != 0) {
         exit(EXIT_FAILURE);
     }
 
@@ -105,8 +112,8 @@ void JoystickControl_init(int* terminate_flag)
 
 void JoystickControl_join()
 {
-    //pthread_join(pressTrigger_id, NULL);
-    //pthread_join(pressExecute_id, NULL);
+    pthread_join(pressTrigger_id, NULL);
+    pthread_join(pressExecute_id, NULL);
     pthread_join(volumeTrigger_id, NULL);
     pthread_join(volumeExecute_id, NULL);
     pthread_join(tempoTrigger_id, NULL);
@@ -116,12 +123,12 @@ void JoystickControl_join()
 void JoystickControl_cleanup()
 {
     //Free semaphore
+    sem_destroy(&press_full);
+    sem_destroy(&press_empty);
     sem_destroy(&volume_empty);
 	sem_destroy(&volume_full);
     sem_destroy(&tempo_empty);
 	sem_destroy(&tempo_full);
-    sem_destroy(&press_full);
-    sem_destroy(&press_empty);
 }
 
 
@@ -218,7 +225,7 @@ void* press_execute_thread()
 //////////////////// Volume ////////////////////
 
 //Thread is polling to check Up or Down button trigger
-void* volume_up_down_thread()
+void* volume_up_down_trigger_thread()
 {
     int gpioUp;
     int gpioDown;
@@ -274,7 +281,7 @@ void* volume_execute_thread()
             //Send data -> update frontend
             snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,increase,%d", AudioMixerControl_getVolume());
             printf("change Volume ---> %s\n", volumeBuffer);
-            UDP_sendToTarget(volumeBuffer);
+            //UDP_sendToTarget(volumeBuffer);
         }
         //Down => decrease the volume
         else if(volumeContinue >= MAX_BOUNCING && prevVolumeDir == 3)
@@ -285,7 +292,7 @@ void* volume_execute_thread()
             //Send to Server -> update on frontend
             snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,decrease,%d", AudioMixerControl_getVolume());
             printf("change Volume ---> %s\n", volumeBuffer);
-            UDP_sendToTarget(volumeBuffer);
+            //UDP_sendToTarget(volumeBuffer);
         }
 
         pthread_mutex_unlock(&volumeMutex);
@@ -298,7 +305,7 @@ void* volume_execute_thread()
 //////////////////// Tempo ////////////////////
 
 //Thread is polling to check left & right button trigger
-void* tempo_left_right_thread()
+void* tempo_left_right_trigger_thread()
 {
     int gpioLeft;
     int gpioRight;
@@ -354,7 +361,7 @@ void* tempo_execute_thread()
             //Send to Server -> update on frontend
             snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,decrease,%d", AudioMixerControl_getTempo());
             printf("change Tempo ---> %s\n", tempoBuffer);
-            UDP_sendToTarget(tempoBuffer);
+            //UDP_sendToTarget(tempoBuffer);
         }
         //Right => increase the tempo
         else if(tempoContinue >= MAX_BOUNCING && prevTempoDir == 3)
@@ -365,7 +372,7 @@ void* tempo_execute_thread()
             //Send to Server -> update on frontend
             snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,increase,%d", AudioMixerControl_getTempo());
             printf("change Tempo ---> %s\n", tempoBuffer);
-            UDP_sendToTarget(tempoBuffer);
+            //UDP_sendToTarget(tempoBuffer);
         }
 
         pthread_mutex_unlock(&tempoMutex);
