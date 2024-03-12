@@ -5,11 +5,17 @@
 
 int terminate_flag = 0;
 
-void UDP_Server() 
+void Operation() 
 {
     UDP_initServer(&terminate_flag);
+    JoystickControl_init(&terminate_flag);
+
     UDP_join();
+    JoystickControl_join();
+
+    //Cleanup -> later move to shutdown thread
     UDP_cleanup();
+    JoystickControl_cleanup();
 }
 
 void test()
@@ -34,10 +40,7 @@ void test()
 
 int main() 
 {
-    JoystickControl_init(&terminate_flag);
-
-    JoystickControl_join();
-    JoystickControl_cleanup();
-
+    
+    Operation();
     return 0;
 }

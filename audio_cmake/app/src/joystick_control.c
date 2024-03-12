@@ -196,7 +196,7 @@ void* press_execute_thread()
                 mode = 2;
             }
         } 
-        //Prev is not 0
+        //User did not press button continously or does not meet bouncing condition
         else
         {
             mode = 0;
@@ -211,7 +211,7 @@ void* press_execute_thread()
         else if(mode == 2)
         {
             //Do something
-            printf("pressContinue: %d - pressValue: %d - mode: %d]n", pressContinue, prevPressDir, mode);
+            printf("pressContinue: %d - pressValue: %d - mode: %d]\n", pressContinue, prevPressDir, mode);
         }
 
 
@@ -281,7 +281,7 @@ void* volume_execute_thread()
             //Send data -> update frontend
             snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,increase,%d", AudioMixerControl_getVolume());
             printf("change Volume ---> %s\n", volumeBuffer);
-            //UDP_sendToTarget(volumeBuffer);
+            UDP_sendToTarget(volumeBuffer);
         }
         //Down => decrease the volume
         else if(volumeContinue >= MAX_BOUNCING && prevVolumeDir == 3)
@@ -292,7 +292,7 @@ void* volume_execute_thread()
             //Send to Server -> update on frontend
             snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,decrease,%d", AudioMixerControl_getVolume());
             printf("change Volume ---> %s\n", volumeBuffer);
-            //UDP_sendToTarget(volumeBuffer);
+            UDP_sendToTarget(volumeBuffer);
         }
 
         pthread_mutex_unlock(&volumeMutex);
@@ -361,7 +361,7 @@ void* tempo_execute_thread()
             //Send to Server -> update on frontend
             snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,decrease,%d", AudioMixerControl_getTempo());
             printf("change Tempo ---> %s\n", tempoBuffer);
-            //UDP_sendToTarget(tempoBuffer);
+            UDP_sendToTarget(tempoBuffer);
         }
         //Right => increase the tempo
         else if(tempoContinue >= MAX_BOUNCING && prevTempoDir == 3)
@@ -372,7 +372,7 @@ void* tempo_execute_thread()
             //Send to Server -> update on frontend
             snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,increase,%d", AudioMixerControl_getTempo());
             printf("change Tempo ---> %s\n", tempoBuffer);
-            //UDP_sendToTarget(tempoBuffer);
+            UDP_sendToTarget(tempoBuffer);
         }
 
         pthread_mutex_unlock(&tempoMutex);
