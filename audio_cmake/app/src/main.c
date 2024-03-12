@@ -21,7 +21,7 @@ void Operation()
 void test()
 {
     AudioMixerControl_init(&terminate_flag);
-    AudioMixerControl_setUserSelection(1);
+    AudioMixerControl_setUserSelection(2);
 
     AudioMixerControl_join();
     AudioMixerControl_cleanup();

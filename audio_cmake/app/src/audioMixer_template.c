@@ -102,7 +102,7 @@ void AudioMixer_readWaveFileIntoMemory(char *fileName, wavedata_t *pSound)
 	const int PCM_DATA_OFFSET = 44;
 
 	// Open the wave file
-	FILE *file = fopen(fileName, "r");
+	FILE *file = fopen(fileName, "rb");
 	if (file == NULL) {
 		fprintf(stderr, "ERROR: Unable to open file %s.\n", fileName);
 		exit(EXIT_FAILURE);

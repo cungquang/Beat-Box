@@ -4,13 +4,13 @@
 
 #define MAX_STD_BEAT 3
 
-#define STDBEAT_DRUM "/beatbox-wav-files/100051__menegass__gui-drum-bd-hard.wav"
-#define STDBEAT_HIT_HAT "/beatbox-wav-files/100053__menegass__gui-drum-cc.wav"
-#define STDBEAT_SNARE "/beatbox-wav-files/100059__menegass__gui-drum-snare-soft.wav"
+#define STDBEAT_DRUM "/mnt/remote/myApps/beatbox-wave-files/100051__menegass__gui-drum-bd-hard.wav"
+#define STDBEAT_HIT_HAT "/mnt/remote/myApps/beatbox-wave-files/100053__menegass__gui-drum-cc.wav"
+#define STDBEAT_SNARE "/mnt/remote/myApps/beatbox-wave-files/100059__menegass__gui-drum-snare-soft.wav"
 
-#define ACCBEAT_CYN "/beatbox-wav-files/100056__menegass__gui-drum-cyn-hard.wav"
-#define ACCBEAT_SNARE "/beatbox-wav-files/100060__menegass__gui-drum-splash-hard.wav"
-#define ACCBEAT_HIT_HAT "/beatbox-wav-files/100062__menegass__gui-drum-tom-hi-hard.wav"
+#define ACCBEAT_CYN "/mnt/remote/myApps/beatbox-wave-files/100056__menegass__gui-drum-cyn-hard.wav"
+#define ACCBEAT_SNARE "/mnt/remote/myApps/beatbox-wave-files/100060__menegass__gui-drum-splash-hard.wav"
+#define ACCBEAT_HIT_HAT "/mnt/remote/myApps/beatbox-wave-files/100062__menegass__gui-drum-tom-hi-hard.wav"
 
 //Manage operation
 static int* isTerminate;
@@ -49,11 +49,11 @@ void AudioMixerControl_init(int *terminateFlag)
     //Init trigger flag
     isTerminate = terminateFlag;
 
-    //Load beats into memory
-    loadBeatIntoMemory();
-
     //Init Audio Mixer
     AudioMixer_init();
+
+    //Load beats into memory
+    loadBeatIntoMemory();
 
     // Launch playback thread:
 	if(pthread_create(&audioThreadId, NULL, addThemeToQueue_thread, NULL) != 0)
@@ -165,7 +165,7 @@ void* addThemeToQueue_thread()
 
 static int convertTempoIntoTime(int tempo) 
 {
-    float timeToSleep = (60/tempo/2)*1000;
+    float timeToSleep = ((60.0f / tempo) / 2.0f) * 1000.0f;
     return (int)timeToSleep;
 }
 
@@ -206,7 +206,7 @@ static void playback_stdRockBeat()
     AudioMixer_queueSound(&stdBeat[0]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
-    //beat 1.5 - Hit-hat
+    //beat 1 - Hit-hat
     AudioMixer_queueSound(&stdBeat[1]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
@@ -219,21 +219,21 @@ static void playback_stdRockBeat()
     AudioMixer_queueSound(&stdBeat[1]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
-    //beat 3
+    //beat 3 - Hit-hat, base
     AudioMixer_queueSound(&stdBeat[1]);
     AudioMixer_queueSound(&stdBeat[0]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
-    //beat 3.5
+    //beat 3.5 - Hit-hat
     AudioMixer_queueSound(&stdBeat[1]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
-    //beat 4
+    //beat 4 - Hit-hat, snare
     AudioMixer_queueSound(&stdBeat[1]);
     AudioMixer_queueSound(&stdBeat[0]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
-    //beat 4.5
+    //beat 4.5 - Hit hat
     AudioMixer_queueSound(&stdBeat[1]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 }
@@ -242,38 +242,48 @@ static void playback_stdRockBeat()
 static void playback_customBeats()
 {
     //beat 1 - base
+    AudioMixer_queueSound(&stdBeat[1]);
     AudioMixer_queueSound(&stdBeat[0]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 1.5 - Hit-hat
     AudioMixer_queueSound(&stdBeat[0]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 2 - Hit-hat, snare
     AudioMixer_queueSound(&stdBeat[0]);
     AudioMixer_queueSound(&stdBeat[1]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 2.5 - Hit-hat
     AudioMixer_queueSound(&stdBeat[0]);
     AudioMixer_queueSound(&stdBeat[2]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 3
+    AudioMixer_queueSound(&stdBeat[1]);
     AudioMixer_queueSound(&stdBeat[0]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 3.5
     AudioMixer_queueSound(&stdBeat[0]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 4
     AudioMixer_queueSound(&stdBeat[0]);
     AudioMixer_queueSound(&stdBeat[1]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 4.5
     AudioMixer_queueSound(&stdBeat[0]);
     AudioMixer_queueSound(&stdBeat[2]);
+    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 }
