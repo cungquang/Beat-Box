@@ -14,8 +14,8 @@ static int *isTerminated;
 
 //Sokcet setup
 static int serverSock;
-//static int targetSock;
-//static struct sockaddr_in target_addr;
+static int targetSock;
+static struct sockaddr_in target_addr;
 
 //Response message
 static const char *responseMessage;
@@ -24,7 +24,7 @@ static const char *responseMessage;
 static pthread_t udpSever_id;
 
 //Mutex
-//static pthread_mutex_t sendMutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t sendMutex = PTHREAD_MUTEX_INITIALIZER;
 
 //Declare functions
 //void setupForSendingMessage();
@@ -37,8 +37,13 @@ static const char *UDP_commandDrum(const char* target, int value);
 static const char *UDP_commandTerminate(const char* target, int value);
 
 
+/*
+#############################
+#           PUBLIC          #
+#############################
+*/
 
-/*-------------------------- Public -----------------------------*/
+
 
 void UDP_join(void)
 {
@@ -52,9 +57,9 @@ void UDP_cleanup(void)
         close(serverSock);
     }
 
-    // if(targetSock) {
-    //     close(targetSock);
-    // }
+    if(targetSock) {
+        close(targetSock);
+    }
 
     isTerminated = NULL;
 }
@@ -65,62 +70,66 @@ void UDP_initServer(int *terminate_flag)
     isTerminated = terminate_flag;
 
     //Setup for sending message
-    //setupForSendingMessage();
-    //printf("Finish setup UDP for send");
+    setupForSendingMessage();
+    printf("Finish setup UDP for send");
 
     //Run server thread
     pthread_create(&udpSever_id, NULL, UDP_serverThread, NULL);
 }
 
 
-// void UDP_sendToTarget(char *message)
-// {
-//     //critical section
-//     pthread_mutex_lock(&sendMutex);
+void UDP_sendToTarget(char *message)
+{
+    //critical section
+    pthread_mutex_lock(&sendMutex);
 
-//     //Check if error in initialization
-//     if (targetSock < 0) {
-//         fprintf(stderr, "Socket not initialized.\n");
-//         exit(EXIT_FAILURE);
-//     }
+    //Check if error in initialization
+    if (targetSock < 0) {
+        fprintf(stderr, "Socket not initialized.\n");
+        exit(EXIT_FAILURE);
+    }
 
-//     //Send the message
-//     ssize_t bytes_sent = sendto(targetSock, message, strlen(message), 0, (struct sockaddr *)&target_addr, sizeof(target_addr));
-//     if (bytes_sent < 0) {
-//         perror("sendto");
-//         close(targetSock);
-//         exit(EXIT_FAILURE);
-//     }
-//     pthread_mutex_unlock(&sendMutex);
-// }
+    //Send the message
+    ssize_t bytes_sent = sendto(targetSock, message, strlen(message), 0, (struct sockaddr *)&target_addr, sizeof(target_addr));
+    if (bytes_sent < 0) {
+        perror("sendto");
+        close(targetSock);
+        exit(EXIT_FAILURE);
+    }
+    pthread_mutex_unlock(&sendMutex);
+}
 
 
 
-/*-------------------------- Private -----------------------------*/
+/*
+#############################
+#           PRIVATE         #
+#############################
+*/
 
 
 //Setup for sending message
-// void setupForSendingMessage()
-// {
-//     // Create a UDP socket
-//     targetSock = socket(AF_INET, SOCK_DGRAM, 0);
-//     if (targetSock < 0) {
-//         perror("socket");
-//         exit(EXIT_FAILURE);
-//     }
+void setupForSendingMessage()
+{
+    // Create a UDP socket
+    targetSock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (targetSock < 0) {
+        perror("socket");
+        exit(EXIT_FAILURE);
+    }
 
-//     //Setup target socket
-//     memset(&target_addr, 0, sizeof(target_addr));
-//     target_addr.sin_family = AF_INET;
-//     target_addr.sin_port = htons(TARGET_PORT);
+    //Setup target socket
+    memset(&target_addr, 0, sizeof(target_addr));
+    target_addr.sin_family = AF_INET;
+    target_addr.sin_port = htons(TARGET_PORT);
 
-//     //Fail to setup
-//     if (inet_aton(TARGET_IP, &target_addr.sin_addr) == 0) {
-//         perror("inet_aton");
-//         close(targetSock);
-//         exit(EXIT_FAILURE);
-//     }
-// }
+    //Fail to setup
+    if (inet_aton(TARGET_IP, &target_addr.sin_addr) == 0) {
+        perror("inet_aton");
+        close(targetSock);
+        exit(EXIT_FAILURE);
+    }
+}
 
 
 //Server side, receive: history, count, length, dips, help (or ?), stop, <Enter>

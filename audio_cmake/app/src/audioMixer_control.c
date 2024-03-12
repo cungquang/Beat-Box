@@ -44,7 +44,7 @@ static void playback_customBeats();
 #########################
 */
 
-void AudioMixerControl_init(int *terminateFlag)
+void AudioMixerControl_init(int* terminateFlag)
 {
     //Init trigger flag
     isTerminate = terminateFlag;
