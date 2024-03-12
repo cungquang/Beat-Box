@@ -2,6 +2,7 @@
 #define _AUDIOMIXER_CONTROL_H_
 
 #include <unistd.h> 
+#include <stdio.h>
 #include <stdbool.h>
 #include <pthread.h>
 #include <alsa/asoundlib.h>
