@@ -15,12 +15,16 @@ static int *isTerminated;
 //Sokcet setup
 static int serverSock;
 static int targetSock;
+static struct sockaddr_in target_addr;
 
 //Response message
 static const char *responseMessage;
 
 //Thread
 static pthread_t udpSever_id;
+
+//Mutex
+static pthread_mutex_t sendMutex = PTHREAD_MUTEX_INITIALIZER;
 
 //Declare functions
 void *UDP_serverThread();
@@ -54,16 +58,46 @@ void UDP_cleanup(void)
 
 void UDP_initServer(int *terminate_flag)
 {
+    //Setup operational flag
     isTerminated = terminate_flag;
 
-    //Create thread
+    //Setup for sending message
+    setupForSendingMessage();
+
+    //Run server thread
     pthread_create(&udpSever_id, NULL, UDP_serverThread, NULL);
 }
 
+
 void UDP_sendToTarget(char *message)
 {
-    struct sockaddr_in target_addr;
+    //critical section
+    pthread_mutex_lock(&sendMutex);
 
+    //Check if error in initialization
+    if (targetSock < 0) {
+        fprintf(stderr, "Socket not initialized.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    //Send the message
+    ssize_t bytes_sent = sendto(targetSock, message, strlen(message), 0, (struct sockaddr *)&target_addr, sizeof(target_addr));
+    if (bytes_sent < 0) {
+        perror("sendto");
+        close(targetSock);
+        exit(EXIT_FAILURE);
+    }
+    pthread_mutex_unlock(&sendMutex);
+}
+
+
+
+/*-------------------------- Private -----------------------------*/
+
+
+//Setup for sending message
+void setupForSendingMessage()
+{
     // Create a UDP socket
     targetSock = socket(AF_INET, SOCK_DGRAM, 0);
     if (targetSock < 0) {
@@ -82,20 +116,8 @@ void UDP_sendToTarget(char *message)
         close(targetSock);
         exit(EXIT_FAILURE);
     }
-
-    // Send the message
-    ssize_t bytes_sent = sendto(targetSock, message, strlen(message), 0, (struct sockaddr *)&target_addr, sizeof(target_addr));
-    if (bytes_sent < 0) {
-        perror("sendto");
-        close(targetSock);
-        exit(EXIT_FAILURE);
-    }
-
-    close(targetSock);
 }
 
-
-/*-------------------------- Private -----------------------------*/
 
 //Server side, receive: history, count, length, dips, help (or ?), stop, <Enter>
 void *UDP_serverThread()

@@ -1,8 +1,11 @@
 #include "../include/joystick_control.h"
 
 #define MAX_BOUNCING 5
+#define MAX_BUFFER_SIZE 250
 
 static int *isTerminate;
+static char volumeBuffer[MAX_BUFFER_SIZE];
+static char tempoBuffer[MAX_BUFFER_SIZE];
 
 //Press
 static int prevPressDir;
@@ -243,7 +246,9 @@ void* volume_execute_thread()
             AudioMixerControl_setVolume(AudioMixerControl_getVolume() + 5);
 
             //Send data -> update frontend
-            printf("change Volume ---> %d\n", AudioMixerControl_getVolume());
+            snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,increase,%d", AudioMixerControl_getVolume());
+            printf("change Volume ---> %d\n", volumeBuffer);
+            //UDP_sendToTarget(volumeBuffer);
         }
         //Down => decrease the volume
         else if(volumeContinue >= MAX_BOUNCING && prevVolumeDir == 3)
@@ -251,8 +256,10 @@ void* volume_execute_thread()
             //Decrease volume
             AudioMixerControl_setVolume(AudioMixerControl_getVolume() - 5);
 
-            //Send data -> update frontend
-            printf("change Volume ---> %d\n", AudioMixerControl_getVolume());
+            //Send to Server -> update on frontend
+            snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,decrease,%d", AudioMixerControl_getVolume());
+            printf("change Volume ---> %d\n", volumeBuffer);
+            //UDP_sendToTarget(volumeBuffer);
         }
 
         pthread_mutex_unlock(&volumeMutex);
@@ -319,7 +326,9 @@ void* tempo_execute_thread()
             AudioMixerControl_setTempo(AudioMixerControl_getTempo() - 5);
 
             //Send to Server -> update on frontend
-            printf("change Volume ---> %d\n", AudioMixerControl_getTempo());
+            snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,decrease,%d", AudioMixerControl_getTempo());
+            printf("change Volume ---> %d\n", tempoBuffer);
+            //UDP_sendToTarget(tempoBuffer);
         }
         //Right => increase the tempo
         else if(tempoContinue >= MAX_BOUNCING && prevTempoDir == 3)
@@ -328,7 +337,9 @@ void* tempo_execute_thread()
             AudioMixerControl_setTempo(AudioMixerControl_getTempo() + 5);
 
             //Send to Server -> update on frontend
-            printf("change Volume ---> %d\n", AudioMixerControl_getTempo());
+            snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,increase,%d", AudioMixerControl_getTempo());
+            printf("change Volume ---> %d\n", tempoBuffer);
+            //UDP_sendToTarget(tempoBuffer);
         }
 
         pthread_mutex_unlock(&tempoMutex);
