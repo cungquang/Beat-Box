@@ -21,15 +21,8 @@ void Operation()
     JoystickControl_cleanup();
 }
 
-void test()
-{
-    UDP_initServer(&terminate_flag);
-    UDP_join();
-    UDP_cleanup();
-}
-
 int main() 
 {
-    test();
+    Operation();
     return 0;
 }

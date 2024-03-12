@@ -50,6 +50,17 @@ static pthread_t playbackThreadId;
 static int volume = DEFAULT_VOLUME;
 static int tempo = DEFAULT_TEMPO;
 
+
+
+/*
+#########################
+#        PUBLIC         #
+#########################
+*/
+
+
+///////////////////////////// Aministration /////////////////////////////
+
 void AudioMixer_init(void)
 {
 	// Initialize the currently active sound-bites being played
@@ -193,16 +204,19 @@ void AudioMixer_queueSound(wavedata_t *pSound)
 
 void AudioMixer_stop(void)
 {
+	printf("Stopping audio...\n");	
 	// Stop the PCM generation thread
 	stopping = true;
-	printf("Stopping audio...\n");	
+}
+
+void AudioMixer_join()
+{
+	pthread_join(playbackThreadId, NULL);
 }
 
 //Clean up function 
 void AudioMixer_cleanup(void)
-{
-	pthread_join(playbackThreadId, NULL);
-	
+{	
 	// Shutdown the PCM output, allowing any pending sound to play out (drain)
 	snd_pcm_drain(handle);
 	snd_pcm_close(handle);
@@ -216,6 +230,44 @@ void AudioMixer_cleanup(void)
 	printf("Done stopping audio...\n");
 	fflush(stdout);
 }
+
+
+
+///////////////////////////// Manul Process /////////////////////////////
+
+//Reset playbackBuffer
+void AudioMixer_CleanUpBuffer()
+{
+	//Criticals ection
+ 	pthread_mutex_lock(&audioMutex);
+	
+	//Reset the playbackBuffer -> number element * data type of each (short)
+	memset(playbackBuffer, 0, playbackBufferSize*SAMPLE_SIZE);
+
+	pthread_mutex_unlock(&audioMutex);
+}
+
+//Reset soundBites
+void AudioMixer_CleanUpQueue()
+{
+	//Criticals ection
+ 	pthread_mutex_lock(&audioMutex);
+	
+	//Search for empty slot in soundBites
+	for(int i = 0; i < MAX_SOUND_BITES; i++)
+	{
+		if(soundBites[i].pSound)
+		{
+			soundBites[i].pSound = NULL;
+			soundBites[i].location = 0;
+		}
+	}
+
+	pthread_mutex_unlock(&audioMutex);
+}
+
+
+///////////////////////////// Setter/Getter /////////////////////////////
 
 int AudioMixer_getTempo()
 {
@@ -271,37 +323,6 @@ void AudioMixer_setVolume(int newVolume)
     snd_mixer_selem_set_playback_volume_all(elem, volume * max / 100);
 
     snd_mixer_close(volHandle);
-}
-
-//Reset playbackBuffer
-void AudioMixer_CleanUpBuffer()
-{
-	//Criticals ection
- 	pthread_mutex_lock(&audioMutex);
-	
-	//Reset the playbackBuffer -> number element * data type of each (short)
-	memset(playbackBuffer, 0, playbackBufferSize*SAMPLE_SIZE);
-
-	pthread_mutex_unlock(&audioMutex);
-}
-
-//Reset soundBites
-void AudioMixer_CleanUpQueue()
-{
-	//Criticals ection
- 	pthread_mutex_lock(&audioMutex);
-	
-	//Search for empty slot in soundBites
-	for(int i = 0; i < MAX_SOUND_BITES; i++)
-	{
-		if(soundBites[i].pSound)
-		{
-			soundBites[i].pSound = NULL;
-			soundBites[i].location = 0;
-		}
-	}
-
-	pthread_mutex_unlock(&audioMutex);
 }
 
 

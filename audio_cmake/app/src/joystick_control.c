@@ -113,6 +113,7 @@ void JoystickControl_init(int* terminate_flag)
 
 void JoystickControl_join()
 {
+    AudioMixer_stop();
     pthread_join(pressTrigger_id, NULL);
     pthread_join(pressExecute_id, NULL);
     pthread_join(volumeTrigger_id, NULL);
