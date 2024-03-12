@@ -22,13 +22,21 @@ static wavedata_t accBeat[MAX_STD_BEAT];
 static int selectedBeats[MAX_STD_BEAT];
 
 static pthread_t audioThreadId;
+static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
 
 //Initiate private function
 void* addThemeToQueue_thread();
 static void addThemeBeatToQueue();
 static int convertTempoIntoTime(int tempo);
 static void loadBeatIntoMemory();
+static void cleanUpBeatInMemory();
 
+
+/*
+#########################
+#        PUBLIC         #
+#########################
+*/
 
 void AudioMixerControl_init(int *terminateFlag)
 {
@@ -55,11 +63,50 @@ void AudioMixerControl_cleanup(void)
 {
     //Free other service
     AudioMixer_cleanup();
+
+    //Clean up beat
+    cleanUpBeatInMemory();
 }
 
-void AudioMixerControl_AddSound(int indexSound)
+void AudioMixerControl_AddSound(int soundIndex)
 {
-    AudioMixer_queueSound(&accBeat[indexSound]);
+    AudioMixer_queueSound(&accBeat[soundIndex]);
+}
+
+void AudioMixerControl_modifyBeat(int beatIndex, int value)
+{
+    if(beatIndex < 0 || beatIndex > 2)
+    {
+        printf("ERROR: Unsupported beats.\n");
+    }
+
+    pthread_mutex_lock(&audioMutex);
+    selectedBeats[beatIndex] = value;
+    pthread_mutex_unlock(&audioMutex);
+}
+
+/////////////////// Sound Control ///////////////////
+
+void AudioMixerControl_setVolume(int newVolume)
+{
+    AudioMixer_setVolume(newVolume);
+}
+
+int AudioMixerControl_getVolume()
+{
+    return AudioMixer_getVolume();
+}
+
+/////////////////// Volume Control ///////////////////
+
+void AudioMixerControl_setTempo(int newTempo)
+{
+    AudioMixer_setTempo(newTempo);
+}
+
+int AudioMixerControl_getTempo()
+{
+    return AudioMixer_getTempo();
 }
 
 /*
@@ -70,11 +117,14 @@ void AudioMixerControl_AddSound(int indexSound)
 
 void* addThemeToQueue_thread()
 {
-    //add to queue
-    addThemeBeatToQueue();
+    while(!*isTerminate)
+    {
+        //add to queue
+        addThemeBeatToQueue();
 
-    //Sleep based on tempo value
-    sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+        //Sleep based on tempo value
+        sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+    }
 
     return NULL;
 }
@@ -83,11 +133,14 @@ static void addThemeBeatToQueue()
 {
     for(int i = 0; i < MAX_STD_BEAT; i++)
     {
+        //Critical section
+        pthread_mutex_lock(&audioMutex);    
         if(selectedBeats[i] == 1)
         {
             AudioMixer_queueSound(&stdBeat[i]);
         }
-        sleepForMs(1000);
+        pthread_mutex_unlock(&audioMutex);
+        sleepForMs(700);
     }
 }
 
@@ -108,4 +161,17 @@ static void loadBeatIntoMemory()
     AudioMixer_readWaveFileIntoMemory(ACCBEAT_CYN, &accBeat[0]);                //0 - Z axis - Drum
     AudioMixer_readWaveFileIntoMemory(ACCBEAT_SNARE, &accBeat[1]);              //1 - X axis - Snare
     AudioMixer_readWaveFileIntoMemory(ACCBEAT_HIT_HAT, &accBeat[2]);            //2 - Y axis - Hit-hat 
+}
+
+static void cleanUpBeatInMemory()
+{
+    //Free standard beat
+    AudioMixer_freeWaveFileData(&stdBeat[0]);
+    AudioMixer_freeWaveFileData(&stdBeat[1]);
+    AudioMixer_freeWaveFileData(&stdBeat[2]);
+
+    //Free beat for accelerometer
+    AudioMixer_freeWaveFileData(&accBeat[0]);
+    AudioMixer_freeWaveFileData(&accBeat[1]);
+    AudioMixer_freeWaveFileData(&accBeat[2]);
 }

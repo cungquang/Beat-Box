@@ -1,11 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <stdbool.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
+#include "../include/audioMixer_upd.h"
 
 #define SERVER_IP "192.168.7.2"
 #define SERVER_PORT 12345
@@ -13,11 +6,15 @@
 #define WRITE_UP_TO (MAX_BUFFER_SIZE - 2)           // Last - \0 & second last - \n
 #define MAX_PARTS 3                                 // Number of parts from request message
 
+#define TARGET_IP "192.168.6.2"
+#define TARGET_PORT 8088
+
 //flag
 static int *isTerminated;
 
 //Sokcet setup
 static int serverSock;
+static int targetSock;
 
 //Response message
 static const char *responseMessage;
@@ -48,6 +45,10 @@ void UDP_cleanup(void)
         close(serverSock);
     }
 
+    if(targetSock) {
+        clos(targetSock);
+    }
+
     isTerminated = NULL;
 }
 
@@ -57,6 +58,40 @@ void UDP_initServer(int *terminate_flag)
 
     //Create thread
     pthread_create(&udpSever_id, NULL, UDP_serverThread, NULL);
+}
+
+void UDP_sendToTarget(char *message)
+{
+    struct sockaddr_in target_addr;
+
+    // Create a UDP socket
+    targetSock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (targetSock < 0) {
+        perror("socket");
+        exit(EXIT_FAILURE);
+    }
+
+    //Setup target socket
+    memset(&target_addr, 0, sizeof(target_addr));
+    target_addr.sin_family = AF_INET;
+    target_addr.sin_port = htons(TARGET_PORT);
+
+    //Fail to setup
+    if (inet_aton(TARGET_IP, &target_addr.sin_addr) == 0) {
+        perror("inet_aton");
+        close(targetSock);
+        exit(EXIT_FAILURE);
+    }
+
+    // Send the message
+    ssize_t bytes_sent = sendto(targetSock, message, strlen(message), 0, (struct sockaddr *)&target_addr, sizeof(target_addr));
+    if (bytes_sent < 0) {
+        perror("sendto");
+        close(targetSock);
+        exit(EXIT_FAILURE);
+    }
+
+    close(targetSock);
 }
 
 

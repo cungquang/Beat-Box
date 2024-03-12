@@ -2,6 +2,9 @@
     "cmake.sourceDirectory": "/home/hcung/cmpt433/work/assignment3/audio_cmake",
     "files.associations": {
         "hal_buttonup.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "stdbool.h": "c",
+        "socket.h": "c",
+        "inet.h": "c"
     }
 }
