@@ -278,6 +278,9 @@ static void UDP_commandTerminate(int value)
 static void splitStringToParts(char *input, char *intoParts[]) {
     char *token;
     int partNum = 0;
+    for (int i = 0; i < MAX_PARTS; i++) {
+        intoParts[i] = NULL;
+    }
 
     // Get the first token
     token = strtok(input, ",");
