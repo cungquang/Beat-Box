@@ -164,7 +164,7 @@ void *press_trigger_thread()
         //Update press
         prevPressDir = currPressDir;
         pthread_mutex_unlock(&pressMutex);
-        sleepForMs(100);
+        sleepForMs(5);
     }
 
     return NULL;
@@ -208,7 +208,7 @@ void* press_execute_thread()
             printf("pressContinue: %d - pressValue: %d - mode: %d]\n", pressContinue, prevPressDir, mode);
         }
         pthread_mutex_unlock(&pressMutex);
-        sleepForMs(100);
+        sleepForMs(5);
     }
 
     return NULL;
@@ -248,7 +248,7 @@ void* volume_up_down_trigger_thread()
         //Update previous 
         prevVolumeDir = currVolumeDir;
         pthread_mutex_unlock(&volumeMutex);
-        sleepForMs(100);
+        sleepForMs(5);
     }
 
     return NULL;
@@ -285,7 +285,7 @@ void* volume_execute_thread()
         }
 
         pthread_mutex_unlock(&volumeMutex);
-        sleepForMs(100);
+        sleepForMs(5);
     }
 
     return NULL;
@@ -326,7 +326,7 @@ void* tempo_left_right_trigger_thread()
         prevTempoDir = currTempoDir;
         pthread_mutex_unlock(&tempoMutex);
 
-        sleepForMs(100);
+        sleepForMs(5);
     }
 
     return NULL;
@@ -364,7 +364,7 @@ void* tempo_execute_thread()
 
         pthread_mutex_unlock(&tempoMutex);
 
-        sleepForMs(100);
+        sleepForMs(5);
     }
 
     return NULL;
