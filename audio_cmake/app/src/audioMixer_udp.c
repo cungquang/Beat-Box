@@ -247,7 +247,7 @@ static void UDP_commandDrum(int value)
 
 static void UDP_commandTerminate(int value)
 {
-    *isTerminated = 1;
+    *isTerminated = value;
     return NULL;
 }
 
