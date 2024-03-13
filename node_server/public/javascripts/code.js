@@ -6,31 +6,22 @@ $(document).ready(function() {
 
     //Select beat
     select_noneButton();
-
     select_rock1Button();
-
     select_rock2Button();
-
 
     //Volume
     increase_volume();    
-
     decrease_volume();
     
-
     //Tempo
     increase_tempo();
-    
     decrease_tempo();
 
 
     //Select play drum
     select_hithatButton();
-
     select_snareButton();
-
     select_baseButton();
-
 
     //Terminate button
     select_terminateButton();
@@ -82,7 +73,6 @@ function select_rock1Button() {
             beat[2] = false;
             $('#rock2-button').removeClass('button-active');
 
-
             //Send message
             socket.emit('beat', 'rock1Button,1');
         } else {
@@ -132,6 +122,7 @@ function increase_volume() {
 
             // Listen for response from server
             socket.on('volume_up', function(response) {
+                console.log(response);
                 var parts = response.split(',');
                 if (parts.length === 2) {
                     currTempo = parseInt(parts[1]);
@@ -160,6 +151,7 @@ function decrease_volume() {
 
             // Listen for response from server
             socket.on('volume_down', function(response) {
+                console.log(response);
                 var parts = response.split(',');
                 if (parts.length === 2) {
                     currTempo = parseInt(parts[1]);
@@ -191,6 +183,7 @@ function increase_tempo() {
 
             // Listen for response from server
             socket.on('tempo_up', function(response) {
+                console.log(response);
                 var parts = response.split(',');
                 if (parts.length === 2) {
                     currTempo = parseInt(parts[1]);
@@ -219,6 +212,7 @@ function decrease_tempo() {
 
             // Listen for response from server
             socket.on('tempo_down', function(response) {
+                console.log(response);
                 var parts = response.split(',');
                 if (parts.length === 2) {
                     currTempo = parseInt(parts[1]);

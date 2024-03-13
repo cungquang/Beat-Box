@@ -4,6 +4,7 @@ const dgram = require('dgram');
 const udpClient = dgram.createSocket('udp4');
 const CLIENT_IP = '192.168.7.2';
 const CLIENT_PORT = 12345;
+udpClient.setMaxListeners(15);
 
 //Export function listen() -> listen to connection
 exports.listen = function(server) {
