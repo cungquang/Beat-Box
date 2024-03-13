@@ -198,7 +198,7 @@ void *UDP_serverThread()
             UDP_commandTerminate(atoi(msgParts[2]));
         }
 
-
+        printf("send: %s\n", responseMessage);
         // Reply to the sender
         if(responseMessage)
         {
@@ -228,7 +228,7 @@ static const char *UDP_commandVolume(const char* target)
 {
     memset(tempBuffer, 0, sizeof(tempBuffer));
     AudioMixerControl_setVolume(AudioMixerControl_getVolume() + 1);
-    //snprintf(tempBuffer, sizeof(tempBuffer), "volume,%s,%d", target, AudioMixerControl_getVolume());
+    snprintf(tempBuffer, sizeof(tempBuffer), "volume,%s,%d", target, AudioMixerControl_getVolume());
     return tempBuffer;
 }
 
@@ -236,7 +236,7 @@ static const char *UDP_commandTempo(const char* target)
 {
     memset(tempBuffer, 0, sizeof(tempBuffer));
     AudioMixer_setTempo(AudioMixer_getTempo() + 1);
-    //snprintf(tempBuffer, sizeof(tempBuffer), "tempo,%s,%d", target, AudioMixer_getTempo());
+    snprintf(tempBuffer, sizeof(tempBuffer), "tempo,%s,%d", target, AudioMixer_getTempo());
     return tempBuffer;
 }
 

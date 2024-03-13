@@ -231,9 +231,6 @@ function decrease_tempo() {
                     console.error('Invalid response format:', response);
                 }
             });
-
-            //Update on screen
-            $('#tempo-text').val(currTempo);
         }
     });
 }
@@ -243,12 +240,9 @@ function decrease_tempo() {
 function select_hithatButton() {
     $('#hithat-button').click(function(event) {
         event.preventDefault();
-        drum[0] = !drum[0];
-        //$('#hithat-button').toggleClass('button-active');
-        
-        if(drum[0]){
-            socket.emit('drum', 'hit-hat,0');
-        }
+
+        //Send message each time user click
+        socket.emit('drum', 'hit-hat,0');
     });
 }
 
@@ -256,12 +250,9 @@ function select_hithatButton() {
 function select_snareButton() {
     $('#snare-button').click(function(event) {
         event.preventDefault();
-        drum[1] = !drum[1];
-        //$('#snare-button').toggleClass('button-active');
-
-        if(drum[1]){
-            socket.emit('drum', 'snare,1');
-        }
+        
+        //Send message each time user click
+        socket.emit('drum', 'snare,1');
     });
 }
 
@@ -269,12 +260,9 @@ function select_snareButton() {
 function select_baseButton() {
     $('#base-button').click(function(event) {
         event.preventDefault();
-        drum[2] = !drum[2];
-        $('#base-button').toggleClass('button-active');
 
-        if(drum[2]){
-            socket.emit('drum', 'base,2');
-        }
+        //Send message each time user click
+        socket.emit('drum','base,2');
     });
 }
 
