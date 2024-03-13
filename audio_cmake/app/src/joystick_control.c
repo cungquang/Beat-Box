@@ -266,8 +266,8 @@ void* volume_execute_thread()
             AudioMixerControl_setVolume(AudioMixerControl_getVolume() + 5);
 
             //Send data -> update frontend
-            snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,increase,%d", AudioMixerControl_getVolume());
-            printf("change Volume ---> %s\n", volumeBuffer);
+            //snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,increase,%d", AudioMixerControl_getVolume());
+            //printf("change Volume ---> %s\n", volumeBuffer);
             UDP_sendToTarget(volumeBuffer);
         }
         //Down => decrease the volume
@@ -277,8 +277,8 @@ void* volume_execute_thread()
             AudioMixerControl_setVolume(AudioMixerControl_getVolume() - 5);
 
             //Send to Server -> update on frontend
-            snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,decrease,%d", AudioMixerControl_getVolume());
-            printf("change Volume ---> %s\n", volumeBuffer);
+            //snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,decrease,%d", AudioMixerControl_getVolume());
+            //printf("change Volume ---> %s\n", volumeBuffer);
             UDP_sendToTarget(volumeBuffer);
         }
 
@@ -344,8 +344,8 @@ void* tempo_execute_thread()
             AudioMixerControl_setTempo(AudioMixerControl_getTempo() - 5);
 
             //Send to Server -> update on frontend
-            snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,decrease,%d", AudioMixerControl_getTempo());
-            printf("change Tempo ---> %s\n", tempoBuffer);
+            //snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,decrease,%d", AudioMixerControl_getTempo());
+            //printf("change Tempo ---> %s\n", tempoBuffer);
             UDP_sendToTarget(tempoBuffer);
         }
         //Right => increase the tempo
@@ -355,8 +355,8 @@ void* tempo_execute_thread()
             AudioMixerControl_setTempo(AudioMixerControl_getTempo() + 5);
 
             //Send to Server -> update on frontend
-            snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,increase,%d", AudioMixerControl_getTempo());
-            printf("change Tempo ---> %s\n", tempoBuffer);
+            //snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,increase,%d", AudioMixerControl_getTempo());
+            //printf("change Tempo ---> %s\n", tempoBuffer);
             UDP_sendToTarget(tempoBuffer);
         }
 
