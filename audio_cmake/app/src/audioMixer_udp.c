@@ -174,6 +174,7 @@ void *UDP_serverThread()
 
         //Break the string into part
         splitStringToParts(receiv_buffer, msgParts);
+        printf("Receive Message: %s - %s\n", msgParts[0], msgParts[2]);
 
         // Execute command according to request from client
         if(strcmp("beat", msgParts[0]) == 0)

@@ -60,10 +60,10 @@ function select_noneButton() {
             }
 
             //none-button get pressed -> send to 
-            socket.emit('beat', 'noneButton,true');
+            socket.emit('beat', 'noneButton,0');
         } else {
             $('#none-button').removeClass('button-active');
-            socket.emit('beat', 'none-button,false');
+            socket.emit('beat', 'none-button,0');
         }
     });
 }
@@ -85,10 +85,10 @@ function select_rock1Button() {
 
 
             //Send message
-            socket.emit('beat', 'rock1Button,true');
+            socket.emit('beat', 'rock1Button,1');
         } else {
             $('#rock1-button').removeClass('button-active');
-            socket.emit('beat', 'rock1Button,false');
+            socket.emit('beat', 'rock1Button,0');
         }
     });
 }
@@ -109,10 +109,10 @@ function select_rock2Button() {
             $('#rock1-button').removeClass('button-active');
 
             //Send message
-            socket.emit('beat', 'rock2Button,true');
+            socket.emit('beat', 'rock2Button,2');
         } else {
             $('#rock2-button').removeClass('button-active');
-            socket.emit('beat', 'rock2Button,false');
+            socket.emit('beat', 'rock2Button,0');
         }
     });
 }

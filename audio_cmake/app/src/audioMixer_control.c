@@ -132,12 +132,14 @@ void AudioMixerControl_controlBeat(int beatIndex)
 
 void* addThemeToQueue_thread()
 {
+    int getSelectedBeat;
     while(!isTerminate)
     {
         pthread_mutex_lock(&audioMutex);
-        int getSelectedBeat = selectedBeat;
+        getSelectedBeat = selectedBeat;
         pthread_mutex_unlock(&audioMutex);
 
+        printf("selected beat: %d\n", getSelectedBeat);
         //Play standard rock beat
         if(getSelectedBeat == 1)
         {
