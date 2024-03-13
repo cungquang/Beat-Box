@@ -227,16 +227,34 @@ static void UDP_commandBeat(int value)
 static const char *UDP_commandVolume(const char* target)
 {
     memset(tempBuffer, 0, sizeof(tempBuffer));
-    AudioMixerControl_setVolume(AudioMixerControl_getVolume() + 1);
-    snprintf(tempBuffer, sizeof(tempBuffer), "volume,%s,%d", target, AudioMixerControl_getVolume());
+    if(strcmp(target, "up") == 0)
+    {
+        AudioMixerControl_setVolume(AudioMixerControl_getVolume() + 5);
+    }
+    else 
+    {
+        AudioMixerControl_setVolume(AudioMixerControl_getVolume() - 5);
+    }
+
+    //Write message to send
+    snprintf(tempBuffer, sizeof(tempBuffer), "volume_%s,%d", target, AudioMixerControl_getVolume());
     return tempBuffer;
 }
 
 static const char *UDP_commandTempo(const char* target)
 {
     memset(tempBuffer, 0, sizeof(tempBuffer));
-    AudioMixer_setTempo(AudioMixer_getTempo() + 1);
-    snprintf(tempBuffer, sizeof(tempBuffer), "tempo,%s,%d", target, AudioMixer_getTempo());
+    if(strcmp(target, "up") == 0)
+    {
+        AudioMixer_setTempo(AudioMixer_getTempo() + 5);
+    }
+    else 
+    {
+        AudioMixer_setTempo(AudioMixer_getTempo() - 5);
+    }
+
+    //Write message to send
+    snprintf(tempBuffer, sizeof(tempBuffer), "tempo_%s,%d", target, AudioMixer_getTempo());
     return tempBuffer;
 }
 
