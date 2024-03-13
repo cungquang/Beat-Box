@@ -130,13 +130,17 @@ void* addThemeToQueue_thread()
 {
     while(!*isTerminate)
     {
+        pthread_mutex_lock(&audioMutex);
+        int getSelectedBeat = selectedBeat;
+        pthread_mutex_unlock(&audioMutex);
+
         //Play standard rock beat
-        if(userSelection == 1)
+        if(getSelectedBeat == 1)
         {
             playback_stdRockBeat();
         }
         //Play custom beat
-        else if(userSelection == 2)
+        else if(getSelectedBeat == 2)
         {
             playback_customBeats();
         }
@@ -146,6 +150,7 @@ void* addThemeToQueue_thread()
             AudioMixer_CleanUpQueue();
             AudioMixer_CleanUpBuffer();
         }
+        
     }
 
     return NULL;
