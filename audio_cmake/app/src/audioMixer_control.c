@@ -139,7 +139,6 @@ void* addThemeToQueue_thread()
         getSelectedBeat = selectedBeat;
         pthread_mutex_unlock(&audioMutex);
 
-        printf("selected beat: %d\n", getSelectedBeat);
         //Play standard rock beat
         if(getSelectedBeat == 1)
         {
