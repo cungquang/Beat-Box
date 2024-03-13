@@ -30,12 +30,13 @@ static pthread_mutex_t sendMutex = PTHREAD_MUTEX_INITIALIZER;
 //Declare functions
 //void setupForSendingMessage();
 void *UDP_serverThread();
+void setupForSendingMessage();
 static void splitStringToParts(char *input, char *intoParts[]);
 static void UDP_commandBeat(int value);
-static const char *UDP_commandVolume(const char* target, int value);
-static const char *UDP_commandTempo(const char* target, int value);
+static const char *UDP_commandVolume(const char* target);
+static const char *UDP_commandTempo(const char* target);
 static void UDP_commandDrum(int value);
-static const char *UDP_commandTerminate(const char* target, int value);
+static void UDP_commandTerminate(int value);
 
 
 /*
@@ -183,11 +184,11 @@ void *UDP_serverThread()
         } 
         else if (strcmp("volume", msgParts[0]) == 0)
         {
-            responseMessage = UDP_commandVolume(msgParts[1], atoi(msgParts[2]));
+            responseMessage = UDP_commandVolume(msgParts[1]);
         }
         else if (strcmp("tempo", msgParts[0]) == 0)
         {
-            responseMessage = UDP_commandTempo(msgParts[1], atoi(msgParts[2]));
+            responseMessage = UDP_commandTempo(msgParts[1]);
         }
         else if (strcmp("drum", msgParts[0]) == 0)
         {
@@ -195,7 +196,7 @@ void *UDP_serverThread()
         }
         else if (strcmp("terminate", msgParts[0]) == 0)
         {
-            UDP_commandTerminate(msgParts[1], atoi(msgParts[2]));
+            UDP_commandTerminate(atoi(msgParts[2]));
         }
 
 
@@ -221,10 +222,10 @@ void *UDP_serverThread()
 
 static void UDP_commandBeat(int value)
 {
-    void AudioMixerControl_controlBeat(value);
+    AudioMixerControl_controlBeat(value);
 }
 
-static const char *UDP_commandVolume(const char* target, int value)
+static const char *UDP_commandVolume(const char* target)
 {
     memset(tempBuffer, 0, sizeof(tempBuffer));
     AudioMixerControl_setVolume(AudioMixerControl_getVolume() + 1);
@@ -232,7 +233,7 @@ static const char *UDP_commandVolume(const char* target, int value)
     return tempBuffer;
 }
 
-static const char *UDP_commandTempo(const char* target, int value)
+static const char *UDP_commandTempo(const char* target)
 {
     memset(tempBuffer, 0, sizeof(tempBuffer));
     AudioMixer_setTempo(AudioMixer_getTempo() + 1);
@@ -248,7 +249,6 @@ static void UDP_commandDrum(int value)
 static void UDP_commandTerminate(int value)
 {
     *isTerminated = value;
-    return NULL;
 }
 
 
