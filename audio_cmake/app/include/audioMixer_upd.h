@@ -11,6 +11,7 @@
 #include <sys/socket.h>
 #include "./audioMixer_control.h"
 #include "../include/joystick_control.h"
+#include "../include/application_control.h"
 
 // This module manages UDP server (application level)
 // - Initiate the thread to run server - allow user to remotely control the program
