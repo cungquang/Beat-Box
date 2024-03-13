@@ -267,8 +267,9 @@ static void UDP_commandTerminate(int value)
     isTerminated = value;
     //Stop audio mixer
     AudioMixer_stop();
-    JoystickControl_setTerminateFlag();
+    JoystickControl_terminate();
     AudioMixerControl_terminate();
+    Application_terminate();
 }
 
 

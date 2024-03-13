@@ -11,15 +11,12 @@ static char buffer[MAX_BUFFER_SIZE];
 static char* timeToParts[MAX_TIME_PARTS];
 static char messageToSend[500];
 
-
 static pthread_t processUpTime_id;
-
 
 //Initate Private function
 static void splitTimeToParts(char *input, char *intoParts[]);
 void* processUpTime_thread();
 void readFromProcessUptime();
-
 
 
 /*
@@ -29,7 +26,7 @@ void readFromProcessUptime();
 */
 
 
-void Appliction_control() 
+void Appliction_init() 
 {
     isTerminate = 0;
 

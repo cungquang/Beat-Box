@@ -19,10 +19,14 @@ void Operation()
     JoystickControl_cleanup();
 }
 
+void testOperation()
+{
+    
+}
+
 int main() 
 {
     //Operation();
-    readFromProcessUptime();
 
     return 0;
 }

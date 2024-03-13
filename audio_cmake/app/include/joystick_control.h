@@ -17,6 +17,6 @@ void JoystickControl_init();
 void JoystickControl_join();
 
 void JoystickControl_cleanup();
-void JoystickControl_setTerminateFlag();
+void JoystickControl_terminate();
 
 #endif

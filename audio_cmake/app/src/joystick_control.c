@@ -122,7 +122,7 @@ void JoystickControl_cleanup()
 
 }
 
-void JoystickControl_setTerminateFlag()
+void JoystickControl_terminate()
 {
     isTerminate = 1;
 }
