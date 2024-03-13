@@ -2,8 +2,8 @@ const socketio = require('socket.io');
 const dgram = require('dgram');
 
 const udpClient = dgram.createSocket('udp4');
-const SERVER_ADDRESS = '192.168.7.2';
-const SERVER_PORT = 12345;
+const CLIENT_IP = '192.168.7.2';
+const CLIENT_PORT = 12345;
 
 //Export function listen() -> listen to connection
 exports.listen = function(server) {
@@ -35,13 +35,22 @@ exports.listen = function(server) {
 
 //UDP Client code to send message:
 function sendToUDPServer(message) {
-    const buffer = Buffer.from(message);
-    udpClient.send(buffer, 0, buffer.length, SERVER_PORT, SERVER_ADDRESS, function(err) {
-        if (err) {
-            console.error('Error sending message to UDP server:', err);
-        } else {
-            console.log('Message sent to UDP server:', message);
-        }
+    return new Promise((resolve, reject) => {
+        const buffer = Buffer.from(message);
+
+        //Send UDP message
+        udpClient.send(buffer, 0, buffer.length, CLIENT_PORT, CLIENT_IP, function(err) {
+            //Catch error
+            if (err) {
+                reject(err);
+
+            //Catch response
+            } else {
+                udpClient.once('message', function(response) {
+                    resolve(response.toString());
+                });
+            }
+        });
     });
 }
 
@@ -61,19 +70,34 @@ function handle_beat(socket) {
 
 //Handle volume request from client
 function handle_volume(socket) {
+    socket.on('volume', async function(data) {
+        try {
+            const message = 'volume';
+            const response = await sendToUDPServer(`${message},${data}`);
+            const parts = response.split(',');
 
-    socket.on('volume', function(data) {
-        message = 'volume';
-        sendToUDPServer(`${message},${data}`);
+            //Send via websocket
+            socket.emit(`${parts[0]}`, response);
+        } catch(error) 
+        {
+        }
     });
 }
 
 
 //Handle tempo 
 function handle_tempo(socket) {
-    socket.on('tempo', function(data) {
-        message = 'volume';
-        sendToUDPServer(`${message},${data}`);
+    socket.on('tempo', async function(data) {
+        try {
+            const message = 'tempo';
+            const response = await sendToUDPServer(`${message},${data}`);
+            const parts = response.split(',');
+
+            //Send via websocket
+            socket.emit(`${parts[0]}`, response);
+        } catch(error) 
+        {
+        }
     });
 }
 
