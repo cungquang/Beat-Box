@@ -5,7 +5,11 @@ const mime = require('mime-types');
 const path = require('path');
 const socketServer = require('./lib/socket_server');
 
-//Host address: http://192.168.6.2:8088/
+//HTTP address: http://192.168.6.2:8088
+//UDP address: 192:168.6.2:8087
+const HTTP_PORT = 8088;
+const UDP_PORT = 8087;
+
 
 /*
 #####################
@@ -35,20 +39,34 @@ const httpServer = http.createServer((request, response) => {
 
 const udpServer = dgram.createSocket('udp4');
 
+// UPD send message
+
 udpServer.on('message', function(message, remote) {
+    //print message
+    console.log('from ' + remote.address + ':' + remote.port + ' - ' + message);
     
+    //Split message by deliminiter
+    const msgParts = message.split(',');
+    socketServer.send(msgParts[0], msgParts[1]);
 })
 
+//UDP on error
+
+udpServer.on('error', function(err){
+    console.log("ERROR (UDP):\n" + err.stack);
+})
 
 //////////////////////// Configure Server ////////////////////////
+
+// Binding on UDP port
+udpServer.bind(UDP_PORT);
 
 //Open the socket listen on the same server PORT
 socketServer.listen(httpServer);
 
 // Configuration
-const PORT = 8088;
-httpServer.listen(PORT, function() {
-    console.log("Server listening on PORT " + PORT);  
+httpServer.listen(HTTP_PORT, function() {
+    console.log("Server listening on PORT " + HTTP_PORT);  
 });
 
 

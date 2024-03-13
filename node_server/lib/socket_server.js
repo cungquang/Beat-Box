@@ -5,11 +5,19 @@ const udpClient = dgram.createSocket('udp4');
 const CLIENT_IP = '192.168.7.2';
 const CLIENT_PORT = 12345;
 udpClient.setMaxListeners(20);
+var io;             //Declare io as global variable
 
-//Declare io as global variable
-var io;
 
-//Export function listen() -> listen to connection
+
+/*
+#####################
+#       MAIN        #
+#####################
+*/
+
+
+////////////////////// Exported functions //////////////////////
+
 exports.listen = function(server) {
     // Create web socket listen on server
     io = new socketio.Server(server);
@@ -50,6 +58,7 @@ function sendToUDPServer_reg(message) {
     // Send the message
     udpClient.send(buffer, 0, buffer.length, CLIENT_PORT, CLIENT_IP);
 }
+
 
 //UDP Client - Volume/Tempo - Source: follow ChatGPT
 function sendToUDPServer_promise(message) {
@@ -103,6 +112,7 @@ function handle_volume(socket) {
     });
 }
 
+
 //Handle tempo 
 function handle_tempo(socket) {
     socket.on('tempo', async function(data) {
@@ -120,6 +130,7 @@ function handle_tempo(socket) {
     });
 }
 
+
 //Handle drum
 function handle_drum(socket) {
     socket.on('drum', function(data) {
@@ -127,6 +138,7 @@ function handle_drum(socket) {
         sendToUDPServer_reg(`${message},${data}`);
     });
 }
+
 
 //Handle terminate
 function handle_terminate(socket) {
