@@ -13,15 +13,10 @@ exports.listen = function(server) {
     //On connection 
     io.on('connection', function(socket) {
         handle_beat(socket);
-
         handle_volume(socket);
-
         handle_tempo(socket);
-
         handle_drum(socket);
-
         handle_volume(socket);
-
         handle_terminate(socket);
     });
 };
@@ -33,22 +28,23 @@ exports.listen = function(server) {
 #####################
 */
 
-//UDP Client code to send message:
+//UDP Client code to send message - Source: follow ChatGPT
 function sendToUDPServer(message) {
     return new Promise((resolve, reject) => {
         const buffer = Buffer.from(message);
 
-        //Send UDP message
+        // Create a one-time listener
+        function onResponse(response) {
+            resolve(response.toString());
+            // Remove the listener after it's triggered
+            udpClient.removeListener('message', onResponse);
+        }
+
+        udpClient.once('message', onResponse);
+
         udpClient.send(buffer, 0, buffer.length, CLIENT_PORT, CLIENT_IP, function(err) {
-            //Catch error
             if (err) {
                 reject(err);
-
-            //Catch response
-            } else {
-                udpClient.once('message', function(response) {
-                    resolve(response.toString());
-                });
             }
         });
     });
@@ -77,6 +73,7 @@ function handle_volume(socket) {
             const parts = response.split(',');
 
             //Send via websocket
+            console.log(response);
             socket.emit(`${parts[0]}`, response);
         } catch(error) 
         {
@@ -92,7 +89,7 @@ function handle_tempo(socket) {
             const message = 'tempo';
             const response = await sendToUDPServer(`${message},${data}`);
             const parts = response.split(',');
-
+            console.log(response);
             //Send via websocket
             socket.emit(`${parts[0]}`, response);
         } catch(error) 
