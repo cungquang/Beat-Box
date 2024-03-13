@@ -198,7 +198,6 @@ void *UDP_serverThread()
             UDP_commandTerminate(atoi(msgParts[2]));
         }
 
-        printf("send: %s\n", responseMessage);
         // Reply to the sender
         if(responseMessage)
         {
