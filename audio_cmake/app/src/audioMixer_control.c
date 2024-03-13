@@ -15,14 +15,11 @@
 //Manage operation
 static int* isTerminate;
 
-//User selection
-static int userSelection = 1;
-
 //Wave file
 static wavedata_t stdBeat[MAX_STD_BEAT];
 static wavedata_t accBeat[MAX_STD_BEAT];
 
-static int selectedBeats[MAX_STD_BEAT];
+static int selectedBeat = 0;
 
 static pthread_t audioThreadId;
 static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
@@ -82,17 +79,6 @@ void AudioMixerControl_addDrum(int soundIndex)
     AudioMixer_queueSound(&accBeat[soundIndex]);
 }
 
-void AudioMixerControl_controlBeat(int beatIndex, int value)
-{
-    if(beatIndex < 0 || beatIndex > 2)
-    {
-        printf("ERROR: Unsupported beats.\n");
-    }
-
-    pthread_mutex_lock(&audioMutex);
-    selectedBeats[beatIndex] = value;
-    pthread_mutex_unlock(&audioMutex);
-}
 
 /////////////////// Sound Control ///////////////////
 
@@ -120,14 +106,17 @@ int AudioMixerControl_getTempo()
 
 /////////////////// User Selection ///////////////////
 
-int AudioMixerControl_getUserSelection()
-{
-    return userSelection;
-}
 
-void AudioMixerControl_setUserSelection(int newSelect)
+void AudioMixerControl_controlBeat(int beatIndex)
 {
-    userSelection = newSelect;
+    if(beatIndex < 0 || beatIndex > 2)
+    {
+        printf("ERROR: Unsupported beats.\n");
+    }
+
+    pthread_mutex_lock(&audioMutex);
+    selectedBeat = beatIndex;
+    pthread_mutex_unlock(&audioMutex);
 }
 
 
