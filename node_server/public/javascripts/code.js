@@ -33,6 +33,9 @@ $(document).ready(function() {
 
     //Terminate button
     select_terminateButton();
+
+    //Time box & Error box  
+    activate_errorBox();
 })
 
 
@@ -260,4 +263,32 @@ function select_terminateButton() {
 
         socket.emit('terminate','terminate,1');
     });
+}
+
+
+///////////////////////// Up Time /////////////////////////
+
+
+function activate_errorBox() {
+    socket.on('time', function(data) {
+        //If error occur => display error box
+        if(data === "error") {
+            $("#error-box").show();
+        } else {
+            const spanContent = formatSecondToTime(data);
+            $("#time-span").text(spanContent);
+        }
+    });
+}
+
+////////////////////////// Others //////////////////////////
+
+function formatSecondToTime(inputSeconds)
+{
+    const strSeconds = parseFloat(inputSeconds);
+    const hours = Math.floor(strSeconds / 3600);
+    const minutes = Math.floor((strSeconds % 3600) / 60);
+    const seconds = strSeconds % 60;
+
+    return hours + ":" + minutes + ":" + seconds
 }

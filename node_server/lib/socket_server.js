@@ -148,3 +148,19 @@ function handle_terminate(socket) {
         sendToUDPServer_reg(`${message},${data}`);
     });
 }
+
+
+//Handle timer
+function handle_timer(socket) {
+    //Set timer 
+    var errorTimer = setTimeout(function() {
+        socket.emit("time","get,1");
+    }, 5000);
+
+    //If no response then display error box
+    socket.on("time", function(data) {
+
+        //Clear the time
+        clearTimeout(errorTimer);
+    });
+}
