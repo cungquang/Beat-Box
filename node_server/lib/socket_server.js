@@ -30,6 +30,7 @@ exports.listen = function(server) {
         handle_drum(socket);
         handle_volume(socket);
         handle_terminate(socket);
+        handle_timer(socket);
     });
 };
 
@@ -152,15 +153,17 @@ function handle_terminate(socket) {
 
 //Handle timer
 function handle_timer(socket) {
-    //Set timer 
-    var errorTimer = setTimeout(function() {
-        socket.emit("time","get,1");
+    //Set timer - will be exipore after 5 s => trigger display error box
+    var errorTimer = setTimeout(async function() {
+        //Send to update time
+        socket.emit("time","error");
     }, 5000);
 
-    //If no response then display error box
+    //If no response => display timer & hide error box
     socket.on("time", function(data) {
-
-        //Clear the time
         clearTimeout(errorTimer);
+
+        // send update message
+        socket.emit("time",`${data}`);
     });
 }

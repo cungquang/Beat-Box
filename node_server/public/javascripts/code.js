@@ -274,7 +274,9 @@ function activate_errorBox() {
         //If error occur => display error box
         if(data === "error") {
             $("#error-box").show();
+        //If no error => hide the error box & display the time
         } else {
+            $("#error-box").hide();
             const spanContent = formatSecondToTime(data);
             $("#time-span").text(spanContent);
         }
