@@ -11,6 +11,7 @@ static char buffer[MAX_BUFFER_SIZE];
 static char* timeToParts[MAX_TIME_PARTS];
 static char messageToSend[500];
 
+
 static pthread_t processUpTime_id;
 
 
