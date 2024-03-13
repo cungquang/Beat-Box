@@ -6,10 +6,13 @@ const CLIENT_IP = '192.168.7.2';
 const CLIENT_PORT = 12345;
 udpClient.setMaxListeners(20);
 
+//Declare io as global variable
+var io;
+
 //Export function listen() -> listen to connection
 exports.listen = function(server) {
     // Create web socket listen on server
-    const io = new socketio.Server(server);
+    io = new socketio.Server(server);
     
     //On connection 
     io.on('connection', function(socket) {
@@ -21,6 +24,17 @@ exports.listen = function(server) {
         handle_terminate(socket);
     });
 };
+
+exports.send = function(msgCode, msgContent) {
+    if(io) 
+    {
+        io.emit(msgCode, msgContent);
+    }
+    //socket was not up
+    else{
+        console.log('ERROR: socket was not initated.');
+    }
+}
 
 
 /*
@@ -73,7 +87,7 @@ function handle_beat(socket) {
 }
 
 
-//Handle volume request from client
+//Handle volume
 function handle_volume(socket) {
     socket.on('volume', async function(data) {
         try {
@@ -88,7 +102,6 @@ function handle_volume(socket) {
         }
     });
 }
-
 
 //Handle tempo 
 function handle_tempo(socket) {
@@ -107,7 +120,7 @@ function handle_tempo(socket) {
     });
 }
 
-
+//Handle drum
 function handle_drum(socket) {
     socket.on('drum', function(data) {
         message = 'drum';
@@ -115,7 +128,7 @@ function handle_drum(socket) {
     });
 }
 
-
+//Handle terminate
 function handle_terminate(socket) {
 
     socket.on('terminate', function(data) {

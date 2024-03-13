@@ -1,4 +1,5 @@
 const http = require('http');
+const dgram = require('dgram');
 const fs = require('fs');
 const mime = require('mime-types');
 const path = require('path');
@@ -12,8 +13,10 @@ const socketServer = require('./lib/socket_server');
 #####################
 */
 
-//Create a server
-const server = http.createServer((request, response) => {
+
+////////////////////// Create a Http server //////////////////////
+
+const httpServer = http.createServer((request, response) => {
     var filePath = false;
     
     // If accessing root or directory, serve index.html
@@ -27,12 +30,24 @@ const server = http.createServer((request, response) => {
     serverStatic(response, absPath);
 });
 
+
+/////////////////////// Create a UDP server ///////////////////////
+
+const udpServer = dgram.createSocket('udp4');
+
+udpServer.on('message', function(message, remote) {
+    
+})
+
+
+//////////////////////// Configure Server ////////////////////////
+
 //Open the socket listen on the same server PORT
-socketServer.listen(server);
+socketServer.listen(httpServer);
 
 // Configuration
 const PORT = 8088;
-server.listen(PORT, function() {
+httpServer.listen(PORT, function() {
     console.log("Server listening on PORT " + PORT);  
 });
 

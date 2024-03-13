@@ -1,6 +1,13 @@
 var socket = io.connect();
-
 var beat = [false, false, false];
+
+
+/*
+#####################
+#       MAIN        #
+#####################
+*/
+
 
 $(document).ready(function() {
 
@@ -12,11 +19,12 @@ $(document).ready(function() {
     //Volume
     increase_volume();    
     decrease_volume();
-    
+    set_volume();
+
     //Tempo
     increase_tempo();
     decrease_tempo();
-
+    set_tempo();
 
     //Select play drum
     select_hithatButton();
@@ -35,7 +43,9 @@ $(document).ready(function() {
 #####################
 */
 
-//Select beat
+
+////////////////////////// Beat //////////////////////////
+
 function select_noneButton() {
     $('#none-button').click(function(event) {
         event.preventDefault();
@@ -107,7 +117,8 @@ function select_rock2Button() {
 }
 
 
-//Volume
+//////////////////////// Volume ////////////////////////
+
 function increase_volume() {
     //click add-vol button
     $('#add-vol').click(function(event) {
@@ -149,8 +160,17 @@ function decrease_volume() {
     });
 }
 
+function set_volume() {
+    // Listen for response from server - volume_set
+    socket.on('volume_set'), function(request) {
+        currVol = parseInt(request);
+        $('#vol-text').val(currVol);
+    }
+}
 
-//Tempo
+
+///////////////////////// Tempo /////////////////////////
+
 function increase_tempo() {
     //click add button
     $('#add-tempo').click(function(event) {
@@ -192,8 +212,16 @@ function decrease_tempo() {
     });
 }
 
+function set_tempo() {
+    socket.on('tempo_set', function(request){
+        currTempo = parseInt(request);
+        $('#tempo-text').val(currTempo);
+    })
+}
 
-//Select drum
+
+////////////////////////// Drum //////////////////////////
+
 function select_hithatButton() {
     $('#hithat-button').click(function(event) {
         event.preventDefault();
@@ -224,7 +252,8 @@ function select_baseButton() {
 }
 
 
-//Select termination
+//////////////////////// Terminate ////////////////////////
+
 function select_terminateButton() {
     $('#terminate-button').click(function(event) {
         event.preventDefault();
