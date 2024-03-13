@@ -17,7 +17,7 @@
 // - Join & clean up the program after complete - free all resources after use
 
 // Thread
-void UDP_initServer(int *terminate_flag);
+void UDP_initServer();
 
 //Clean up
 void UDP_cleanup(void);

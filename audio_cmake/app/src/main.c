@@ -3,13 +3,11 @@
 #include "../include/joystick_control.h"
 
 
-int terminate_flag = 0;
-
 void Operation() 
 {
-    //AudioMixerControl_init(&terminate_flag);
-    JoystickControl_init(&terminate_flag);
-    UDP_initServer(&terminate_flag);
+    AudioMixerControl_init();
+    JoystickControl_init();
+    UDP_initServer();
 
     UDP_join();
     AudioMixerControl_join();

@@ -10,7 +10,7 @@
 #define TARGET_PORT 8088
 
 //flag
-static int *isTerminated;
+static int isTerminated;
 
 //Sokcet setup
 static int serverSock;
@@ -62,14 +62,12 @@ void UDP_cleanup(void)
     if(targetSock) {
         close(targetSock);
     }
-
-    isTerminated = NULL;
 }
 
-void UDP_initServer(int *terminate_flag)
+void UDP_initServer()
 {
     //Setup operational flag
-    isTerminated = terminate_flag;
+    isTerminated = 0;
 
     //Setup for sending message
     setupForSendingMessage();
@@ -165,7 +163,7 @@ void *UDP_serverThread()
     //Print server start
     printf("Server starting...\n");
 
-    while(!*isTerminated)
+    while(!isTerminated)
     {
         // Receive message
         if ((recv_len = recvfrom(serverSock, receiv_buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr *)&client_addr, &client_len)) == -1) {
@@ -248,10 +246,11 @@ static void UDP_commandDrum(int value)
 
 static void UDP_commandTerminate(int value)
 {
-    *isTerminated = value;
+    isTerminated = value;
     //Stop audio mixer
     AudioMixer_stop();
     JoystickControl_setTerminateFlag();
+    AudioMixerControl_terminate();
 }
 
 

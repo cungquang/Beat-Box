@@ -9,9 +9,10 @@
 #include "../include/audioMixer_template.h"
 
 //Setup
-void AudioMixerControl_init(int *terminateFlag);
+void AudioMixerControl_init();
 void AudioMixerControl_join(void);
 void AudioMixerControl_cleanup(void);
+void AudioMixerControl_terminate();
 
 //Beat control - Select or unselect beats
 void AudioMixerControl_controlBeat(int beatIndex);
@@ -26,9 +27,5 @@ int AudioMixerControl_getTempo();
 
 //Drum control - add drum to queue
 void AudioMixerControl_addDrum(int soundIndex);
-
-//User selection control
-void AudioMixerControl_setUserSelection(int newSelect);
-int AudioMixerControl_getUserSelection();
 
 #endif

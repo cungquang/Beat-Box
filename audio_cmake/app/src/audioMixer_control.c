@@ -13,7 +13,7 @@
 #define ACCBEAT_HIT_HAT "/mnt/remote/myApps/beatbox-wave-files/100062__menegass__gui-drum-tom-hi-hard.wav"
 
 //Manage operation
-static int* isTerminate;
+static int isTerminate;
 
 //Wave file
 static wavedata_t stdBeat[MAX_STD_BEAT];
@@ -41,10 +41,10 @@ static void playback_customBeats();
 #########################
 */
 
-void AudioMixerControl_init(int* terminateFlag)
+void AudioMixerControl_init()
 {
     //Init trigger flag
-    isTerminate = terminateFlag;
+    isTerminate = 0;
 
     //Init Audio Mixer
     AudioMixer_init();
@@ -79,6 +79,10 @@ void AudioMixerControl_addDrum(int soundIndex)
     AudioMixer_queueSound(&accBeat[soundIndex]);
 }
 
+void AudioMixerControl_terminate() 
+{
+    isTerminate = 1;
+}
 
 /////////////////// Sound Control ///////////////////
 
@@ -128,7 +132,7 @@ void AudioMixerControl_controlBeat(int beatIndex)
 
 void* addThemeToQueue_thread()
 {
-    while(!*isTerminate)
+    while(!isTerminate)
     {
         pthread_mutex_lock(&audioMutex);
         int getSelectedBeat = selectedBeat;
@@ -155,7 +159,6 @@ void* addThemeToQueue_thread()
 
     return NULL;
 }
-
 
 static int convertTempoIntoTime(int tempo) 
 {
