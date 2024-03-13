@@ -4,7 +4,7 @@
 #define MAX_PRESS_BOUNCING 100
 #define MAX_BUFFER_SIZE 250
 
-static int *isTerminate;
+static int isTerminate;
 static char volumeBuffer[MAX_BUFFER_SIZE];
 static char tempoBuffer[MAX_BUFFER_SIZE];
 
@@ -33,17 +33,10 @@ static pthread_t tempoExecute_id;
 
 
 //Mutex
-static pthread_mutex_t volumeMutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t tempoMutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t pressMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t volumeMutex;
+pthread_mutex_t tempoMutex;
+pthread_mutex_t pressMutex;
 
-//Semaphore
-sem_t press_full;
-sem_t press_empty;
-sem_t volume_full;
-sem_t volume_empty;
-sem_t tempo_full;
-sem_t tempo_empty;
 
 
 //Initiate private function
@@ -66,18 +59,16 @@ int isUpOrDown(int up, int down);
 #########################
 */
 
-void JoystickControl_init(int* terminate_flag)
+void JoystickControl_init()
 {
     //Trigger flag
-    isTerminate = terminate_flag;
+    isTerminate = 0;
 
-    //Init sempahore
-    sem_init(&volume_empty, 0, 1);
-    sem_init(&volume_full, 0, 0);
-    sem_init(&tempo_empty, 0, 1);
-    sem_init(&tempo_full, 0, 0);
-    sem_init(&press_empty, 0, 1);
-    sem_init(&press_full, 0, 0);
+    //	pthread_mutex_init(&sampler_mutex, NULL);
+    pthread_mutex_init(&volumeMutex, NULL);
+    pthread_mutex_init(&tempoMutex, NULL);
+    pthread_mutex_init(&pressMutex, NULL);
+
 
     //Create and start pressTrigger_id
     if(pthread_create(&pressTrigger_id, NULL, press_trigger_thread, NULL) != 0) {
@@ -113,29 +104,30 @@ void JoystickControl_init(int* terminate_flag)
 
 void JoystickControl_join()
 {
-    AudioMixer_stop();
-    pthread_join(pressTrigger_id, NULL);
-    pthread_join(pressExecute_id, NULL);
+    printf("Start to join\n");
     pthread_join(volumeTrigger_id, NULL);
-    pthread_join(volumeExecute_id, NULL);
     pthread_join(tempoTrigger_id, NULL);
+    pthread_join(pressTrigger_id, NULL);
+
     pthread_join(tempoExecute_id, NULL);
+    pthread_join(volumeExecute_id, NULL);
+    pthread_join(pressExecute_id, NULL);
 }
 
 void JoystickControl_cleanup()
 {
-    //End AudioMixer
     AudioMixer_stop();
 
-    //Free semaphore
-    sem_destroy(&press_full);
-    sem_destroy(&press_empty);
-    sem_destroy(&volume_empty);
-	sem_destroy(&volume_full);
-    sem_destroy(&tempo_empty);
-	sem_destroy(&tempo_full);
+    pthread_mutex_destroy(&volumeMutex);
+    pthread_mutex_destroy(&tempoMutex);
+    pthread_mutex_destroy(&pressMutex);
+
 }
 
+void JoystickControl_setTerminateFlag()
+{
+    isTerminate = 1;
+}
 
 /*
 #########################
@@ -151,12 +143,11 @@ void *press_trigger_thread()
 {
     int currPressDir;
 
-    while(!*isTerminate)
+    while(isTerminate == 0)
     {
         currPressDir = readValue_gpioPress();
 
         //Critical section
-        sem_wait(&press_empty);
         pthread_mutex_lock(&pressMutex);
 
         //Match with previous
@@ -172,9 +163,8 @@ void *press_trigger_thread()
 
         //Update press
         prevPressDir = currPressDir;
-
         pthread_mutex_unlock(&pressMutex);
-        sem_post(&press_full);
+        sleepForMs(100);
     }
 
     return NULL;
@@ -183,9 +173,8 @@ void *press_trigger_thread()
 //Thread execute command -> "None" -> "Beat1" -> "None" -> "Beat2"
 void* press_execute_thread()
 {
-    while(!*isTerminate)
+    while(isTerminate == 0)
     {
-        sem_wait(&press_full);
         pthread_mutex_lock(&pressMutex);
 
         //User press button - continously
@@ -218,10 +207,8 @@ void* press_execute_thread()
             //Do something
             printf("pressContinue: %d - pressValue: %d - mode: %d]\n", pressContinue, prevPressDir, mode);
         }
-
-
         pthread_mutex_unlock(&pressMutex);
-        sem_post(&press_empty);
+        sleepForMs(100);
     }
 
     return NULL;
@@ -236,13 +223,12 @@ void* volume_up_down_trigger_thread()
     int gpioDown;
     int currVolumeDir;
 
-    while(!*isTerminate)
+    while(isTerminate == 0)
     {
         gpioUp = readValue_gpioUp();
         gpioDown = readValue_gpioDown();
 
         //Critical section
-        sem_wait(&volume_empty);
         pthread_mutex_lock(&volumeMutex);
 
         currVolumeDir = isUpOrDown(gpioUp, gpioDown);
@@ -261,9 +247,8 @@ void* volume_up_down_trigger_thread()
 
         //Update previous 
         prevVolumeDir = currVolumeDir;
-
         pthread_mutex_unlock(&volumeMutex);
-        sem_post(&volume_full);
+        sleepForMs(100);
     }
 
     return NULL;
@@ -272,9 +257,8 @@ void* volume_up_down_trigger_thread()
 //Thread execute command -> increase/decrease volume + send to server
 void* volume_execute_thread()
 {
-    while(!*isTerminate)
+    while(isTerminate == 0)
     {
-        sem_wait(&volume_full);
         pthread_mutex_lock(&volumeMutex);
 
         //Up => increase the volume
@@ -301,7 +285,7 @@ void* volume_execute_thread()
         }
 
         pthread_mutex_unlock(&volumeMutex);
-        sem_post(&volume_empty);
+        sleepForMs(100);
     }
 
     return NULL;
@@ -316,12 +300,11 @@ void* tempo_left_right_trigger_thread()
     int gpioRight;
     int currTempoDir;
 
-    while(!*isTerminate)
+    while(isTerminate == 0)
     {
         gpioLeft = readValue_gpioLeft();
         gpioRight = readValue_gpioRight();
 
-        sem_wait(&tempo_empty);
         pthread_mutex_lock(&tempoMutex);
 
         currTempoDir = isLeftOrRight(gpioLeft, gpioRight);
@@ -341,9 +324,9 @@ void* tempo_left_right_trigger_thread()
 
         //Update previous
         prevTempoDir = currTempoDir;
-        
         pthread_mutex_unlock(&tempoMutex);
-        sem_post(&tempo_full);
+
+        sleepForMs(100);
     }
 
     return NULL;
@@ -352,9 +335,8 @@ void* tempo_left_right_trigger_thread()
 //Thread execute command -> increase/decrease tempo + send to server
 void* tempo_execute_thread()
 {
-    while(!*isTerminate)
+    while(isTerminate == 0)
     {
-        sem_wait(&tempo_full);
         pthread_mutex_lock(&tempoMutex);
 
         //Left => decrease the tempo
@@ -381,7 +363,8 @@ void* tempo_execute_thread()
         }
 
         pthread_mutex_unlock(&tempoMutex);
-        sem_post(&tempo_empty);
+
+        sleepForMs(100);
     }
 
     return NULL;

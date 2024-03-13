@@ -7,13 +7,17 @@ int terminate_flag = 0;
 
 void Operation() 
 {
-    UDP_initServer(&terminate_flag);
     //AudioMixerControl_init(&terminate_flag);
     JoystickControl_init(&terminate_flag);
+    UDP_initServer(&terminate_flag);
+
+    printf("start running\n");
 
     UDP_join();
     //AudioMixerControl_join();
     JoystickControl_join();
+
+    printf("Start cleaning up\n");
 
     //Cleanup -> later move to shutdown thread
     UDP_cleanup();

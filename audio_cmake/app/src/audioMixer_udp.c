@@ -50,7 +50,7 @@ static void UDP_commandTerminate(int value);
 void UDP_join(void)
 {
     pthread_join(udpSever_id, NULL);
-    printf("Join Thread complete");
+    printf("Join Thread complete\n");
 }
 
 void UDP_cleanup(void) 
@@ -249,6 +249,9 @@ static void UDP_commandDrum(int value)
 static void UDP_commandTerminate(int value)
 {
     *isTerminated = value;
+    //Stop audio mixer
+    AudioMixer_stop();
+    JoystickControl_setTerminateFlag();
 }
 
 

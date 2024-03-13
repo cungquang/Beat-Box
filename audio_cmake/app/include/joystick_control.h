@@ -13,10 +13,10 @@
 #include "../include/audioMixer_control.h"
 #include "../include/audioMixer_upd.h"
 
-void JoystickControl_init(int* terminate_flag);
-
+void JoystickControl_init();
 void JoystickControl_join();
 
 void JoystickControl_cleanup();
+void JoystickControl_setTerminateFlag();
 
 #endif
