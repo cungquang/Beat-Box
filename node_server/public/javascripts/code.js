@@ -51,7 +51,6 @@ function select_noneButton() {
         event.preventDefault();
         beat[0] = !beat[0];
         $('#none-button').toggleClass('button-active');
-        $('#none-button').removeClass('button-active');
 
         if(beat[0]) {
             //Other button must be unpressed
@@ -62,6 +61,9 @@ function select_noneButton() {
 
             //none-button get pressed -> send to 
             socket.emit('beat', 'noneButton,true');
+        } else {
+            $('#none-button').removeClass('button-active');
+            socket.emit('beat', 'none-button,false');
         }
     });
 }
@@ -75,9 +77,12 @@ function select_rock1Button() {
         if(beat[1]){
             $('#rock1-button').toggleClass('button-active');
 
-            //Remove 
+            //Unable other button 
             beat[0] = false;
             $('#none-button').removeClass('button-active');
+            beat[2] = false;
+            $('#rock2-button').removeClass('button-active');
+
 
             //Send message
             socket.emit('beat', 'rock1Button,true');
@@ -100,6 +105,8 @@ function select_rock2Button() {
             //Remove 
             beat[0] = false;
             $('#none-button').removeClass('button-active');
+            beat[1] = false;
+            $('#rock1-button').removeClass('button-active');
 
             //Send message
             socket.emit('beat', 'rock2Button,true');
@@ -121,12 +128,23 @@ function increase_volume() {
 
         //Upadte value
         if(currVol < maxVol) {
-            currVol += 1;
-            $('#vol-text').val(currVol);
-        }
+            //Send data to server
+            socket.emit('volume',`up,${currVol}`);
 
-        //Send data to server
-        socket.emit('volume',`up,${currVol}`);
+            // Listen for response from server
+            socket.on('volume_updated', function(response) {
+                var parts = response.split(',');
+                if (parts.length === 3) {
+                    currTempo = parseInt(parts[2]);
+
+                    //Update on page
+                    $('#vol-text').val(currVol);
+                } 
+                else {
+                    console.error('Invalid response format:', response);
+                }
+            });
+        }
     });
 }
 
@@ -138,12 +156,23 @@ function decrease_volume() {
 
         //Upadte value
         if(currVol > minVol) {
-            currVol -= 1
-            $('#vol-text').val(currVol);
-        }
+            //Send data to server
+            socket.emit('volume',`down,${currVol}`);
 
-        //Send data to server
-        socket.emit('volume',`down,${currVol}`);
+            // Listen for response from server
+            socket.on('volume_updated', function(response) {
+                var parts = response.split(',');
+                if (parts.length === 3) {
+                    currTempo = parseInt(parts[2]);
+
+                    //Update on page
+                    $('#vol-text').val(currVol);
+                } 
+                else {
+                    console.error('Invalid response format:', response);
+                }
+            });
+        }
     });
 }
 
@@ -157,13 +186,24 @@ function increase_tempo() {
         var maxTempo = parseInt($('#tempo-text').attr('max')); 
 
         //Update 
-        if(currTempo < maxTempo) {
-            currTempo += 1;
-            $('#tempo-text').val(currTempo);
+        if(currTempo < maxTempo) {   
+            //Send data to server
+            socket.emit('tempo',`up,${currTempo}`);
+
+            // Listen for response from server
+            socket.on('tempo_updated', function(response) {
+                var parts = response.split(',');
+                if (parts.length === 3) {
+                    currTempo = parseInt(parts[2]);
+
+                    //Update on page
+                    $('#tempo-text').val(currTempo);
+                } 
+                else {
+                    console.error('Invalid response format:', response);
+                }
+            });
         }
-        
-        //Send data to server
-        socket.emit('tempo',`up,${currTempo}`);
     });
 }
 
@@ -172,15 +212,29 @@ function decrease_tempo() {
     $('#subtract-tempo').click(function(event) {
         event.preventDefault(); 
         var currTempo = parseInt($('#tempo-text').val());
-        var maxTempo = parseInt($('#tempo-text').attr('min')); 
+        var minTempo = parseInt($('#tempo-text').attr('min')); 
 
-        if(currTempo > maxTempo) {
-            currTempo -= 1;
+        if(currTempo > minTempo) {
+            //Send to server
+            socket.emit('tempo',`down,${currTempo}`);
+
+            // Listen for response from server
+            socket.on('tempo_updated', function(response) {
+                var parts = response.split(',');
+                if (parts.length === 3) {
+                    currTempo = parseInt(parts[2]);
+                    
+                    //Update on page
+                    $('#tempo-text').val(currTempo);
+                } 
+                else {
+                    console.error('Invalid response format:', response);
+                }
+            });
+
+            //Update on screen
             $('#tempo-text').val(currTempo);
         }
-
-        //Send to server
-        socket.emit('tempo',`down,${currTempo}`);
     });
 }
 
@@ -190,12 +244,10 @@ function select_hithatButton() {
     $('#hithat-button').click(function(event) {
         event.preventDefault();
         drum[0] = !drum[0];
-        $('#hithat-button').toggleClass('button-active');
+        //$('#hithat-button').toggleClass('button-active');
         
         if(drum[0]){
-            socket.emit('drum', 'hitButton,true');
-        } else {
-            socket.emit('drum', 'hitButton,false');
+            socket.emit('drum', 'hit-hat,0');
         }
     });
 }
@@ -205,12 +257,10 @@ function select_snareButton() {
     $('#snare-button').click(function(event) {
         event.preventDefault();
         drum[1] = !drum[1];
-        $('#snare-button').toggleClass('button-active');
+        //$('#snare-button').toggleClass('button-active');
 
         if(drum[1]){
-            socket.emit('drum', 'snareButton,true');
-        } else {
-            socket.emit('drum', 'snareButton,false');
+            socket.emit('drum', 'snare,1');
         }
     });
 }
@@ -223,9 +273,7 @@ function select_baseButton() {
         $('#base-button').toggleClass('button-active');
 
         if(drum[2]){
-            socket.emit('drum', 'baseButton,true');
-        } else {
-            socket.emit('drum', 'baseButton,false');
+            socket.emit('drum', 'base,2');
         }
     });
 }

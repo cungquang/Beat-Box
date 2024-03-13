@@ -79,7 +79,6 @@ function handle_tempo(socket) {
 
 
 function handle_drum(socket) {
-
     socket.on('drum', function(data) {
         message = 'drum';
         sendToUDPServer(`${message},${data}`);

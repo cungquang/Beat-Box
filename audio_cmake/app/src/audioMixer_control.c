@@ -77,13 +77,12 @@ void AudioMixerControl_cleanup(void)
     cleanUpBeatInMemory();
 }
 
-void AudioMixerControl_AddDrum(char drumFile, int value)
+void AudioMixerControl_addDrum(int soundIndex)
 {
-    
-    AudioMixer_queueSound(&accBeat[drumIndex]);
+    AudioMixer_queueSound(&accBeat[soundIndex]);
 }
 
-void AudioMixerControl_modifyBeat(int beatIndex, int value)
+void AudioMixerControl_controlBeat(int beatIndex, int value)
 {
     if(beatIndex < 0 || beatIndex > 2)
     {

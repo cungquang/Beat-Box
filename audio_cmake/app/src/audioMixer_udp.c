@@ -34,7 +34,7 @@ static void splitStringToParts(char *input, char *intoParts[]);
 static const char *UDP_commandBeat(const char* target, int value);
 static const char *UDP_commandVolume(const char* target, int value);
 static const char *UDP_commandTempo(const char* target, int value);
-static const char *UDP_commandDrum(const char* target, int value);
+static void UDP_commandDrum(int value);
 static const char *UDP_commandTerminate(const char* target, int value);
 
 
@@ -242,10 +242,9 @@ static const char *UDP_commandTempo(const char* target, int value)
     return tempBuffer;
 }
 
-static UDP_commandDrum(const char* target, int value)
+static void UDP_commandDrum(int value)
 {
-    AudioMixerControl_AddDrum();
-    return tempBuffer;
+    AudioMixerControl_addDrum(value);
 }
 
 static void UDP_commandTerminate(const char* target, int value)
