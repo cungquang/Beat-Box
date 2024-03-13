@@ -8,6 +8,8 @@
 #include <string.h>
 #include <pthread.h>
 #include <sys/time.h>
+#include "../include/audioMixer_helper.h"
+#include "../include/audioMixer_upd.h"
 
 
 #endif

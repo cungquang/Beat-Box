@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "../include/audioMixer_upd.h"
 #include "../include/joystick_control.h"
-
+#include "../include/application_control.h"
 
 void Operation() 
 {
@@ -21,6 +21,8 @@ void Operation()
 
 int main() 
 {
-    Operation();
+    //Operation();
+    readFromProcessUptime();
+
     return 0;
 }

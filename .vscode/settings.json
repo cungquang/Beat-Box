@@ -11,6 +11,7 @@
         "joystick_gpioup.h": "c",
         "joystick_gpioright.h": "c",
         "joystick_gpiopress.h": "c",
-        "type_traits": "c"
+        "type_traits": "c",
+        "audiomixer_helper.h": "c"
     }
 }
