@@ -4,7 +4,7 @@ const dgram = require('dgram');
 const udpClient = dgram.createSocket('udp4');
 const CLIENT_IP = '192.168.7.2';
 const CLIENT_PORT = 12345;
-udpClient.setMaxListeners(15);
+udpClient.setMaxListeners(20);
 
 //Export function listen() -> listen to connection
 exports.listen = function(server) {
@@ -29,8 +29,16 @@ exports.listen = function(server) {
 #####################
 */
 
-//UDP Client code to send message - Source: follow ChatGPT
-function sendToUDPServer(message) {
+//UDP Client for all
+function sendToUDPServer_reg(message) {
+    const buffer = Buffer.from(message);
+
+    // Send the message
+    udpClient.send(buffer, 0, buffer.length, CLIENT_PORT, CLIENT_IP);
+}
+
+//UDP Client - Volume/Tempo - Source: follow ChatGPT
+function sendToUDPServer_promise(message) {
     return new Promise((resolve, reject) => {
         const buffer = Buffer.from(message);
 
@@ -60,7 +68,7 @@ function handle_beat(socket) {
 
     socket.on('beat', function(data) {
         message = 'beat';
-        sendToUDPServer(`${message},${data}`);
+        sendToUDPServer_reg(`${message},${data}`);
     });
 }
 
@@ -70,14 +78,13 @@ function handle_volume(socket) {
     socket.on('volume', async function(data) {
         try {
             const message = 'volume';
-            const response = await sendToUDPServer(`${message},${data}`);
+            const response = await sendToUDPServer_promise(`${message},${data}`);
             const parts = response.split(',');
 
-            //Send via websocket
-            console.log(response);
-            socket.emit(`${parts[0]}`, response);
+            socket.emit(`${parts[0]}`, parts[1]);
         } catch(error) 
         {
+            console.log("ERROR: ", error);
         }
     });
 }
@@ -88,13 +95,14 @@ function handle_tempo(socket) {
     socket.on('tempo', async function(data) {
         try {
             const message = 'tempo';
-            const response = await sendToUDPServer(`${message},${data}`);
+            const response = await sendToUDPServer_promise(`${message},${data}`);
             const parts = response.split(',');
-            console.log(response);
+
             //Send via websocket
-            socket.emit(`${parts[0]}`, response);
+            socket.emit(`${parts[0]}`, parts[1]);
         } catch(error) 
-        {
+        {  
+            console.log("ERROR: ", error);
         }
     });
 }
@@ -103,7 +111,7 @@ function handle_tempo(socket) {
 function handle_drum(socket) {
     socket.on('drum', function(data) {
         message = 'drum';
-        sendToUDPServer(`${message},${data}`);
+        sendToUDPServer_reg(`${message},${data}`);
     });
 }
 
@@ -112,6 +120,6 @@ function handle_terminate(socket) {
 
     socket.on('terminate', function(data) {
         message = 'terminate';
-        sendToUDPServer(`${message},${data}`);
+        sendToUDPServer_reg(`${message},${data}`);
     });
 }

@@ -122,17 +122,8 @@ function increase_volume() {
 
             // Listen for response from server
             socket.on('volume_up', function(response) {
-                console.log(response);
-                var parts = response.split(',');
-                if (parts.length === 2) {
-                    currTempo = parseInt(parts[1]);
-
-                    //Update on page
-                    $('#vol-text').val(currVol);
-                } 
-                else {
-                    console.error('Invalid response format:', response);
-                }
+                currVol = parseInt(response);
+                $('#vol-text').val(currVol);
             });
         }
     });
@@ -151,17 +142,8 @@ function decrease_volume() {
 
             // Listen for response from server
             socket.on('volume_down', function(response) {
-                console.log(response);
-                var parts = response.split(',');
-                if (parts.length === 2) {
-                    currTempo = parseInt(parts[1]);
-
-                    //Update on page
-                    $('#vol-text').val(currVol);
-                } 
-                else {
-                    console.error('Invalid response format:', response);
-                }
+                currVol = parseInt(response);
+                $('#vol-text').val(currVol);
             });
         }
     });
@@ -183,17 +165,8 @@ function increase_tempo() {
 
             // Listen for response from server
             socket.on('tempo_up', function(response) {
-                console.log(response);
-                var parts = response.split(',');
-                if (parts.length === 2) {
-                    currTempo = parseInt(parts[1]);
-
-                    //Update on page
-                    $('#tempo-text').val(currTempo);
-                } 
-                else {
-                    console.error('Invalid response format:', response);
-                }
+                currTempo = parseInt(response);
+                $('#tempo-text').val(currTempo);
             });
         }
     });
@@ -212,17 +185,8 @@ function decrease_tempo() {
 
             // Listen for response from server
             socket.on('tempo_down', function(response) {
-                console.log(response);
-                var parts = response.split(',');
-                if (parts.length === 2) {
-                    currTempo = parseInt(parts[1]);
-                    
-                    //Update on page
-                    $('#tempo-text').val(currTempo);
-                } 
-                else {
-                    console.error('Invalid response format:', response);
-                }
+                currTempo = parseInt(response);
+                $('#tempo-text').val(currTempo);
             });
         }
     });
