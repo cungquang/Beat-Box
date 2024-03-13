@@ -1,7 +1,6 @@
 var socket = io.connect();
 
 var beat = [false, false, false];
-var drum = [false, false, false];
 
 $(document).ready(function() {
 
@@ -132,10 +131,10 @@ function increase_volume() {
             socket.emit('volume',`up,${currVol}`);
 
             // Listen for response from server
-            socket.on('volume_updated', function(response) {
+            socket.on('volume_up', function(response) {
                 var parts = response.split(',');
-                if (parts.length === 3) {
-                    currTempo = parseInt(parts[2]);
+                if (parts.length === 2) {
+                    currTempo = parseInt(parts[1]);
 
                     //Update on page
                     $('#vol-text').val(currVol);
@@ -160,10 +159,10 @@ function decrease_volume() {
             socket.emit('volume',`down,${currVol}`);
 
             // Listen for response from server
-            socket.on('volume_updated', function(response) {
+            socket.on('volume_down', function(response) {
                 var parts = response.split(',');
-                if (parts.length === 3) {
-                    currTempo = parseInt(parts[2]);
+                if (parts.length === 2) {
+                    currTempo = parseInt(parts[1]);
 
                     //Update on page
                     $('#vol-text').val(currVol);
@@ -191,10 +190,10 @@ function increase_tempo() {
             socket.emit('tempo',`up,${currTempo}`);
 
             // Listen for response from server
-            socket.on('tempo_updated', function(response) {
+            socket.on('tempo_up', function(response) {
                 var parts = response.split(',');
-                if (parts.length === 3) {
-                    currTempo = parseInt(parts[2]);
+                if (parts.length === 2) {
+                    currTempo = parseInt(parts[1]);
 
                     //Update on page
                     $('#tempo-text').val(currTempo);
@@ -219,10 +218,10 @@ function decrease_tempo() {
             socket.emit('tempo',`down,${currTempo}`);
 
             // Listen for response from server
-            socket.on('tempo_updated', function(response) {
+            socket.on('tempo_down', function(response) {
                 var parts = response.split(',');
-                if (parts.length === 3) {
-                    currTempo = parseInt(parts[2]);
+                if (parts.length === 2) {
+                    currTempo = parseInt(parts[1]);
                     
                     //Update on page
                     $('#tempo-text').val(currTempo);
