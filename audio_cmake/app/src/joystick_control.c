@@ -31,12 +31,10 @@ static pthread_t volumeExecute_id;
 static pthread_t tempoTrigger_id;
 static pthread_t tempoExecute_id;
 
-
 //Mutex
 pthread_mutex_t volumeMutex;
 pthread_mutex_t tempoMutex;
 pthread_mutex_t pressMutex;
-
 
 
 //Initiate private function
