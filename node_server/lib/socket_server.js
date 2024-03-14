@@ -164,7 +164,7 @@ function handle_error(socket) {
     //Set timer - will be exipore after 5 s => trigger display error box
     var errorTimer = setTimeout(async function() {
         //Send to update time
-        socket.emit("show_error","error");
+        socket.emit("show_error","show");
     }, 5000);
 
 
