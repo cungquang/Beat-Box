@@ -172,7 +172,7 @@ function handle_error(socket) {
 
     //Listen to 
     socket.on("show_error", async function(data) {
-        const response = await sendToUDPServer_promise(`${message},${data}`);
+        const response = await sendToUDPServer_promise(`show_error,${data}`);
         const parts = response.split(',');
 
         //Send via websocket
