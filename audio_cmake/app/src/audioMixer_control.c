@@ -20,9 +20,11 @@ static wavedata_t stdBeat[MAX_STD_BEAT];
 static wavedata_t accBeat[MAX_STD_BEAT];
 
 static int selectedBeat = 0;
+static int mode = 0;
 
 static pthread_t audioThreadId;
 static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t modeMutex = PTHREAD_MUTEX_INITIALIZER;
 
 //Initiate private function
 void* addThemeToQueue_thread();
@@ -32,6 +34,11 @@ static void cleanUpBeatInMemory();
 //Music theme
 static void playback_stdRockBeat();
 static void playback_customBeats();
+
+//Mode
+static void play_mode0(void);
+static void play_mode1(void);
+static void play_mode2(void);
 
 
 /*
@@ -112,7 +119,7 @@ int AudioMixerControl_getTempo()
 
 void AudioMixerControl_controlBeat(int beatIndex)
 {
-    if(beatIndex < 0 || beatIndex > 3)
+    if(beatIndex < -1 || beatIndex > 2)
     {
         return;
     }
@@ -128,6 +135,13 @@ int AudioMixerControl_hasSound(void)
     return AudioMixer_isSoundBites();
 }
 
+void AudioMixerControl_setMode(int newMode)
+{
+    pthread_mutex_lock(&modeMutex);
+    mode = newMode;
+    pthread_mutex_unlock(&modeMutex);
+}
+
 /*
 #########################
 #       PRIVATE         #
@@ -136,36 +150,90 @@ int AudioMixerControl_hasSound(void)
 
 void* addThemeToQueue_thread()
 {
-    int getSelectedBeat;
+    
     while(!isTerminate)
     {
-        pthread_mutex_lock(&audioMutex);
-        getSelectedBeat = selectedBeat;
-        pthread_mutex_unlock(&audioMutex);
-
-        //Play standard rock beat
-        if(getSelectedBeat == 1)
+        if(mode == 2)
         {
-            playback_stdRockBeat();
+            play_mode2();
+            AudioMixerControl_setMode(0);
         }
-        //Play custom beat
-        else if(getSelectedBeat == 2)
+        else if (mode == 1)
         {
-            playback_customBeats();
+            play_mode1();
+            AudioMixerControl_setMode(0);
         }
-        //Play None
-        else if(getSelectedBeat == 0)
+        else
         {
-            AudioMixer_CleanUpQueue();
-            AudioMixer_CleanUpBuffer();
-            AudioMixerControl_controlBeat(3);
+            play_mode0();
         }
-        
     }
 
     return NULL;
 }
 
+static void play_mode0(void)
+{
+    int getSelectedBeat;
+    pthread_mutex_lock(&audioMutex);
+    getSelectedBeat = selectedBeat;
+    pthread_mutex_unlock(&audioMutex);
+
+    //Play standard rock beat
+    if(getSelectedBeat == 1)
+    {
+        playback_stdRockBeat();
+    }
+    //Play custom beat
+    else if(getSelectedBeat == 2)
+    {
+        playback_customBeats();
+    }
+    //Play None
+    else if(getSelectedBeat == 0)
+    {
+        AudioMixer_CleanUpQueue();
+        AudioMixer_CleanUpBuffer();
+        AudioMixerControl_controlBeat(-1);
+    }
+}
+
+
+static void play_mode1(void)
+{
+    //Clean -> None
+    AudioMixerControl_controlBeat(0);
+    sleepForMs(4*convertTempoIntoTime(AudioMixer_getTempo()));
+
+    //Play standard rock beat
+    AudioMixerControl_controlBeat(2);
+    sleepForMs(9*convertTempoIntoTime(AudioMixer_getTempo()));
+    printf("finish custom beat\n");
+
+    //Reset
+    AudioMixerControl_controlBeat(0);
+    sleepForMs(4*convertTempoIntoTime(AudioMixer_getTempo()));
+    
+    //Play custom beat
+    AudioMixerControl_controlBeat(1);
+    sleepForMs(9*convertTempoIntoTime(AudioMixer_getTempo()));
+    printf("finish standard beat\n");
+
+    //Reset
+    AudioMixerControl_controlBeat(0);
+}
+
+static void play_mode2(void)
+{
+    AudioMixerControl_controlBeat(1);
+    sleepForMs(9*convertTempoIntoTime(AudioMixer_getTempo()));
+
+    AudioMixerControl_controlBeat(2);
+    sleepForMs(9*convertTempoIntoTime(AudioMixer_getTempo()));
+
+    AudioMixerControl_controlBeat(0);
+    sleepForMs(9*convertTempoIntoTime(AudioMixer_getTempo()));
+}
 
 static void loadBeatIntoMemory()
 {

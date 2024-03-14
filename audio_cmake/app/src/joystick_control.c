@@ -183,52 +183,16 @@ void* press_execute_thread()
         if(pressContinue >= MAX_MODE1_BOUNCING && pressContinue < MAX_MODE2_BOUNCING && prevPressDir == 0)
         {
             mode = 1;
-            printf("Testing mode: %d\n", mode);
+            AudioMixerControl_setMode(mode);
         } else if (pressContinue >= MAX_MODE2_BOUNCING && prevPressDir == 0)
         //User did not press button continously or does not meet bouncing condition
         {
             mode = 2;
-            printf("Testing mode: %d\n", mode);
+            AudioMixerControl_setMode(mode);
         }
         else
         {
             mode = 0;
-        }
-
-
-        //Take action based on mode value
-        if(mode == 1)
-        {
-            //Clean -> None
-            AudioMixerControl_controlBeat(0);
-            sleepForMs(4*convertTempoIntoTime(AudioMixer_getTempo()));
-
-            //Play standard rock beat
-            AudioMixerControl_controlBeat(2);
-            sleepForMs(8*convertTempoIntoTime(AudioMixer_getTempo()));
-            printf("finish custom beat\n");
-
-            //Reset
-            AudioMixerControl_controlBeat(0);
-            sleepForMs(4*convertTempoIntoTime(AudioMixer_getTempo()));
-            
-            //Play custom beat
-            AudioMixerControl_controlBeat(1);
-            sleepForMs(8*convertTempoIntoTime(AudioMixer_getTempo()));
-            printf("finish standard beat\n");
-
-            //Reset
-            AudioMixerControl_controlBeat(0);
-        }
-        else if(mode == 2)
-        {
-            AudioMixerControl_controlBeat(0);
-            sleepForMs(8*convertTempoIntoTime(AudioMixer_getTempo()));
-            AudioMixerControl_controlBeat(1);
-            sleepForMs(8*convertTempoIntoTime(AudioMixer_getTempo()));
-            AudioMixerControl_controlBeat(2);
-            sleepForMs(8*convertTempoIntoTime(AudioMixer_getTempo()));
-            AudioMixerControl_controlBeat(0);
         }
 
         pthread_mutex_unlock(&pressMutex);
