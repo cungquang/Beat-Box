@@ -52,12 +52,12 @@ void waitUntilBeatIsFinish(void);
 
 
 
-
 /*
 #########################
 #       PUBLIC          #
 #########################
 */
+
 
 void JoystickControl_init()
 {
@@ -216,8 +216,9 @@ void* press_execute_thread()
         }
         else if(mode == 2)
         {
-            //Do something
-            printf("pressContinue: %d - pressValue: %d - mode: %d]\n", pressContinue, prevPressDir, mode);
+            AudioMixerControl_controlBeat(0);
+            AudioMixerControl_controlBeat(1);
+            AudioMixerControl_controlBeat(2);
         }
         pthread_mutex_unlock(&pressMutex);
         sleepForMs(5);
