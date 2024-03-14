@@ -197,8 +197,12 @@ void* press_execute_thread()
         //Take action based on mode value
         if(mode == 1)
         {
-            //Do something
-            printf("pressContinue: %d - pressValue: %d - mode: %d\n", pressContinue, prevPressDir, mode);
+            //Clean => selection = 0
+            AudioMixerControl_controlBeat(0);
+
+            //Run standard bit
+            
+            
         }
         else if(mode == 2)
         {

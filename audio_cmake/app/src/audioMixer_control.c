@@ -41,7 +41,7 @@ static void playback_customBeats();
 #########################
 */
 
-void AudioMixerControl_init()
+void AudioMixerControl_init(void)
 {
     //Init trigger flag
     isTerminate = 0;
@@ -113,9 +113,9 @@ int AudioMixerControl_getTempo()
 
 void AudioMixerControl_controlBeat(int beatIndex)
 {
-    if(beatIndex < 0 || beatIndex > 2)
+    if(beatIndex < 0 || beatIndex > 3)
     {
-        printf("ERROR: Unsupported beats.\n");
+        return;
     }
 
     pthread_mutex_lock(&audioMutex);
@@ -123,6 +123,11 @@ void AudioMixerControl_controlBeat(int beatIndex)
     pthread_mutex_unlock(&audioMutex);
 }
 
+
+void AudioMixerControl_hasSound(void)
+{
+    return AudioMixer_isSoundBites();
+}
 
 /*
 #########################
@@ -150,7 +155,7 @@ void* addThemeToQueue_thread()
             playback_customBeats();
         }
         //Play None
-        else
+        else if(getSelectedBeat == 0)
         {
             AudioMixer_CleanUpQueue();
             AudioMixer_CleanUpBuffer();

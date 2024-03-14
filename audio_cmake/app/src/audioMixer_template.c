@@ -202,6 +202,7 @@ void AudioMixer_queueSound(wavedata_t *pSound)
 	pthread_mutex_unlock(&audioMutex);
 }
 
+
 void AudioMixer_stop(void)
 {
 	printf("Stopping audio...\n");	
@@ -209,10 +210,12 @@ void AudioMixer_stop(void)
 	stopping = true;
 }
 
+
 void AudioMixer_join()
 {
 	pthread_join(playbackThreadId, NULL);
 }
+
 
 //Clean up function 
 void AudioMixer_cleanup(void)
@@ -231,6 +234,19 @@ void AudioMixer_cleanup(void)
 	fflush(stdout);
 }
 
+
+int AudioMixer_isSoundBites(void)
+{
+	pthread_mutex_lock(&audioMutex);
+	int hasSound = 0;
+	for(int i = 0; i < MAX_SOUND_BITES; i++)
+	{
+		hasSound++;
+	}
+	pthread_mutex_unlock(&audioMutex);
+
+	return hasSound;
+}
 
 
 ///////////////////////////// Manul Process /////////////////////////////

@@ -1,5 +1,5 @@
-#ifndef _APPLICATION_CONTROL_H
-#define _APPLICATION_CONTROL_H
+#ifndef _PROCESSTIME_CONTROL_H_
+#define _PROCESSTIME_CONTROL_H_
 
 #include <stdio.h>
 #include <unistd.h>
@@ -11,11 +11,10 @@
 #include "../include/audioMixer_helper.h"
 #include "../include/audioMixer_upd.h"
 
-void Appliction_init();
-void Application_join();
-void Application_terminate();
-void Application_cleanup();
-
-void readFromProcessUptime();
+void Application_init(void);
+void Application_join(void);
+void Application_terminate(void);
+void Application_cleanup(void);
+void AudioMixerControl_hasSound(void);
 
 #endif

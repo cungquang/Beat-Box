@@ -1,7 +1,7 @@
 // Playback sounds in real time, allowing multiple simultaneous wave files
 // to be mixed together and played without jitter.
-#ifndef AUDIO_MIXER_H
-#define AUDIO_MIXER_H
+#ifndef _AUDIO_MIXER_H_
+#define _AUDIO_MIXER_H_
 
 typedef struct {
 	int numSamples;
@@ -12,10 +12,15 @@ typedef struct {
 
 // init() must be called before any other functions,
 // cleanup() must be called last to stop playback threads and free memory.s
+// join() must be called after intiate -> join thread
 void AudioMixer_init(void);
 void AudioMixer_cleanup(void);
-void AudioMixer_stop(void);
 void AudioMixer_join();
+
+// stop() called to stop the current play list
+// isSoundBites() check if any sound in the current list
+void AudioMixer_stop(void);
+int AudioMixer_isSoundBites(void);
 
 // Read the contents of a wave file into the pSound structure. Note that
 // the pData pointer in this structure will be dynamically allocated in

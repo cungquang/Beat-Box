@@ -15,8 +15,8 @@ static pthread_t processUpTime_id;
 
 //Initate Private function
 static void splitTimeToParts(char *input, char *intoParts[]);
-void* processUpTime_thread();
-void readFromProcessUptime();
+void* processUpTime_thread(void);
+void readFromProcessUptime(void);
 
 
 /*
@@ -26,7 +26,7 @@ void readFromProcessUptime();
 */
 
 
-void Appliction_init() 
+void Application_init(void) 
 {
     isTerminate = 0;
 
@@ -34,17 +34,17 @@ void Appliction_init()
     pthread_create(&processUpTime_id, NULL, processUpTime_thread, NULL);
 }
 
-void Application_join()
+void Application_join(void)
 {
     pthread_join(processUpTime_id, NULL);
 }
 
-void Application_terminate()
+void Application_terminate(void)
 {
     isTerminate = 1;
 }
 
-void Application_cleanup()
+void Application_cleanup(void)
 {
     //Clean data before use
     memset(buffer, 0, sizeof(buffer));
@@ -62,7 +62,7 @@ void Application_cleanup()
 */
 
 
-void* processUpTime_thread()
+void* processUpTime_thread(void)
 {
     while(!isTerminate) 
     {
@@ -77,7 +77,7 @@ void* processUpTime_thread()
 }
 
 
-void readFromProcessUptime()
+void readFromProcessUptime(void)
 {
     //Clean data before use
     memset(buffer, 0, sizeof(buffer));
