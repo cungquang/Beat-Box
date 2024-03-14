@@ -156,7 +156,7 @@ void *press_trigger_thread()
         if(prevPressDir == currPressDir)
         {
             pressContinue++;
-            pressContinue = pressContinue > MAX_BOUNCING ? MAX_BOUNCING + 1 : pressContinue;
+            pressContinue = pressContinue > MAX_MODE2_BOUNCING ? MAX_MODE2_BOUNCING : pressContinue;
         }
         //Does not match with previous
         else{
@@ -180,19 +180,15 @@ void* press_execute_thread()
         pthread_mutex_lock(&pressMutex);
 
         //User press button - continously
-        if(pressContinue >= MAX_BOUNCING && prevPressDir == 0)
+        if(pressContinue >= MAX_MODE1_BOUNCING && prevPressDir == 0)
         {
+            mode = 1;
             //mode == 0
-            if(mode == 0) 
-            {
-                mode = 1;
-            } 
-            else if (mode == 1)
-            {
-                mode = 2;
-            }
-        } 
+        } else if (pressContinue >= MAX_MODE2_BOUNCING && prevPressDir == 0)
         //User did not press button continously or does not meet bouncing condition
+        {
+            mode = 2;
+        }
         else
         {
             mode = 0;
@@ -203,18 +199,17 @@ void* press_execute_thread()
         {
             //Clean -> None
             AudioMixerControl_controlBeat(0);
-            AudioMixerControl_controlBeat(3);
-            waitUntilBeatIsFinish();
+            sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
             //Play standard rock beat
             AudioMixerControl_controlBeat(2);
             AudioMixerControl_controlBeat(3);
-            waitUntilBeatIsFinish();
+            sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
             //Play custom beat
             AudioMixerControl_controlBeat(1);
             AudioMixerControl_controlBeat(3);
-            waitUntilBeatIsFinish();
+            sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
         }
         else if(mode == 2)
         {
@@ -225,6 +220,7 @@ void* press_execute_thread()
             AudioMixerControl_controlBeat(2);
             AudioMixerControl_controlBeat(3);
         }
+        
         pthread_mutex_unlock(&pressMutex);
         sleepForMs(5);
     }
@@ -400,14 +396,4 @@ int isLeftOrRight(int left, int right)
 int isUpOrDown(int up, int down)
 {
     return up*2 + down*3;
-}
-
-//Wait until the beat is complete
-void waitUntilBeatIsFinish(void)
-{
-    while(AudioMixerControl_hasSound() > 0)
-    {
-        //Sleep for half of the beat
-        sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
-    }
 }
