@@ -200,6 +200,10 @@ void* press_execute_thread()
             //Clean => selection = 0
             AudioMixerControl_controlBeat(0);
 
+            while(AudioMixerControl_hasSound() > 0)
+            {
+                sleep
+            }
             //Run standard bit
             
             
