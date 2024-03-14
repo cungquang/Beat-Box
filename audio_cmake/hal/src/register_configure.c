@@ -4,7 +4,7 @@
 #define I2CDRV_LINUX_BUS1 "/dev/i2c-1"
 #define I2CDRV_LINUX_BUS2 "/dev/i2c-2"
 
-#define I2C_DEVICE_ADDRESS 0x20
+#define I2C_DEVICE_ADDRESS 0x18
 
 #define REG_CTRL_REG1 0x20
 #define REG_OUT_X_L 0x28
@@ -25,8 +25,17 @@ void I2cbus1_init()
     i2c1_FileDesc = initI2cBus(I2CDRV_LINUX_BUS1, I2C_DEVICE_ADDRESS);
 
     //Configure pin
-    initI2cpin_17();
-    initI2cpin_18();
+    if(!isI2cConfigure_p917())
+    {
+        initI2c_p917();
+        printf("Not yet configure p917\n");
+    }
+
+    if(!isI2cConfigure_p918())
+    {
+        initI2c_p918();
+        printf("Not yet configure p918\n");
+    }
 }
 
 int I2c1FileDesc_get()
@@ -34,6 +43,10 @@ int I2c1FileDesc_get()
     return i2c1_FileDesc;
 }
 
+void I2c1FileDesc_set(int newI2c1FileDesc)
+{
+    i2c1_FileDesc = newI2c1FileDesc;
+}
 
 ///////////////////////// WRITE OPERATION /////////////////////////
 

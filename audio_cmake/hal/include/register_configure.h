@@ -12,7 +12,9 @@
 
 //Init opeartion
 void I2cbus1_init();
+
 int I2c1FileDesc_get();
+void I2c1FileDesc_set(int newI2c1FileDesc);
 
 //Write operation
 void I2cbus1Write_Reg1(unsigned char value);
