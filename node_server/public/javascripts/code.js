@@ -270,7 +270,8 @@ function select_terminateButton() {
 
 
 function activate_errorBox() {
-    socket.on('time', function(data) {
+    socket.on('timer', function(data) {
+        console.log(data);
         //If error occur => display error box
         if(data === "error") {
             $("#error-box").show();

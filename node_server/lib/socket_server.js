@@ -156,14 +156,14 @@ function handle_timer(socket) {
     //Set timer - will be exipore after 5 s => trigger display error box
     var errorTimer = setTimeout(async function() {
         //Send to update time
-        socket.emit("time","error");
+        socket.emit("timer","error");
     }, 5000);
 
     //Every 1 second -> server will send to the socket => display timer & hide error box
-    socket.on("time", function(data) {
+    socket.on("timer", function(data) {
         clearTimeout(errorTimer);
 
         // send update message
-        socket.emit("time",`${data}`);
+        socket.emit("timer",`${data}`);
     });
 }
