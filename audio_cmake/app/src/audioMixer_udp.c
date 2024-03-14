@@ -6,7 +6,7 @@
 #define WRITE_UP_TO (MAX_BUFFER_SIZE - 2)           // Last - \0 & second last - \n
 #define MAX_PARTS 3                                 // Number of parts from request message
 
-#define TARGET_IP "192.168.6.2"
+#define TARGET_IP "192.168.7.2"
 #define TARGET_PORT 8087
 
 //flag
