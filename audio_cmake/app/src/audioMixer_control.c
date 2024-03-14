@@ -315,6 +315,7 @@ static void playback_customBeats()
 
     //beat 1.5 - Hit-hat
     AudioMixer_queueSound(&stdBeat[0]);
+    AudioMixer_queueSound(&accBeat[2]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 2 - Hit-hat, snare
@@ -323,8 +324,7 @@ static void playback_customBeats()
 
     //beat 2.5 - Hit-hat
     AudioMixer_queueSound(&stdBeat[0]);
-    AudioMixer_queueSound(&accBeat[2]);
-    AudioMixer_queueSound(&accBeat[0]);
+    AudioMixer_queueSound(&accBeat[1]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 3
@@ -334,6 +334,7 @@ static void playback_customBeats()
 
     //beat 3.5
     AudioMixer_queueSound(&stdBeat[0]);
+    AudioMixer_queueSound(&accBeat[2]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
     //beat 4
@@ -342,7 +343,6 @@ static void playback_customBeats()
 
     //beat 4.5
     AudioMixer_queueSound(&stdBeat[0]);
-    AudioMixer_queueSound(&accBeat[2]);
-    AudioMixer_queueSound(&accBeat[0]);
+    AudioMixer_queueSound(&accBeat[1]);
     sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 }
