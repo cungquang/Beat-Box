@@ -15,6 +15,7 @@
         "audiomixer_helper.h": "c",
         "fcntl.h": "c",
         "joystick_gpioleft.h": "c",
-        "joystick_gpiodown.h": "c"
+        "joystick_gpiodown.h": "c",
+        "stdlib.h": "c"
     }
 }

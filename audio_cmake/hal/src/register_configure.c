@@ -29,12 +29,17 @@ void I2cbus1_init()
     initI2cpin_18();
 }
 
+int I2c1FileDesc_get()
+{
+    return i2c1_FileDesc;
+}
+
 
 ///////////////////////// WRITE OPERATION /////////////////////////
 
 void I2cbus1Write_Reg1(unsigned char value)
 {
-    if(i2c1_FileDesc)
+    if(!i2c1_FileDesc)
     {
         printf("ERROR: The bus was not iniated\n");
         exit(EXIT_FAILURE);
@@ -48,7 +53,7 @@ void I2cbus1Write_Reg1(unsigned char value)
 
 unsigned char I2cbus1Read_Reg1()
 {
-    if(i2c1_FileDesc)
+    if(!i2c1_FileDesc)
     {
         printf("ERROR: The bus was not iniated\n");
         exit(EXIT_FAILURE);
@@ -60,7 +65,7 @@ unsigned char I2cbus1Read_Reg1()
 
 unsigned char I2cbus1Read_OutXL()
 {
-    if(i2c1_FileDesc)
+    if(!i2c1_FileDesc)
     {
         printf("ERROR: The bus was not iniated\n");
         exit(EXIT_FAILURE);
@@ -72,7 +77,7 @@ unsigned char I2cbus1Read_OutXL()
 
 unsigned char I2cbus1Read_OutXH()
 {
-    if(i2c1_FileDesc)
+    if(!i2c1_FileDesc)
     {
         printf("ERROR: The bus was not iniated\n");
         exit(EXIT_FAILURE);
@@ -84,7 +89,7 @@ unsigned char I2cbus1Read_OutXH()
 
 unsigned char I2cbus1Read_OutYL()
 {
-    if(i2c1_FileDesc)
+    if(!i2c1_FileDesc)
     {
         printf("ERROR: The bus was not iniated\n");
         exit(EXIT_FAILURE);
@@ -96,7 +101,7 @@ unsigned char I2cbus1Read_OutYL()
 
 unsigned char I2cbus1Read_OutYH()
 {
-    if(i2c1_FileDesc)
+    if(!i2c1_FileDesc)
     {
         printf("ERROR: The bus was not iniated\n");
         exit(EXIT_FAILURE);
@@ -108,7 +113,7 @@ unsigned char I2cbus1Read_OutYH()
 
 unsigned char I2cbus1Read_OutZL()
 {
-    if(i2c1_FileDesc)
+    if(!i2c1_FileDesc)
     {
         printf("ERROR: The bus was not iniated\n");
         exit(EXIT_FAILURE);
@@ -120,7 +125,7 @@ unsigned char I2cbus1Read_OutZL()
 
 unsigned char I2cbus1Read_OutZH()
 {
-    if(i2c1_FileDesc)
+    if(!i2c1_FileDesc)
     {
         printf("ERROR: The bus was not iniated\n");
         exit(EXIT_FAILURE);

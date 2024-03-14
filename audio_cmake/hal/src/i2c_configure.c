@@ -18,6 +18,7 @@ int initI2cBus(char* bus, int address)
 {
     int i2cFileDesc = open(bus, O_RDWR);
     int result = ioctl(i2cFileDesc, I2C_SLAVE, address);
+
     if (result < 0) {
         perror("I2C: Unable to set I2C device to slave address.");
         exit(1);
