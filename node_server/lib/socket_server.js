@@ -174,6 +174,6 @@ function handle_error(socket) {
     //Listen to 
     socket.on("show_error", async function(data) {
         clearTimeout(errorTimer);
-        socket.emit("show_error","hide");
+        socket.emit("show_error",data);
     });
 }

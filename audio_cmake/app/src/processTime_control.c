@@ -70,8 +70,6 @@ void* processUpTime_thread(void)
         readFromProcessUptime();
         UDP_sendToTarget(messageToSend);
 
-        isAliveMessage();
-        UDP_sendToTarget(messageToSend);
         //Sleep for 1 second
         sleepForMs(1000);
     }
