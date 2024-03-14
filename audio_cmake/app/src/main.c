@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include "../include/audioMixer_upd.h"
 #include "../include/joystick_control.h"
-#include "../include/application_control.h"
+#include "../include/processTime_control.h"
 
 void Operation() 
 {
     UDP_initServer();
     AudioMixerControl_init();
     JoystickControl_init();
-    Appliction_init();
+    ProcessTime_init();
 
     AudioMixerControl_join();
     JoystickControl_join();

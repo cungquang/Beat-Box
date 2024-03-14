@@ -1,4 +1,4 @@
-#include "../include/application_control.h"
+#include "../include/processTime_control.h"
 
 #define MAX_BUFFER_SIZE 300
 #define MAX_SENDMSG_SIZE 800
@@ -15,7 +15,7 @@ static pthread_t processUpTime_id;
 
 //Initate Private function
 static void splitTimeToParts(char *input, char *intoParts[]);
-void* processUpTime_thread(void);
+void* processUpTime_thread();
 void readFromProcessUptime(void);
 
 
@@ -26,7 +26,7 @@ void readFromProcessUptime(void);
 */
 
 
-void Application_init(void) 
+void ProcessTime_init(void) 
 {
     isTerminate = 0;
 
@@ -34,17 +34,17 @@ void Application_init(void)
     pthread_create(&processUpTime_id, NULL, processUpTime_thread, NULL);
 }
 
-void Application_join(void)
+void ProcessTime_join(void)
 {
     pthread_join(processUpTime_id, NULL);
 }
 
-void Application_terminate(void)
+void ProcessTime_terminate(void)
 {
     isTerminate = 1;
 }
 
-void Application_cleanup(void)
+void ProcessTime_cleanup(void)
 {
     //Clean data before use
     memset(buffer, 0, sizeof(buffer));

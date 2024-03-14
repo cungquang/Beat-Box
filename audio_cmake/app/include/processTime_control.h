@@ -11,10 +11,9 @@
 #include "../include/audioMixer_helper.h"
 #include "../include/audioMixer_upd.h"
 
-void Application_init(void);
-void Application_join(void);
-void Application_terminate(void);
-void Application_cleanup(void);
-void AudioMixerControl_hasSound(void);
+void ProcessTime_init(void);
+void ProcessTime_join(void);
+void ProcessTime_terminate(void);
+void ProcessTime_cleanup(void);
 
 #endif
