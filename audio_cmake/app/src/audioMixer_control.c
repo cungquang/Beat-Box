@@ -150,15 +150,20 @@ void AudioMixerControl_setMode(int newMode)
 
 void* addThemeToQueue_thread()
 {
-    
+    int selectedMode;
     while(!isTerminate)
     {
-        if(mode == 2)
+        pthread_mutex_lock(&modeMutex);
+        selectedMode = mode;
+        pthread_mutex_unlock(&modeMutex);
+
+        // Run by mode
+        if(selectedMode == 2)
         {
             play_mode2();
             AudioMixerControl_setMode(0);
         }
-        else if (mode == 1)
+        else if (selectedMode == 1)
         {
             play_mode1();
             AudioMixerControl_setMode(0);
