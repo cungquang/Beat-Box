@@ -8,13 +8,11 @@ udpClient.setMaxListeners(20);
 var io;             //Declare io as global variable
 
 
-
 /*
 #####################
 #       MAIN        #
 #####################
 */
-
 
 ////////////////////// Exported functions //////////////////////
 
@@ -24,13 +22,19 @@ exports.listen = function(server) {
     
     //On connection 
     io.on('connection', function(socket) {
+
+        //Operation
         handle_beat(socket);
         handle_volume(socket);
         handle_tempo(socket);
         handle_drum(socket);
-        handle_volume(socket);
+
+        //Terminate
         handle_terminate(socket);
+
+        //Time & error
         handle_timer(socket);
+        handle_error(socket);
     });
 };
 

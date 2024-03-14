@@ -57,7 +57,7 @@ udpServer.on('message', function(message, remote) {
     }
     
     //print message
-    //console.log('original message: ' + message);
+    console.log('original message: ' + message);
 
     //Split message by deliminiter
     const msgParts = message.split(',');
