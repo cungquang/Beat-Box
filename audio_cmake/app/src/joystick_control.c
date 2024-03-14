@@ -1,8 +1,8 @@
 #include "../include/joystick_control.h"
 
 #define MAX_BOUNCING 25
-#define MAX_MODE1_BOUNCING 7
-#define MAX_MODE2_BOUNCING 12
+#define MAX_MODE1_BOUNCING 10
+#define MAX_MODE2_BOUNCING 30
 #define MAX_BUFFER_SIZE 250
 
 static int isTerminate;

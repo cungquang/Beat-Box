@@ -156,8 +156,7 @@ void* addThemeToQueue_thread()
         pthread_mutex_lock(&modeMutex);
         selectedMode = mode;
         pthread_mutex_unlock(&modeMutex);
-        
-        printf("current mode: %d\n", selectedMode);
+
         // Run by mode
         if(selectedMode == 2)
         {
@@ -209,20 +208,20 @@ static void play_mode1(void)
 {
     //Clean -> None
     AudioMixerControl_controlBeat(0);
-    sleepForMs(4*convertTempoIntoTime(AudioMixer_getTempo()));
+    sleepForMs(2*convertTempoIntoTime(AudioMixer_getTempo()));
 
-    //Play standard rock beat
-    playback_stdRockBeat();
-    sleepForMs(9*convertTempoIntoTime(AudioMixer_getTempo()));
+    //Play custom beat
+    playback_customBeats();
+    sleepForMs(10*convertTempoIntoTime(AudioMixer_getTempo()));
     printf("finish custom beat\n");
 
     //Reset
     AudioMixerControl_controlBeat(0);
-    sleepForMs(4*convertTempoIntoTime(AudioMixer_getTempo()));
+    sleepForMs(2*convertTempoIntoTime(AudioMixer_getTempo()));
     
-    //Play custom beat
+    //Play standard rock beat
     playback_stdRockBeat();
-    sleepForMs(9*convertTempoIntoTime(AudioMixer_getTempo()));
+    sleepForMs(10*convertTempoIntoTime(AudioMixer_getTempo()));
     printf("finish standard beat\n");
 
     //Reset
@@ -232,10 +231,10 @@ static void play_mode1(void)
 static void play_mode2(void)
 {
     playback_stdRockBeat();
-    sleepForMs(9*convertTempoIntoTime(AudioMixer_getTempo()));
+    sleepForMs(10*convertTempoIntoTime(AudioMixer_getTempo()));
 
     playback_customBeats();
-    sleepForMs(9*convertTempoIntoTime(AudioMixer_getTempo()));
+    sleepForMs(10*convertTempoIntoTime(AudioMixer_getTempo()));
 
     AudioMixerControl_controlBeat(0);
     sleepForMs(9*convertTempoIntoTime(AudioMixer_getTempo()));
