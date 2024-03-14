@@ -169,8 +169,6 @@ void *UDP_serverThread()
             exit(EXIT_FAILURE);
         }
         receiv_buffer[recv_len] = '\0'; 
-        // printf("Client Address: %s\n", inet_ntoa(client_addr.sin_addr));
-        // printf("Client Port: %d\n", ntohs(client_addr.sin_port));
 
         //Break the string into part
         printf("msg: %s\n", receiv_buffer);

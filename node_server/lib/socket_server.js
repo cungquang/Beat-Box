@@ -167,18 +167,16 @@ function handle_timer(socket) {
 function handle_error(socket) {
     //Set timer - will be exipore after 5 s => trigger display error box
     var errorTimer = setTimeout(async function() {
-        // Set interval to send message every 1 second - source: ChatGPT
-        setInterval(async () => {
-            await sendToUDPServer_promise(message);
-        }, 1000);
-
         socket.emit("show_error","show");
     }, 5000);
 
     //Listen to 
     socket.on("show_error", async function(data) {
+        const response = await sendToUDPServer_promise(`${message},${data}`);
+        const parts = response.split(',');
 
+        //Send via websocket
         clearTimeout(errorTimer);
-        socket.emit("show_error",data);
+        socket.emit(`${parts[0]}`, parts[1]);
     });
 }
