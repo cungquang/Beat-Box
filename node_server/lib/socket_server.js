@@ -169,12 +169,17 @@ function handle_error(socket) {
     var errorTimer = setTimeout(async function() {
         //Send to update time
         socket.emit("show_error","show");
+
+        // Set interval to send error message every 1 second
+        var interval = setInterval(async function() {
+            const response = await sendToUDPServer_promise("show_error,isAlive");
+            console.log(response);
+        }, 1000);
     }, 5000);
 
 
     socket.on("show_error", async function(data) {
         // send to check isAlive
-        const response = await sendToUDPServer_promise("show_error,isAlive");
         console.log(response);
 
         clearTimeout(errorTimer);
