@@ -281,17 +281,12 @@ function show_time() {
 
 
 function activate_error() {
-    //send every 1000 second
-    setInterval(function() {
-        socket.emit('show_error', 'isAlive');
-    }, 1000);
-
     socket.on('show_error', function(data) {
         //If error occur => display error box
         if(data === "hide") {
             $("#error-box").hide();
         //If no error => hide the error box & display the time
-        } else if (data === "show") {
+        } else {
             $("#error-box").show();
         }
     });
