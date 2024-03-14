@@ -36,6 +36,7 @@ static void UDP_commandBeat(int value);
 static const char *UDP_commandVolume(const char* target);
 static const char *UDP_commandTempo(const char* target);
 static void UDP_commandDrum(int value);
+static const char * UDP_commandShowError(void);
 static void UDP_commandTerminate(int value);
 
 
@@ -191,6 +192,10 @@ void *UDP_serverThread()
         {
             UDP_commandDrum(atoi(msgParts[2]));
         }
+        else if (strcmp("show_error", msgParts[0]) == 0)
+        {
+            UDP_commandShowError();
+        }
         else if (strcmp("terminate", msgParts[0]) == 0)
         {
             UDP_commandTerminate(atoi(msgParts[2]));
@@ -256,6 +261,13 @@ static const char *UDP_commandTempo(const char* target)
 static void UDP_commandDrum(int value)
 {
     AudioMixerControl_addDrum(value);
+}
+
+static const char * UDP_commandShowError(void)
+{
+    memset(tempBuffer, 0, sizeof(tempBuffer));
+    snprintf(tempBuffer, sizeof(tempBuffer), "show_error,hide");
+    return tempBuffer;
 }
 
 static void UDP_commandTerminate(int value)
