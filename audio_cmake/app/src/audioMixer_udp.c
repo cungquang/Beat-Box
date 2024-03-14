@@ -171,7 +171,7 @@ void *UDP_serverThread()
         receiv_buffer[recv_len] = '\0'; 
 
         //Break the string into part
-        printf("msg: %s\n", receiv_buffer);
+        //printf("msg: %s\n", receiv_buffer);
         splitStringToParts(receiv_buffer, msgParts);
 
         // Execute command according to request from client
