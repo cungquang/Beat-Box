@@ -214,30 +214,26 @@ static void play_mode1(void)
     playback_customBeats();
     sleepForMs(10*convertTempoIntoTime(AudioMixer_getTempo()));
     printf("finish custom beat\n");
-
-    //Reset
-    AudioMixerControl_controlBeat(0);
-    sleepForMs(2*convertTempoIntoTime(AudioMixer_getTempo()));
     
     //Play standard rock beat
     playback_stdRockBeat();
     sleepForMs(10*convertTempoIntoTime(AudioMixer_getTempo()));
     printf("finish standard beat\n");
-
-    //Reset
-    AudioMixerControl_controlBeat(0);
 }
 
 static void play_mode2(void)
 {
     playback_stdRockBeat();
     sleepForMs(10*convertTempoIntoTime(AudioMixer_getTempo()));
+    printf("finish standard beat\n");
 
     playback_customBeats();
     sleepForMs(10*convertTempoIntoTime(AudioMixer_getTempo()));
+    printf("finish custom beat\n");
 
+    //Clean -> None
     AudioMixerControl_controlBeat(0);
-    sleepForMs(9*convertTempoIntoTime(AudioMixer_getTempo()));
+    sleepForMs(2*convertTempoIntoTime(AudioMixer_getTempo()));
 }
 
 static void loadBeatIntoMemory()
