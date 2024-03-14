@@ -281,14 +281,15 @@ function show_time() {
 
 
 function activate_error() {
-    socket.on('show_error')
-    //If error occur => display error box
-    if(data === "show") {
-        $("#error-box").show();
-    //If no error => hide the error box & display the time
-    } else {
-        $("#error-box").hide();
-    }
+    socket.on('show_error', function(data) {
+        //If error occur => display error box
+        if(data === "show") {
+            $("#error-box").show();
+        //If no error => hide the error box & display the time
+        } else {
+            $("#error-box").hide();
+        }
+    });
 }
 
 /////////////////////////// Others ///////////////////////////
