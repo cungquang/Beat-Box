@@ -271,7 +271,7 @@ static void UDP_commandTerminate(int value)
     AudioMixer_stop();
     JoystickControl_terminate();
     AudioMixerControl_terminate();
-    Application_terminate();
+    ProcessTime_terminate();
 }
 
 
