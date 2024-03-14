@@ -22,7 +22,7 @@ static int prevTempoDir;
 static int tempoContinue;
 
 //Mode 
-static int mode = 0;
+static int newMode = 0;
 
 //Thread
 static pthread_t pressTrigger_id;
@@ -182,17 +182,19 @@ void* press_execute_thread()
         //User press button - continously
         if(pressContinue >= MAX_MODE1_BOUNCING && pressContinue < MAX_MODE2_BOUNCING && prevPressDir == 0)
         {
-            mode = 1;
-            AudioMixerControl_setMode(mode);
+            newMode = 1;
+            printf("current mode: %d\n", newMode);
+            AudioMixerControl_setMode(newMode);
         } else if (pressContinue >= MAX_MODE2_BOUNCING && prevPressDir == 0)
         //User did not press button continously or does not meet bouncing condition
         {
-            mode = 2;
-            AudioMixerControl_setMode(mode);
+            newMode = 2;
+            printf("current mode: %d\n", newMode);
+            AudioMixerControl_setMode(newMode);
         }
         else
         {
-            mode = 0;
+            newMode = 0;
         }
 
         pthread_mutex_unlock(&pressMutex);
