@@ -16,7 +16,7 @@ void AudioMixerControl_terminate();
 
 //Beat control - Select or unselect beats
 void AudioMixerControl_controlBeat(int beatIndex);
-void AudioMixerControl_hasSound(void);
+int AudioMixerControl_hasSound(void);
 
 //Volume control
 void AudioMixerControl_setVolume(int newVolume);

@@ -87,3 +87,10 @@ void writeToFile(char * fileName)
     fclose(pFile);
     // Call nanosleep() to sleep for ~300ms before use.
 }
+
+
+int convertTempoIntoTime(int tempo) 
+{
+    float timeToSleep = ((60.0f / tempo) / 2.0f) * 1000.0f;
+    return (int)timeToSleep;
+}

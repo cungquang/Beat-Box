@@ -26,7 +26,6 @@ static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
 
 //Initiate private function
 void* addThemeToQueue_thread();
-static int convertTempoIntoTime(int tempo);
 static void loadBeatIntoMemory();
 static void cleanUpBeatInMemory();
 
@@ -124,7 +123,7 @@ void AudioMixerControl_controlBeat(int beatIndex)
 }
 
 
-void AudioMixerControl_hasSound(void)
+int AudioMixerControl_hasSound(void)
 {
     return AudioMixer_isSoundBites();
 }
@@ -166,11 +165,6 @@ void* addThemeToQueue_thread()
     return NULL;
 }
 
-static int convertTempoIntoTime(int tempo) 
-{
-    float timeToSleep = ((60.0f / tempo) / 2.0f) * 1000.0f;
-    return (int)timeToSleep;
-}
 
 static void loadBeatIntoMemory()
 {

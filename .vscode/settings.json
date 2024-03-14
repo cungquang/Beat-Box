@@ -13,6 +13,8 @@
         "joystick_gpiopress.h": "c",
         "type_traits": "c",
         "audiomixer_helper.h": "c",
-        "fcntl.h": "c"
+        "fcntl.h": "c",
+        "joystick_gpioleft.h": "c",
+        "joystick_gpiodown.h": "c"
     }
 }

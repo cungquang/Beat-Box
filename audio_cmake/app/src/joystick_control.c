@@ -48,6 +48,8 @@ int isLeftOrRight(int left, int right);
 void* tempo_left_right_trigger_thread();
 void* tempo_execute_thread();
 int isUpOrDown(int up, int down);
+void waitUntilBeatIsFinish(void);
+
 
 
 
@@ -197,16 +199,20 @@ void* press_execute_thread()
         //Take action based on mode value
         if(mode == 1)
         {
-            //Clean => selection = 0
+            //Clean -> None
             AudioMixerControl_controlBeat(0);
+            AudioMixerControl_controlBeat(3);
+            waitUntilBeatIsFinish();
 
-            while(AudioMixerControl_hasSound() > 0)
-            {
-                sleep
-            }
-            //Run standard bit
-            
-            
+            //Play standard rock beat
+            AudioMixerControl_controlBeat(1);
+            AudioMixerControl_controlBeat(3);
+            waitUntilBeatIsFinish();
+
+            //Play custom beat
+            AudioMixerControl_controlBeat(2);
+            AudioMixerControl_controlBeat(3);
+            waitUntilBeatIsFinish();
         }
         else if(mode == 2)
         {
@@ -388,4 +394,14 @@ int isLeftOrRight(int left, int right)
 int isUpOrDown(int up, int down)
 {
     return up*2 + down*3;
+}
+
+//Wait until the beat is complete
+void waitUntilBeatIsFinish(void)
+{
+    while(AudioMixerControl_hasSound() > 0)
+    {
+        //Sleep for half of the beat
+        sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+    }
 }
