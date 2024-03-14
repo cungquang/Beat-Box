@@ -168,18 +168,10 @@ function handle_error(socket) {
     //Set timer - will be exipore after 5 s => trigger display error box
     var errorTimer = setTimeout(async function() {
         // Set interval to send message every 1 second - source: ChatGPT
-        setInterval(() => {
-            const message = "show_error,isAlive"; 
-            udpServer.send(message, 0, message.length, CLIENT_PORT, SERVER_IP, (err) => {
-                if (err) {
-                    console.error('Error sending message:', err);
-                } else {
-                    console.log('Message sent successfully:', message);
-                }
-            });
+        setInterval(async () => {
+            await sendToUDPServer_promise(message);
         }, 1000);
 
-        
         socket.emit("show_error","show");
     }, 5000);
 
