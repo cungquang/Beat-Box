@@ -35,7 +35,8 @@ $(document).ready(function() {
     select_terminateButton();
 
     //Time box & Error box  
-    activate_errorBox();
+    show_time();
+    activate_error();
 })
 
 
@@ -287,7 +288,6 @@ function activate_error() {
     //If no error => hide the error box & display the time
     } else {
         $("#error-box").hide();
-        
     }
 }
 

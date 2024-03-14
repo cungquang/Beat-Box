@@ -31,7 +31,6 @@ exports.listen = function(server) {
         handle_volume(socket);
         handle_terminate(socket);
         handle_timer(socket);
-        handle_error(socket);
     });
 };
 
@@ -153,7 +152,7 @@ function handle_terminate(socket) {
 
 
 //Handle timer
-function handle_timer(socket) {
+function handle_timer(socket) {    
     //Every 1 second -> server will send to the socket => display timer & hide error box
     socket.on("timer", function(data) {
         // send update message
@@ -161,19 +160,19 @@ function handle_timer(socket) {
     });
 }
 
-
-//Handle error
 function handle_error(socket) {
+    //Set timer - will be exipore after 5 s => trigger display error box
     var errorTimer = setTimeout(async function() {
-        //send to show error box
-        socket.emit("show_error","show");
+        //Send to update time
+        socket.emit("show_error","error");
     }, 5000);
 
-    socket.on("show_error", async function(data) {
-        const response = await sendToUDPServer_promise("show_error,isAlive");
-        clearTimeout(errorTimer);
 
-        // send update message
-        socket.emit("show_error", "hide");
+    socket.on("show_error", async function(data) {
+        // send to check isAlive
+        const response = await sendToUDPServer_promise("show_error,isAlive");
+
+        clearTimeout(errorTimer);
+        socket.emit("show_error","hide");
     });
 }
