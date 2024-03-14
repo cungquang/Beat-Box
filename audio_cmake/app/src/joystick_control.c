@@ -156,7 +156,7 @@ void *press_trigger_thread()
         if(prevPressDir == currPressDir)
         {
             pressContinue++;
-            pressContinue = pressContinue > MAX_MODE2_BOUNCING ? MAX_MODE2_BOUNCING : pressContinue;
+            pressContinue = pressContinue > MAX_MODE2_BOUNCING ? MAX_MODE2_BOUNCING + 1 : pressContinue;
         }
         //Does not match with previous
         else{
@@ -180,39 +180,40 @@ void* press_execute_thread()
         pthread_mutex_lock(&pressMutex);
 
         //User press button - continously
-        if(pressContinue >= MAX_MODE1_BOUNCING && prevPressDir == 0)
+        if(pressContinue >= MAX_MODE1_BOUNCING && pressContinue < MAX_MODE2_BOUNCING && prevPressDir == 0)
         {
             mode = 1;
-            //mode == 0
+            printf("Testing mode: %d\n", mode);
         } else if (pressContinue >= MAX_MODE2_BOUNCING && prevPressDir == 0)
         //User did not press button continously or does not meet bouncing condition
         {
             mode = 2;
+            printf("Testing mode: %d\n", mode);
         }
         else
         {
             mode = 0;
         }
-        printf("Testing mode: %d\n", mode);
-        
+
+
         //Take action based on mode value
         if(mode == 1)
         {
             //Clean -> None
             AudioMixerControl_controlBeat(0);
-            //sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
             //Play standard rock beat
             AudioMixerControl_controlBeat(2);
             AudioMixerControl_controlBeat(3);
+            sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
             //Reset
-            AudioMixerControl_controlBeat(3);
             AudioMixerControl_controlBeat(0);
             
             //Play custom beat
-            AudioMixerControl_controlBeat(3);
             AudioMixerControl_controlBeat(1);
+            AudioMixerControl_controlBeat(3);
+            sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
         }
         else if(mode == 2)
         {
