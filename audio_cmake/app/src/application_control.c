@@ -89,7 +89,6 @@ void readFromProcessUptime()
     //Get time from /proc/uptime
     readFromFileToBuffer(PROC_UPTIME_PATH, buffer, MAX_BUFFER_SIZE);
     splitTimeToParts(buffer, timeToParts);
-    printf("%s\n", timeToParts[0]);
     snprintf(messageToSend, MAX_SENDMSG_SIZE, "timer,%s", timeToParts[0]);
 }
 

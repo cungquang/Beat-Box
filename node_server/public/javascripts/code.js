@@ -166,7 +166,8 @@ function decrease_volume() {
 function set_volume() {
     // Listen for response from server - volume_set
     socket.on('volume_set'), function(request) {
-        currVol = parseInt(request);
+        console.log(request);
+        const currVol = parseInt(request);
         $('#vol-text').val(currVol);
     }
 }
@@ -217,7 +218,7 @@ function decrease_tempo() {
 
 function set_tempo() {
     socket.on('tempo_set', function(request){
-        currTempo = parseInt(request);
+        const currTempo = parseInt(request);
         $('#tempo-text').val(currTempo);
     })
 }

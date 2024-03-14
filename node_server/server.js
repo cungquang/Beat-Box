@@ -57,11 +57,12 @@ udpServer.on('message', function(message, remote) {
     }
     
     //print message
-    console.log('from ' + remote.address + ':' + remote.port + ' - ' + message);
+    console.log('original message: ' + message);
 
     
     //Split message by deliminiter
     const msgParts = message.split(',');
+    console.log('after split: ' + msgParts[0] + " - " + msgParts[1]);
     socketServer.send(msgParts[0], msgParts[1]);
 })
 
