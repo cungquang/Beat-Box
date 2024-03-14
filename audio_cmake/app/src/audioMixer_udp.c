@@ -50,7 +50,6 @@ static void UDP_commandTerminate(int value);
 void UDP_join(void)
 {
     pthread_join(udpSever_id, NULL);
-    printf("Join Thread complete\n");
 }
 
 void UDP_cleanup(void) 
@@ -71,7 +70,6 @@ void UDP_initServer()
 
     //Setup for sending message
     setupForSendingMessage();
-    printf("Finish setup UDP for send");
 
     //Run server thread
     pthread_create(&udpSever_id, NULL, UDP_serverThread, NULL);
@@ -135,7 +133,6 @@ void setupForSendingMessage()
 //Server side, receive: history, count, length, dips, help (or ?), stop, <Enter>
 void *UDP_serverThread()
 {
-    printf("Setup server...\n");
     struct sockaddr_in server_addr, client_addr;
     socklen_t client_len = sizeof(client_addr);
     int recv_len;
@@ -161,7 +158,7 @@ void *UDP_serverThread()
     }
 
     //Print server start
-    //printf("Server starting...\n");
+    printf("Server starting...\n");
 
     while(!isTerminated)
     {
@@ -171,12 +168,11 @@ void *UDP_serverThread()
             exit(EXIT_FAILURE);
         }
         receiv_buffer[recv_len] = '\0'; 
-        printf("Client Address: %s\n", inet_ntoa(client_addr.sin_addr));
-        printf("Client Port: %d\n", ntohs(client_addr.sin_port));
+        // printf("Client Address: %s\n", inet_ntoa(client_addr.sin_addr));
+        // printf("Client Port: %d\n", ntohs(client_addr.sin_port));
 
         //Break the string into part
         splitStringToParts(receiv_buffer, msgParts);
-        // printf("Receive Message: %s - %s\n", msgParts[0], msgParts[2]);
 
         // Execute command according to request from client
         if(strcmp("beat", msgParts[0]) == 0)
@@ -208,8 +204,6 @@ void *UDP_serverThread()
                 perror("Fail to send");
                 exit(EXIT_FAILURE);
             }
-
-            //reset responseMessage
             responseMessage = NULL;
         }
     }
