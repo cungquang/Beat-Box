@@ -173,6 +173,7 @@ void *UDP_serverThread()
         // printf("Client Port: %d\n", ntohs(client_addr.sin_port));
 
         //Break the string into part
+        printf("msg: %s\n", receiv_buffer);
         splitStringToParts(receiv_buffer, msgParts);
 
         // Execute command according to request from client

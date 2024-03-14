@@ -175,6 +175,7 @@ function handle_error(socket) {
     socket.on("show_error", async function(data) {
         // send to check isAlive
         const response = await sendToUDPServer_promise("show_error,isAlive");
+        console.log(response);
 
         clearTimeout(errorTimer);
         socket.emit("show_error","hide");
