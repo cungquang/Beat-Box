@@ -161,7 +161,7 @@ void *UDP_serverThread()
     }
 
     //Print server start
-    printf("Server starting...\n");
+    //printf("Server starting...\n");
 
     while(!isTerminated)
     {

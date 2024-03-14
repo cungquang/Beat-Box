@@ -193,23 +193,26 @@ void* press_execute_thread()
         {
             mode = 0;
         }
-
+        printf("Testing mode: %d\n", mode);
+        
         //Take action based on mode value
         if(mode == 1)
         {
             //Clean -> None
             AudioMixerControl_controlBeat(0);
-            sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+            //sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
             //Play standard rock beat
             AudioMixerControl_controlBeat(2);
             AudioMixerControl_controlBeat(3);
-            sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
 
-            //Play custom beat
-            AudioMixerControl_controlBeat(1);
+            //Reset
             AudioMixerControl_controlBeat(3);
-            sleepForMs(convertTempoIntoTime(AudioMixer_getTempo()));
+            AudioMixerControl_controlBeat(0);
+            
+            //Play custom beat
+            AudioMixerControl_controlBeat(3);
+            AudioMixerControl_controlBeat(1);
         }
         else if(mode == 2)
         {
@@ -220,7 +223,7 @@ void* press_execute_thread()
             AudioMixerControl_controlBeat(2);
             AudioMixerControl_controlBeat(3);
         }
-        
+
         pthread_mutex_unlock(&pressMutex);
         sleepForMs(5);
     }
