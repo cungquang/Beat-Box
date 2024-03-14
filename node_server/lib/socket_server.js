@@ -34,7 +34,7 @@ exports.listen = function(server) {
 
         //Time & error
         handle_timer(socket);
-        handle_error(socket);
+        // handle_error(socket);
     });
 };
 
@@ -164,17 +164,9 @@ function handle_timer(socket) {
     });
 }
 
-function handle_error(socket) {
-    //Set timer - will be exipore after 5 s => trigger display error box
-    var errorTimer = setTimeout(async function() {
-        socket.emit("show_error","show");
-    }, 5000);
-
-    //Listen to 
-    socket.on("show_error", async function(data) {
-        socket.emit("show_error","hide");
+// function handle_error(socket) {
+//     //Listen to 
+//     socket.on("show_error", async function(data) {
         
-        //Send via websocket
-        clearTimeout(errorTimer);
-    });
-}
+//     });
+// }

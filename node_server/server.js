@@ -56,9 +56,17 @@ udpServer.on('message', function(message, remote) {
     if (Buffer.isBuffer(message)) {
         message = message.toString('utf8'); // Assuming UTF-8 encoding
     }
-    
-    //print message
-    //console.log('original message: ' + message);
+
+    //Set timer - expire after 5 s => trigger display error box
+    var errorTimer = setTimeout(function() {
+        socketServer.emit("show_error","show");
+    }, 5000);
+
+    //Send via websocket
+    if(message) { 
+        clearTimeout(errorTimer) 
+        socket.emit("show_error","hide");
+    };
 
     //Split message by deliminiter
     const msgParts = message.split(',');
