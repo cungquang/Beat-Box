@@ -1,5 +1,6 @@
 const socketio = require('socket.io');
 const dgram = require('dgram');
+const internal = require('stream');
 
 const udpClient = dgram.createSocket('udp4');
 const CLIENT_IP = '192.168.7.2';
@@ -34,7 +35,7 @@ exports.listen = function(server) {
 
         //Time & error
         handle_timer(socket);
-        // handle_error(socket);
+        handle_error(socket);
     });
 };
 
@@ -164,9 +165,24 @@ function handle_timer(socket) {
     });
 }
 
-// function handle_error(socket) {
-//     //Listen to 
-//     socket.on("show_error", async function(data) {
-        
-//     });
-// }
+function handle_error(socket) {
+    //Set timer - expire after 5 s => trigger display error box
+    var errorTimer;
+    
+    function triggerTimeOut() {
+        errorTimer = setTimeout(function() {
+            socketServer.emit("show_error","show");
+        }, 5000);    
+    } 
+
+    triggerTimeOut();
+
+    //Send via websocket
+    socket.on("show_error", function(data) {
+        clearTimeout(errorTimer) 
+        socket.emit("show_error","hide");
+
+        //retrigger:
+        triggerTimeOut();
+    })
+}
