@@ -267,7 +267,7 @@ void* volume_execute_thread()
 
             //Send data -> update frontend
             memset(volumeBuffer, 0, sizeof(volumeBuffer));
-            snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,%d", AudioMixerControl_getVolume());
+            snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume_set,%d", AudioMixerControl_getVolume());
             UDP_sendToTarget(volumeBuffer);
         }
         //Down => decrease the volume
@@ -278,7 +278,7 @@ void* volume_execute_thread()
 
             //Send to Server -> update on frontend
             memset(volumeBuffer, 0, sizeof(volumeBuffer));
-            snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume,%d", AudioMixerControl_getVolume());
+            snprintf(volumeBuffer, MAX_BUFFER_SIZE, "volume_set,%d", AudioMixerControl_getVolume());
             UDP_sendToTarget(volumeBuffer);
         }
 
@@ -345,7 +345,7 @@ void* tempo_execute_thread()
 
             //Send to Server -> update on frontend
             memset(tempoBuffer, 0, sizeof(tempoBuffer));
-            snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,%d", AudioMixerControl_getTempo());
+            snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo_set,%d", AudioMixerControl_getTempo());
             UDP_sendToTarget(tempoBuffer);
         }
         //Right => increase the tempo
@@ -356,7 +356,7 @@ void* tempo_execute_thread()
 
             //Send to Server -> update on frontend
             memset(tempoBuffer, 0, sizeof(tempoBuffer));
-            snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo,%d", AudioMixerControl_getTempo());
+            snprintf(tempoBuffer, MAX_BUFFER_SIZE, "tempo_set,%d", AudioMixerControl_getTempo());
             UDP_sendToTarget(tempoBuffer);
         }
 
