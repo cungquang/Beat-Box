@@ -269,27 +269,33 @@ function select_terminateButton() {
 ///////////////////////// Up Time /////////////////////////
 
 
-function activate_errorBox() {
+function show_time() {
     socket.on('timer', function(data) {
-        console.log(data);
-        //If error occur => display error box
-        if(data === "error") {
-            $("#error-box").show();
-            
-        //If no error => hide the error box & display the time
-        } else {
-            $("#error-box").hide();
-            const spanContent = formatSecondToTime(data);
-            $("#time-span").text(spanContent);
-        }
+        const spanContent = formatSecondToTime(data);
+        $("#time-span").text(spanContent);
     });
 }
 
-////////////////////////// Others //////////////////////////
+///////////////////////// Catch Error /////////////////////////
+
+
+function activate_error() {
+    socket.on('show_error')
+    //If error occur => display error box
+    if(data === "show") {
+        $("#error-box").show();
+    //If no error => hide the error box & display the time
+    } else {
+        $("#error-box").hide();
+        
+    }
+}
+
+/////////////////////////// Others ///////////////////////////
 
 function formatSecondToTime(inputSeconds)
 {
-    const strSeconds = parseFloat(inputSeconds);
+    const strSeconds = Math.round(parseFloat(inputSeconds));
     const hours = Math.floor(strSeconds / 3600);
     const minutes = Math.floor((strSeconds % 3600) / 60);
     const seconds = strSeconds % 60;
