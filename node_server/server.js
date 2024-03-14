@@ -10,6 +10,7 @@ const socketServer = require('./lib/socket_server');
 const SERVER_IP = '192.168.7.2';
 const HTTP_PORT = 8088;
 const UDP_PORT = 8087;
+const CLIENT_PORT = 12345;
 
 
 /*
@@ -49,7 +50,7 @@ udpServer.on('listening', () => {
     // Set interval to send message every 1 second
     setInterval(() => {
         const message = "show_error,isAlive"; 
-        udpServer.send(message, 0, message.length, address.port, address.address, (err) => {
+        udpServer.send(message, 0, message.length, CLIENT_PORT, address.address, (err) => {
             if (err) {
                 console.error('Error sending message:', err);
             } else {
