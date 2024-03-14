@@ -171,7 +171,7 @@ function handle_error(socket) {
     
     function triggerTimeOut() {
         errorTimer = setTimeout(function() {
-            socketServer.emit("show_error","show");
+            socket.emit("show_error","show");
         }, 5000);    
     } 
 
