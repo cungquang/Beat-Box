@@ -39,6 +39,14 @@ const httpServer = http.createServer((request, response) => {
 
 const udpServer = dgram.createSocket('udp4');
 
+// UDP listen on the port
+
+udpServer.on('listening', () => {
+    const address = udpServer.address();
+    console.log(`UDP server listening on ${address.address}:${address.port}`);
+});
+
+
 // UPD send message
 
 udpServer.on('message', function(message, remote) {

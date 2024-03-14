@@ -7,7 +7,7 @@
 #define MAX_PARTS 3                                 // Number of parts from request message
 
 #define TARGET_IP "192.168.6.2"
-#define TARGET_PORT 8088
+#define TARGET_PORT 8087
 
 //flag
 static int isTerminated;
@@ -171,6 +171,8 @@ void *UDP_serverThread()
             exit(EXIT_FAILURE);
         }
         receiv_buffer[recv_len] = '\0'; 
+        printf("Client Address: %s\n", inet_ntoa(client_addr.sin_addr));
+        printf("Client Port: %d\n", ntohs(client_addr.sin_port));
 
         //Break the string into part
         splitStringToParts(receiv_buffer, msgParts);
