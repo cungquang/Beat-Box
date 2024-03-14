@@ -12,7 +12,7 @@ void Operation()
 
     AudioMixerControl_join();
     JoystickControl_join();
-    Application_join();
+    ProcessTime_join();
     UDP_join();
 
     //Cleanup -> later move to shutdown thread
