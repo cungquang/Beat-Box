@@ -51,8 +51,14 @@ udpServer.on('listening', () => {
 // UPD send message
 
 udpServer.on('message', function(message, remote) {
+    // Convert buffer to string if necessary
+    if (Buffer.isBuffer(message)) {
+        message = message.toString('utf8'); // Assuming UTF-8 encoding
+    }
+    
     //print message
     console.log('from ' + remote.address + ':' + remote.port + ' - ' + message);
+
     
     //Split message by deliminiter
     const msgParts = message.split(',');
@@ -67,11 +73,11 @@ udpServer.on('error', function(err){
 
 //////////////////////// Configure Server ////////////////////////
 
-// Binding on UDP port
-udpServer.bind(UDP_PORT, SERVER_IP);
-
 //Open the socket listen on the same server PORT
 socketServer.listen(httpServer);
+
+// Binding on UDP port
+udpServer.bind(UDP_PORT, SERVER_IP);
 
 // Configuration
 httpServer.listen(HTTP_PORT, function() {
