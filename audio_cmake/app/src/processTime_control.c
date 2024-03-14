@@ -16,6 +16,7 @@ static pthread_t processUpTime_id;
 //Initate Private function
 static void splitTimeToParts(char *input, char *intoParts[]);
 void* processUpTime_thread();
+void isAliveMessage(void);
 void readFromProcessUptime(void);
 
 
@@ -69,6 +70,8 @@ void* processUpTime_thread(void)
         readFromProcessUptime();
         UDP_sendToTarget(messageToSend);
 
+        isAliveMessage();
+        UDP_sendToTarget(messageToSend);
         //Sleep for 1 second
         sleepForMs(1000);
     }
@@ -76,6 +79,11 @@ void* processUpTime_thread(void)
     return NULL;
 }
 
+void isAliveMessage(void)
+{
+    memset(messageToSend, 0, sizeof(messageToSend));
+    snprintf(messageToSend, MAX_SENDMSG_SIZE, "show_error,hide");
+}
 
 void readFromProcessUptime(void)
 {

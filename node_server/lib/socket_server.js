@@ -4,7 +4,7 @@ const dgram = require('dgram');
 const udpClient = dgram.createSocket('udp4');
 const CLIENT_IP = '192.168.7.2';
 const CLIENT_PORT = 12345;
-udpClient.setMaxListeners(20);
+udpClient.setMaxListeners(25);
 var io;             //Declare io as global variable
 
 
@@ -169,19 +169,10 @@ function handle_error(socket) {
     var errorTimer = setTimeout(async function() {
         //Send to update time
         socket.emit("show_error","show");
-
-        // Set interval to send error message every 1 second
-        var interval = setInterval(async function() {
-            const response = await sendToUDPServer_promise("show_error,isAlive");
-            console.log(response);
-        }, 1000);
     }, 5000);
 
-
+    //Listen to 
     socket.on("show_error", async function(data) {
-        // send to check isAlive
-        console.log(response);
-
         clearTimeout(errorTimer);
         socket.emit("show_error","hide");
     });
