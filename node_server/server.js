@@ -7,6 +7,7 @@ const socketServer = require('./lib/socket_server');
 
 //HTTP address: http://192.168.6.2:8088
 //UDP address: 192:168.6.2:8087
+const SERVER_IP = '192.168.6.2';
 const HTTP_PORT = 8088;
 const UDP_PORT = 8087;
 
@@ -67,7 +68,7 @@ udpServer.on('error', function(err){
 //////////////////////// Configure Server ////////////////////////
 
 // Binding on UDP port
-udpServer.bind(UDP_PORT);
+udpServer.bind(UDP_PORT, SERVER_IP);
 
 //Open the socket listen on the same server PORT
 socketServer.listen(httpServer);
