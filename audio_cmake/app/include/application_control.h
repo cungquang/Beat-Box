@@ -11,7 +11,7 @@
 #include "../include/audioMixer_helper.h"
 #include "../include/audioMixer_upd.h"
 
-void Appliction_control();
+void Appliction_init();
 void Application_join();
 void Application_terminate();
 void Application_cleanup();

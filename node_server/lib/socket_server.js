@@ -159,7 +159,7 @@ function handle_timer(socket) {
         socket.emit("time","error");
     }, 5000);
 
-    //If no response => display timer & hide error box
+    //Every 1 second -> server will send to the socket => display timer & hide error box
     socket.on("time", function(data) {
         clearTimeout(errorTimer);
 

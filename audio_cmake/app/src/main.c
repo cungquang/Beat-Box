@@ -5,13 +5,15 @@
 
 void Operation() 
 {
+    UDP_initServer();
     AudioMixerControl_init();
     JoystickControl_init();
-    UDP_initServer();
+    Appliction_init();
 
-    UDP_join();
     AudioMixerControl_join();
     JoystickControl_join();
+    Application_join();
+    UDP_join();
 
     //Cleanup -> later move to shutdown thread
     UDP_cleanup();
@@ -21,8 +23,8 @@ void Operation()
 
 int main() 
 {
-    //Operation();
-    readFromProcessUptime();
+    Operation();
+    //readFromProcessUptime();
 
     return 0;
 }
