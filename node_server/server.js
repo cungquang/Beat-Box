@@ -46,18 +46,6 @@ const udpServer = dgram.createSocket('udp4');
 udpServer.on('listening', () => {
     const address = udpServer.address();
     console.log(`UDP server listening on ${address.address}:${address.port}`);
-
-    // Set interval to send message every 1 second - source: ChatGPT
-    setInterval(() => {
-        const message = "show_error,isAlive"; 
-        udpServer.send(message, 0, message.length, CLIENT_PORT, SERVER_IP, (err) => {
-            if (err) {
-                console.error('Error sending message:', err);
-            } else {
-                console.log('Message sent successfully:', message);
-            }
-        });
-    }, 1000);
 });
 
 

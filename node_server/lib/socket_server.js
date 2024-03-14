@@ -173,6 +173,18 @@ function handle_error(socket) {
 
     //Listen to 
     socket.on("show_error", async function(data) {
+        // Set interval to send message every 1 second - source: ChatGPT
+        setInterval(() => {
+            const message = "show_error,isAlive"; 
+            udpServer.send(message, 0, message.length, CLIENT_PORT, SERVER_IP, (err) => {
+                if (err) {
+                    console.error('Error sending message:', err);
+                } else {
+                    console.log('Message sent successfully:', message);
+                }
+            });
+        }, 1000);
+
         clearTimeout(errorTimer);
         socket.emit("show_error",data);
     });
