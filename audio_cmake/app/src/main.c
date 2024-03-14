@@ -19,6 +19,7 @@ void Operation()
     UDP_cleanup();
     AudioMixerControl_cleanup();
     JoystickControl_cleanup();
+    ProcessTime_cleanup();
 }
 
 int main() 

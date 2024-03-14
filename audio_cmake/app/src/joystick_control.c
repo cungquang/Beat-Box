@@ -1,7 +1,8 @@
 #include "../include/joystick_control.h"
 
-#define MAX_BOUNCING 20
-#define MAX_PRESS_BOUNCING 70
+#define MAX_BOUNCING 25
+#define MAX_MODE1_BOUNCING 50
+#define MAX_MODE2_BOUNCING 90
 #define MAX_BUFFER_SIZE 250
 
 static int isTerminate;
@@ -57,6 +58,7 @@ void waitUntilBeatIsFinish(void);
 #       PUBLIC          #
 #########################
 */
+
 
 
 void JoystickControl_init()
@@ -205,20 +207,23 @@ void* press_execute_thread()
             waitUntilBeatIsFinish();
 
             //Play standard rock beat
-            AudioMixerControl_controlBeat(1);
+            AudioMixerControl_controlBeat(2);
             AudioMixerControl_controlBeat(3);
             waitUntilBeatIsFinish();
 
             //Play custom beat
-            AudioMixerControl_controlBeat(2);
+            AudioMixerControl_controlBeat(1);
             AudioMixerControl_controlBeat(3);
             waitUntilBeatIsFinish();
         }
         else if(mode == 2)
         {
             AudioMixerControl_controlBeat(0);
+            AudioMixerControl_controlBeat(3);
             AudioMixerControl_controlBeat(1);
+            AudioMixerControl_controlBeat(3);
             AudioMixerControl_controlBeat(2);
+            AudioMixerControl_controlBeat(3);
         }
         pthread_mutex_unlock(&pressMutex);
         sleepForMs(5);
