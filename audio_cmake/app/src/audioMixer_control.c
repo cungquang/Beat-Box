@@ -158,6 +158,7 @@ void* addThemeToQueue_thread()
         {
             AudioMixer_CleanUpQueue();
             AudioMixer_CleanUpBuffer();
+            AudioMixerControl_controlBeat(3);
         }
         
     }
