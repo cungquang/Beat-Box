@@ -217,14 +217,14 @@ static void play_mode1(void)
     
     //Play standard rock beat
     playback_stdRockBeat();
-    sleepForMs(10*convertTempoIntoTime(AudioMixer_getTempo()));
+    sleepForMs(11*convertTempoIntoTime(AudioMixer_getTempo()));
     printf("finish standard beat\n");
 }
 
 static void play_mode2(void)
 {
     playback_stdRockBeat();
-    sleepForMs(10*convertTempoIntoTime(AudioMixer_getTempo()));
+    sleepForMs(11*convertTempoIntoTime(AudioMixer_getTempo()));
     printf("finish standard beat\n");
 
     playback_customBeats();
