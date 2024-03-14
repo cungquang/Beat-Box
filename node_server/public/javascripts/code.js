@@ -165,11 +165,10 @@ function decrease_volume() {
 
 function set_volume() {
     // Listen for response from server - volume_set
-    socket.on('volume_set'), function(request) {
-        console.log(request);
+    socket.on('volume_set', function(request) {
         const currVol = parseInt(request);
         $('#vol-text').val(currVol);
-    }
+    });
 }
 
 
