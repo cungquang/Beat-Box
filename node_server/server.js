@@ -50,7 +50,7 @@ udpServer.on('listening', () => {
     // Set interval to send message every 1 second - source: ChatGPT
     setInterval(() => {
         const message = "show_error,isAlive"; 
-        udpServer.send(message, 0, message.length, CLIENT_PORT, address.address, (err) => {
+        udpServer.send(message, 0, message.length, CLIENT_PORT, SERVER_IP, (err) => {
             if (err) {
                 console.error('Error sending message:', err);
             } else {

@@ -36,7 +36,7 @@ static void UDP_commandBeat(int value);
 static const char *UDP_commandVolume(const char* target);
 static const char *UDP_commandTempo(const char* target);
 static void UDP_commandDrum(int value);
-static const char * UDP_commandShowError(void);
+static void UDP_commandShowError(void);
 static void UDP_commandTerminate(int value);
 
 
@@ -264,11 +264,11 @@ static void UDP_commandDrum(int value)
     AudioMixerControl_addDrum(value);
 }
 
-static const char * UDP_commandShowError(void)
+static void UDP_commandShowError(void)
 {
     memset(tempBuffer, 0, sizeof(tempBuffer));
     snprintf(tempBuffer, sizeof(tempBuffer), "show_error,hide");
-    return tempBuffer;
+    UDP_sendToTarget(tempBuffer);
 }
 
 static void UDP_commandTerminate(int value)
