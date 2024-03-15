@@ -4,16 +4,21 @@
 #define BUFFER_SIZE 2
 #define RESOLUTION_12_BITS 4096
 #define SELECT_SCALE 2
+#define REPEAT_BOUNCE 5
 
 static int isTerminate = 0;
 
-const double THRESH_X = 20;
-const double THRESH_Y = 20;
-const double THRESH_Z = 20;
+static const double THRESH_X = 11.234;
+static const double THRESH_Y = 11.234;
+static const double THRESH_Z = 11.234;
+static int repeat_x = 0;
+static int repeat_y = 0;
+static int repeat_z = 0;
 
 uint8_t buff_x[BUFFER_SIZE];
 uint8_t buff_y[BUFFER_SIZE];
 uint8_t buff_z[BUFFER_SIZE];
+
 
 static int16_t xenH_prev;
 static int16_t yenH_prev;
@@ -49,8 +54,7 @@ void* I2cbus1readZenH_thread();
 int16_t I2cbus1_getRawData(int8_t rawL, int8_t rawH);
 float I2cbus1_calculateGForce(int16_t rawData);
 double I2cbus1_calculateAvg(long long count, double accSum, double prevAvg);
-int I2cbus1_triggerSound(double prevAvg, double prevRaw, double currAvg, double currRaw, double threshold);
-
+int I2cbus1_triggerSound(double prevAvg, double prevRaw, double currAvg, double currRaw, double threshold, int* repeat);
 
 
 /*
@@ -133,9 +137,12 @@ void* I2cbus1readXenH_thread()
         avg_x[1] = I2cbus1_calculateAvg(count_x, accSum_x, avg_x[0]);
         
         //Trigger sound
-        if(I2cbus1_triggerSound(avg_x[0], xenH_prev, avg_x[1], xenH_curr, THRESH_X))
+        I2cbus1_triggerSound(avg_x[0], xenH_prev, avg_x[1], xenH_curr, THRESH_X, &repeat_x);
+
+        if(repeat_x > REPEAT_BOUNCE)
         {
-            AudioMixerControl_addDrum(1);
+            AudioMixerControl_addDrum(2);
+            repeat_x = 0;
         }
 
         pthread_mutex_unlock(&xenH_mutex);
@@ -166,9 +173,12 @@ void* I2cbus1readYenH_thread()
         avg_y[1] = I2cbus1_calculateAvg(count_y, accSum_y, avg_y[0]);
 
         //Trigger the sound
-        if(I2cbus1_triggerSound(avg_y[0], yenH_prev, avg_y[1], yenH_curr, THRESH_Y))
+        I2cbus1_triggerSound(avg_y[0], yenH_prev, avg_y[1], yenH_curr, THRESH_Y, &repeat_y);
+
+        if(repeat_y > REPEAT_BOUNCE)
         {
-            AudioMixerControl_addDrum(1);
+            AudioMixerControl_addDrum(2);
+            repeat_y = 0;
         }
         
         pthread_mutex_unlock(&yenH_mutex);
@@ -198,9 +208,12 @@ void* I2cbus1readZenH_thread()
         avg_z[1] = I2cbus1_calculateAvg(count_z, accSum_z, avg_z[0]);
 
         //Trigger the sound
-        if(I2cbus1_triggerSound(avg_z[0], zenH_prev, avg_z[1] ,zenH_curr, THRESH_Z))
+        I2cbus1_triggerSound(avg_z[0], zenH_prev, avg_z[1] ,zenH_curr, THRESH_Z, &repeat_z);
+
+        if(repeat_x > REPEAT_BOUNCE)
         {
             AudioMixerControl_addDrum(2);
+            repeat_x = 0;
         }
         
         pthread_mutex_unlock(&zenH_mutex);
@@ -231,10 +244,11 @@ double I2cbus1_calculateAvg(long long count, double accSum, double prevAvg)
 }
 
 int I2cbus1_triggerSound(double prevAvg, double prevRaw, 
-    double currAvg, double currRaw, double threshold)
+    double currAvg, double currRaw, double threshold, int* repeat)
 {
     if((fabs(prevAvg - prevRaw) > threshold) && (fabs(currAvg - currRaw) > threshold))
     {
+        *repeat += 1;
         return 1;
     }
     return 0;
