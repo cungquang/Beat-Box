@@ -210,10 +210,10 @@ void* I2cbus1readZenH_thread()
         //Trigger the sound
         I2cbus1_triggerSound(avg_z[0], zenH_prev, avg_z[1] ,zenH_curr, THRESH_Z, &repeat_z);
 
-        if(repeat_x > REPEAT_BOUNCE)
+        if(repeat_z > REPEAT_BOUNCE)
         {
             AudioMixerControl_addDrum(2);
-            repeat_x = 0;
+            repeat_z = 0;
         }
         
         pthread_mutex_unlock(&zenH_mutex);
