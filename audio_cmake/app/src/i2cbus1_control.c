@@ -7,6 +7,10 @@
 
 static int isTerminate = 0;
 
+const double THRESH_X = 4.55;
+const double THRESH_Y = 4.55;
+const double THRESH_Z = 4.55;
+
 uint8_t buff_x[BUFFER_SIZE];
 uint8_t buff_y[BUFFER_SIZE];
 uint8_t buff_z[BUFFER_SIZE];
@@ -45,7 +49,7 @@ void* I2cbus1readZenH_thread();
 int16_t I2cbus1_getRawData(int8_t rawL, int8_t rawH);
 float I2cbus1_calculateGForce(int16_t rawData);
 double I2cbus1_calculateAvg(long long count, double accSum, double prevAvg);
-int I2cbus1_triggerSound(double prevAvg, double prevRaw, double currAvg, double currRaw);
+int I2cbus1_triggerSound(double prevAvg, double prevRaw, double currAvg, double currRaw, double threshold);
 
 
 
@@ -129,7 +133,7 @@ void* I2cbus1readXenH_thread()
         avg_x[1] = I2cbus1_calculateAvg(count_x, accSum_x, avg_x[0]);
         
         //Trigger sound
-        if(I2cbus1_triggerSound(avg_x[0], xenH_prev, avg_x[1], xenH_curr))
+        if(I2cbus1_triggerSound(avg_x[0], xenH_prev, avg_x[1], xenH_curr, THRESH_X))
         {
             AudioMixerControl_addDrum(1);
         }
@@ -162,7 +166,7 @@ void* I2cbus1readYenH_thread()
         avg_y[1] = I2cbus1_calculateAvg(count_y, accSum_y, avg_y[0]);
 
         //Trigger the sound
-        if(I2cbus1_triggerSound(avg_y[0], yenH_prev, avg_y[1], yenH_curr))
+        if(I2cbus1_triggerSound(avg_y[0], yenH_prev, avg_y[1], yenH_curr, THRESH_Y))
         {
             AudioMixerControl_addDrum(1);
         }
@@ -194,7 +198,7 @@ void* I2cbus1readZenH_thread()
         avg_z[1] = I2cbus1_calculateAvg(count_z, accSum_z, avg_z[0]);
 
         //Trigger the sound
-        if(I2cbus1_triggerSound(avg_z[0], zenH_prev, avg_z[1] ,zenH_curr))
+        if(I2cbus1_triggerSound(avg_z[0], zenH_prev, avg_z[1] ,zenH_curr, THRESH_Z))
         {
             AudioMixerControl_addDrum(2);
         }
@@ -226,9 +230,10 @@ double I2cbus1_calculateAvg(long long count, double accSum, double prevAvg)
     }
 }
 
-int I2cbus1_triggerSound(double prevAvg, double prevRaw, double currAvg, double currRaw)
+int I2cbus1_triggerSound(double prevAvg, double prevRaw, 
+    double currAvg, double currRaw, double threshold)
 {
-    if((fabs(prevAvg - prevRaw) > 4) && (fabs(currAvg - currRaw) > 4))
+    if((fabs(prevAvg - prevRaw) > threshold) && (fabs(currAvg - currRaw) > threshold))
     {
         return 1;
     }
