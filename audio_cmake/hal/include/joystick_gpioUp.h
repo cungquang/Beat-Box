@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/hal_helper.h"
+#include "../../app/include/audioMixer_helper.h"
 
 int isExported_gpioUp();
 void configure_gpioUp();

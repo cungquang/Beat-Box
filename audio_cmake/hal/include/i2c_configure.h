@@ -10,7 +10,7 @@
 #include <sys/ioctl.h>
 #include <linux/i2c.h>
 #include <linux/i2c-dev.h>
-#include "./hal_helper.h"
+#include "../../app/include/audioMixer_helper.h"
 
 //Configure pin 17 & 18
 void initI2c_p917(void);

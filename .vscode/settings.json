@@ -16,6 +16,7 @@
         "fcntl.h": "c",
         "joystick_gpioleft.h": "c",
         "joystick_gpiodown.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "i2c_configure.h": "c"
     }
 }
