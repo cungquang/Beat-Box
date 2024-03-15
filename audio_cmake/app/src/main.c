@@ -25,27 +25,26 @@ void Operation()
 
 int main() 
 {
-    //Operation(); 00100111
+    unsigned char test;
     //readFromProcessUptime();
     I2cbus1_init();
-    //I2cbus1Write_Reg1(0x27);
-    // unsigned char test = I2cbus1Read_Reg1();
-    // printf(": %d ---> %hhu\n", I2c1FileDesc_get(), test);
+    I2cbus1Write_Reg1(0x27);
 
-    // test = I2cbus1Read_OutXL();
-    // printf("OUT_X_L: %d ---> %hhu\n", I2c1FileDesc_get(), test);
-    // test = I2cbus1Read_OutXH();
-    // printf("OUT_X_H: %d ---> %hhu\n", I2c1FileDesc_get(), test);
+    test = I2cbus1Read_OutXH();
+    printf("OUT_X_H: %d ---> %hhu\n", I2c1FileDesc_get(), test);
+    test = I2cbus1Read_OutYH();
+    printf("OUT_Y_H: %d ---> %hhu\n", I2c1FileDesc_get(), test);
+    test = I2cbus1Read_OutZH();
+    printf("OUT_Z_H: %d ---> %hhu\n", I2c1FileDesc_get(), test);
 
-    // test = I2cbus1Read_OutYL();
-    // printf("OUT_Y_L: %d ---> %hhu\n", I2c1FileDesc_get(), test);
-    // test = I2cbus1Read_OutYH();
-    // printf("OUT_Y_H: %d ---> %hhu\n", I2c1FileDesc_get(), test);
+    printf("-------------------------------------\n");
 
-    // test = I2cbus1Read_OutZL();
-    // printf("OUT_Z_L: %d ---> %hhu\n", I2c1FileDesc_get(), test);
-    // test = I2cbus1Read_OutZH();
-    // printf("OUT_Z_H: %d ---> %hhu\n", I2c1FileDesc_get(), test);
+    test = I2cbus1Read_OutXL();
+    printf("OUT_X_L: %d ---> %hhu\n", I2c1FileDesc_get(), test);
+    test = I2cbus1Read_OutYL();
+    printf("OUT_Y_L: %d ---> %hhu\n", I2c1FileDesc_get(), test);
+    test = I2cbus1Read_OutZL();
+    printf("OUT_Z_L: %d ---> %hhu\n", I2c1FileDesc_get(), test);
 
     return 0;
 }
