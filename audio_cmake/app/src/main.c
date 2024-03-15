@@ -13,8 +13,8 @@ void Operation()
     ProcessTime_init();
     I2cbus1Control_init();
 
-    I2cbus1Control_join();
     ProcessTime_join();
+    I2cbus1Control_join();
     JoystickControl_join();
     AudioMixerControl_join();
     UDP_join();

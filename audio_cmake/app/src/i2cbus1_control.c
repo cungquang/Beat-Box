@@ -7,9 +7,9 @@
 
 static int isTerminate = 0;
 
-const double THRESH_X = 4.55;
-const double THRESH_Y = 4.55;
-const double THRESH_Z = 4.55;
+const double THRESH_X = 20;
+const double THRESH_Y = 20;
+const double THRESH_Z = 20;
 
 uint8_t buff_x[BUFFER_SIZE];
 uint8_t buff_y[BUFFER_SIZE];
