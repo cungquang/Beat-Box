@@ -87,3 +87,23 @@ void writeToFile(char * fileName)
     fclose(pFile);
     // Call nanosleep() to sleep for ~300ms before use.
 }
+
+
+//Source: ChatGPT
+void trimString(char* input)
+{
+    char *start = input;
+    char *end = input + strlen(input) - 1;
+
+    while(end > start && isspace(*end)) {
+        end--;
+    }
+
+    //set to null
+    *(end + 1) = '\0';
+
+    // Shift the non-trailing space to the head of the string (remove leading trailing)
+    if (start != input) {
+        memmove(input, start, end - start + 2);
+    }
+}

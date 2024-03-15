@@ -8,7 +8,7 @@
 #define CONFIGURE_PIN_18 "config-pin p9_18 i2c > /dev/null"
 #define CONFIGURE_PIN_17 "config-pin p9_17 i2c > /dev/null"
 
-static char *buffer[MAX_BUFFER_SIZE];
+static char buffer[MAX_BUFFER_SIZE];
 
 
 void initI2c_p917(void)
@@ -25,6 +25,8 @@ int isI2cConfigure_p917()
 {
     memset(buffer, 0, sizeof(buffer));
     readFromFileToBuffer(P9_17_STATE_PATH, buffer, sizeof(buffer));
+    trimString(buffer);
+    printf("i2c vs %s -> %d \n", buffer, strcmp(buffer, "i2c") );
     if(strcmp(buffer, "i2c") == 0)
     {
         return 1;
@@ -36,6 +38,7 @@ int isI2cConfigure_p918()
 {
     memset(buffer, 0, sizeof(buffer));
     readFromFileToBuffer(P9_18_STATE_PATH, buffer, sizeof(buffer));
+    printf("i2c P9_18 --> %s <--> %d \n", buffer, strcmp("i2c", buffer));
     if(strcmp(buffer, "i2c") == 0)
     {
         return 1;

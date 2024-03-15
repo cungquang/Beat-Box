@@ -25,13 +25,15 @@ void I2cbus1_init()
     i2c1_FileDesc = initI2cBus(I2CDRV_LINUX_BUS1, I2C_DEVICE_ADDRESS);
 
     //Configure pin
-    if(!isI2cConfigure_p917())
+    printf("test value --> %d\n",isI2cConfigure_p917());
+    if(isI2cConfigure_p917())
     {
         initI2c_p917();
         printf("Not yet configure p917\n");
     }
 
-    if(!isI2cConfigure_p918())
+    printf("test value --> %d\n",isI2cConfigure_p918());
+    if(isI2cConfigure_p918())
     {
         initI2c_p918();
         printf("Not yet configure p918\n");
