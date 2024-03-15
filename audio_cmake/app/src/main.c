@@ -29,6 +29,6 @@ void Operation()
 
 int main() 
 {
-
+    Operation();
     return 0;
 }
