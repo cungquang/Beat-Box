@@ -25,6 +25,9 @@ static void splitTimeToParts(char *input, char *intoParts[]);
 void* processUpTime_thread();
 void isAliveMessage(void);
 void readFromProcessUptime(void);
+void get_currentMode(void);
+void get_currentVolume(void);
+void get_currentTempo(void);
 void getStats_refillBuffer(void);
 void getStats_accelerometer(void);
 
@@ -71,20 +74,37 @@ void ProcessTime_cleanup(void)
 #############################
 */
 
-void getCurrentMode(void) 
+
+/////////////////////////////// GETTER /////////////////////////////// 
+
+
+static void get_currentMode(void) 
 {
     curr_mode = AudioMixerControl_getMode();   
 }
 
-void getStats_refillBuffer(void)
+static void get_currentVolume(void)
+{
+    curr_volume = AudioMixerControl_getVolume();
+}
+
+static void get_currentTempo(void)
+{
+    curr_tempo = AudioMixerControl_getTempo();
+}
+
+static void getStats_refillBuffer(void)
 {
     AudioMixerControl_getStats(&stats_refillBuffer[0], &stats_refillBuffer[1], &stats_refillBuffer[2]);
 }
 
-void getStats_accelerometer(void)
+static void getStats_accelerometer(void)
 {
     I2cbusControl_getStats(&stats_accelerometer[0], &stats_accelerometer[1], &stats_accelerometer[2]);
 }
+
+
+/////////////////////////////// MAJOR OPERATION ///////////////////////////////
 
 
 void* processUpTime_thread(void)
@@ -103,6 +123,10 @@ void* processUpTime_thread(void)
 
     return NULL;
 }
+
+
+/////////////////////////////// SUPPORT ///////////////////////////////
+
 
 void isAliveMessage(void)
 {
@@ -140,5 +164,18 @@ static void splitTimeToParts(char *input, char *intoParts[])
         token = strtok(NULL, " ");
         partNum++;
     }
+}
+
+
+static void serverTextDisplay() {
+    get_currentMode();
+    get_currentTempo();
+    get_currentVolume();
+    getStats_accelerometer();
+    getStats_refillBuffer();
+
+    printf("M%d\t %dBpm\t vol%d\t Audio[%.3f, %.3f] avg %.3f\t Accel[%.3f, %.3f] avg %.3f\n", curr_mode, curr_tempo, curr_volume,
+        stats_refillBuffer[0], stats_refillBuffer[1], stats_refillBuffer[2], 
+        stats_accelerometer[0], stats_accelerometer[1], stats_accelerometer[2]);
 }
 

@@ -19,6 +19,7 @@ static int isTerminate;
 static double minPeriod_refill;
 static double maxPeriod_refill;
 static double avgPeriod_refill;
+static double countPeriod_refill;
 
 //Wave file
 static wavedata_t stdBeat[MAX_STD_BEAT];
@@ -177,7 +178,7 @@ void AudioMixerControl_getStats(double *minPeriod, double *maxPeriod, double *av
 
 void setStats_audioMixerTemplate(void) 
 {
-    AudioMixer_getStats(&minPeriod_refill, &maxPeriod_refill, &avgPeriod_refill);
+    AudioMixer_getStats(&minPeriod_refill, &maxPeriod_refill, &avgPeriod_refill, &countPeriod_refill);
 }
 
 void* addThemeToQueue_thread()

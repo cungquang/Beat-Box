@@ -34,6 +34,6 @@ int AudioMixerControl_getTempo();
 void AudioMixerControl_addDrum(int soundIndex);
 
 //Get statistic data
-void AudioMixerControl_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod);
+void AudioMixerControl_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod, long long );
 
 #endif
