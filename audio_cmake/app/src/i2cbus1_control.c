@@ -4,15 +4,15 @@
 #define BUFFER_SIZE 2
 #define RESOLUTION_12_BITS 4096
 #define SELECT_SCALE 2
-#define REPEAT_BOUNCE_X 1
+#define REPEAT_BOUNCE_X 2
 #define REPEAT_BOUNCE_Y 2
 #define REPEAT_BOUNCE_Z 10
 
 static int isTerminate = 0;
 
-static const double THRESH_X = 11.234;
-static const double THRESH_Y = 11.234;
-static const double THRESH_Z = 11.234;
+static const double THRESH_X = 3.3;
+static const double THRESH_Y = 2.12;
+static const double THRESH_Z = 16.2;
 static int repeat_x = 0;
 static int repeat_y = 0;
 static int repeat_z = 0;
@@ -139,10 +139,11 @@ void* I2cbus1readXenH_thread()
         
         //Trigger sound
         I2cbus1_triggerSound(avg_x[0], xenH_prev, avg_x[1], xenH_curr, THRESH_X, &repeat_x);
+        printf("Out_x: repeat-%d ; raw-%d ; %f\n", repeat_x, xenH_curr, avg_x[0]);
 
         if(repeat_x > REPEAT_BOUNCE_X)
         {
-            AudioMixerControl_addDrum(2);
+            AudioMixerControl_addDrum(0);
             repeat_x = 0;
         }
 
@@ -175,10 +176,11 @@ void* I2cbus1readYenH_thread()
 
         //Trigger the sound
         I2cbus1_triggerSound(avg_y[0], yenH_prev, avg_y[1], yenH_curr, THRESH_Y, &repeat_y);
+        printf("Out_y: repeat-%d ; raw-%d ; %f\n", repeat_y, yenH_curr, avg_y[0]);
 
         if(repeat_y > REPEAT_BOUNCE_Y)
         {
-            AudioMixerControl_addDrum(2);
+            AudioMixerControl_addDrum(1);
             repeat_y = 0;
         }
         
@@ -210,9 +212,10 @@ void* I2cbus1readZenH_thread()
 
         //Trigger the sound
         I2cbus1_triggerSound(avg_z[0], zenH_prev, avg_z[1] ,zenH_curr, THRESH_Z, &repeat_z);
+        printf("Out_z: repeat-%d ; raw-%d ; %f\n", repeat_z, zenH_curr, avg_z[0]);
 
         if(repeat_z > REPEAT_BOUNCE_Z)
-        {
+        {   
             AudioMixerControl_addDrum(2);
             repeat_z = 0;
         }
@@ -247,7 +250,7 @@ double I2cbus1_calculateAvg(long long count, double accSum, double prevAvg)
 int I2cbus1_triggerSound(double prevAvg, double prevRaw, 
     double currAvg, double currRaw, double threshold, int* repeat)
 {
-    if((fabs(prevAvg - prevRaw) > threshold) && (fabs(currAvg - currRaw) > threshold))
+    if((prevAvg - prevRaw > threshold) && (currAvg - currRaw > threshold))
     {
         *repeat += 1;
         return 1;
