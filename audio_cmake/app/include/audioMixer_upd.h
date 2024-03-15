@@ -12,6 +12,7 @@
 #include "./audioMixer_control.h"
 #include "../include/joystick_control.h"
 #include "../include/processTime_control.h"
+#include "../include/i2cbus1_control.h"
 
 // This module manages UDP server (application level)
 // - Initiate the thread to run server - allow user to remotely control the program

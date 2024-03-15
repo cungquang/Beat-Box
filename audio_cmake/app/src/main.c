@@ -3,6 +3,7 @@
 #include "../include/joystick_control.h"
 #include "../include/processTime_control.h"
 #include "../../hal/include/register_configure.h"
+#include "../include/i2cbus1_control.h"
 
 void Operation() 
 {
@@ -23,7 +24,7 @@ void Operation()
     ProcessTime_cleanup();
 }
 
-int main() 
+void test()
 {
     unsigned char test;
     //readFromProcessUptime();
@@ -46,5 +47,15 @@ int main()
     test = I2cbus1Read_OutZL();
     printf("OUT_Z_L: %d ---> %hhu\n", I2c1FileDesc_get(), test);
 
+}
+
+int main() 
+{
+    UDP_initServer();
+    I2cbus1Control_init();
+
+    I2cbus1Control_join();
+    UDP_join();
+    UDP_cleanup();
     return 0;
 }

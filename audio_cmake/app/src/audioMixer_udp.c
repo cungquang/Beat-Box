@@ -277,6 +277,7 @@ static void UDP_commandTerminate(int value)
     JoystickControl_terminate();
     AudioMixerControl_terminate();
     ProcessTime_terminate();
+    I2cbusControl_terminate();
 }
 
 
