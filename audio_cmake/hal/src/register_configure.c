@@ -17,6 +17,13 @@
 static int i2c1_FileDesc;
 
 
+/*
+#########################
+#        PUBLIC         #
+#########################
+*/
+
+
 ////////////////////////// INIT OPERATION //////////////////////////
 
 void I2cbus1_init()
@@ -146,3 +153,10 @@ unsigned char I2cbus1Read_OutZH()
     //Read from reg1
     return readI2cReg(i2c1_FileDesc, REG_OUT_Z_H);
 }
+
+
+/*
+#########################
+#       PRIVATE         #
+#########################
+*/
