@@ -96,18 +96,6 @@ int convertTempoIntoTime(int tempo)
     return (int)timeToSleep;
 }
 
-
-double exponentialSmoothAvg(double current_avg, double previous_avg)
-{
-    return current_avg*weighted + previous_avg*(1-weighted);
-}
-
-
-double regularAvg(long current_size, double current_sum) 
-{
-    return current_sum/current_size;
-}
-
 //Source: ChatGPT
 void trimString(char* input)
 {
@@ -125,4 +113,14 @@ void trimString(char* input)
     if (start != input) {
         memmove(input, start, end - start + 2);
     }
+}
+
+double exponentialAvg(double current_avg, double previous_avg)
+{
+    return current_avg*weighted + previous_avg*(1-weighted);
+}
+
+double regularAvg(long current_size, double current_sum) 
+{
+    return current_sum/current_size;
 }

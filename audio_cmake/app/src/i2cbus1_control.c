@@ -1,12 +1,19 @@
 #include "../include/i2cbus1_control.h"
 
 #define TRIGGER_BIT 0x27
+#define BUFFER_SIZE 2
+#define RESOLUTION_12_BITS 4096
+#define SELECT_SCALE 2
 
 static int isTerminate = 0;
 
-static int xenH_value;
-static int yenH_value;
-static int zenH_value;
+uint8_t buff_x[BUFFER_SIZE];
+uint8_t buff_y[BUFFER_SIZE];
+uint8_t buff_z[BUFFER_SIZE];
+
+static int16_t xenH_value;
+static int16_t yenH_value;
+static int16_t zenH_value;
 
 static pthread_t i2cbus1XenH_id;
 static pthread_t i2cbus1YenH_id;
@@ -21,6 +28,8 @@ static pthread_t i2cbus1ZenH_id;
 void* I2cbus1readXenH_thread();
 void* I2cbus1readYenH_thread();
 void* I2cbus1readZenH_thread();
+int16_t I2cbus1_getRawData(int8_t rawL, int8_t rawH);
+float I2cbus1_calculateGForce(int16_t rawData);
 
 
 
@@ -83,8 +92,10 @@ void* I2cbus1readXenH_thread()
 {
     while(!isTerminate)
     {
-        xenH_value = I2cbus1Read_OutXH();
-        printf("OUT_X_H: %d ---> %hhu\n", I2c1FileDesc_get(), xenH_value);
+        buff_x[0] = I2cbus1Read_OutXL();
+        buff_x[1] = I2cbus1Read_OutXH();
+        xenH_value = I2cbus1_calculateGForce(I2cbus1_getRawData(buff_x[0], buff_x[1]));
+        printf("OUT_X_H ---> %d\n", xenH_value);
     }
 
     return NULL;
@@ -95,8 +106,10 @@ void* I2cbus1readYenH_thread()
 {
     while(!isTerminate)
     {
-        yenH_value = I2cbus1Read_OutXH();
-        printf("OUT_Y_H: %d ---> %hhu\n", I2c1FileDesc_get(), yenH_value);
+        buff_y[0] = I2cbus1Read_OutYL();
+        buff_y[1] = I2cbus1Read_OutYH();
+        yenH_value = I2cbus1_calculateGForce(I2cbus1_getRawData(buff_y[0], buff_y[1]));
+        printf("OUT_Y_H---> %d\n", yenH_value);
     }
 
     return NULL;
@@ -106,20 +119,21 @@ void* I2cbus1readZenH_thread()
 {
     while(!isTerminate)
     {
-        zenH_value = I2cbus1Read_OutXH();
-        printf("OUT_Z_H: %d ---> %hhu\n", I2c1FileDesc_get(), zenH_value);
+        buff_z[0] = I2cbus1Read_OutZL();
+        buff_z[1] = I2cbus1Read_OutZH();
+        zenH_value = I2cbus1_calculateGForce(I2cbus1_getRawData(buff_z[0], buff_z[1]));
+        printf("OUT_Y_H---> %d\n", zenH_value);
     }
 
     return NULL;
 }
 
-void I2cbus1_calculateSampleAvg()
+int16_t I2cbus1_getRawData(int8_t rawL, int8_t rawH)
 {
-    //Update previous average - this is overall average - not tight to the batch
-    if(count == 1){
-        current_avg = calculateSimpleAvg(count, accumulate_sum);
-    }
-    else{
-        current_avg = exponentSmoothAvg(calculateSimpleAvg(count, accumulate_sum), previous_avg);   
-    }
+    return (rawH << 8) | (rawL);
+}
+
+float I2cbus1_calculateGForce(int16_t rawData)
+{
+    return (float)rawData * SELECT_SCALE/RESOLUTION_12_BITS;
 }
