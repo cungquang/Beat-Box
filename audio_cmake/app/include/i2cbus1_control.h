@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <pthread.h>
 #include "./audioMixer_helper.h"
+#include "./audioMixer_control.h"
 #include "../../hal/include/register_configure.h"
 
 void I2cbus1Control_init(void);
