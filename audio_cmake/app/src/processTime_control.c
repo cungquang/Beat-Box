@@ -6,6 +6,13 @@
 
 #define PROC_UPTIME_PATH "/proc/uptime"
 
+//Statistic
+static double stats_refillBuffer[3];
+static double stats_accelerometer[3];
+static int curr_mode;
+static int curr_tempo;
+static int curr_volume;
+
 static int isTerminate;
 static char buffer[MAX_BUFFER_SIZE];
 static char* timeToParts[MAX_TIME_PARTS];
@@ -18,6 +25,8 @@ static void splitTimeToParts(char *input, char *intoParts[]);
 void* processUpTime_thread();
 void isAliveMessage(void);
 void readFromProcessUptime(void);
+void getStats_refillBuffer(void);
+void getStats_accelerometer(void);
 
 
 /*
@@ -61,6 +70,21 @@ void ProcessTime_cleanup(void)
 #          PRIVATE          #
 #############################
 */
+
+void getCurrentMode(void) 
+{
+    curr_mode = AudioMixerControl_getMode();   
+}
+
+void getStats_refillBuffer(void)
+{
+    AudioMixerControl_getStats(&stats_refillBuffer[0], &stats_refillBuffer[1], &stats_refillBuffer[2]);
+}
+
+void getStats_accelerometer(void)
+{
+    I2cbusControl_getStats(&stats_accelerometer[0], &stats_accelerometer[1], &stats_accelerometer[2]);
+}
 
 
 void* processUpTime_thread(void)

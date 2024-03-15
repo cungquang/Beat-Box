@@ -17,7 +17,10 @@ void AudioMixerControl_terminate();
 //Beat control - Select or unselect beats
 void AudioMixerControl_controlBeat(int beatIndex);
 int AudioMixerControl_hasSound(void);
+
+//Mode control
 void AudioMixerControl_setMode(int newMode);
+int AudioMixerControl_getMode(void);
 
 //Volume control
 void AudioMixerControl_setVolume(int newVolume);
@@ -29,5 +32,8 @@ int AudioMixerControl_getTempo();
 
 //Drum control - add drum to queue
 void AudioMixerControl_addDrum(int soundIndex);
+
+//Get statistic data
+void AudioMixerControl_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod);
 
 #endif

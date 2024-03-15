@@ -15,5 +15,6 @@ void I2cbus1Control_init(void);
 void I2cbus1Control_join(void);
 void I2cbus1Control_cleanup(void);
 void I2cbusControl_terminate(void);
+void I2cbusControl_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod);
 
 #endif

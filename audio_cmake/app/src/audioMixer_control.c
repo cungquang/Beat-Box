@@ -15,6 +15,11 @@
 //Manage operation
 static int isTerminate;
 
+//Stats data
+static double minPeriod_refill;
+static double maxPeriod_refill;
+static double avgPeriod_refill;
+
 //Wave file
 static wavedata_t stdBeat[MAX_STD_BEAT];
 static wavedata_t accBeat[MAX_STD_BEAT];
@@ -142,11 +147,38 @@ void AudioMixerControl_setMode(int newMode)
     pthread_mutex_unlock(&modeMutex);
 }
 
+
+int AudioMixerControl_getMode(void)
+{
+    pthread_mutex_lock(&modeMutex);
+    int tempMode = mode;
+    pthread_mutex_unlock(&modeMutex);
+
+    return tempMode;
+}
+
+
+/////////////////// Get Statistic ///////////////////
+
+
+void AudioMixerControl_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod)
+{
+    *minPeriod = minPeriod_refill;
+    *maxPeriod = maxPeriod_refill;
+    *avgPeriod = avgPeriod_refill;
+}
+
 /*
 #########################
 #       PRIVATE         #
 #########################
 */
+
+
+void setStats_audioMixerTemplate(void) 
+{
+    AudioMixer_getStats(&minPeriod_refill, &maxPeriod_refill, &avgPeriod_refill);
+}
 
 void* addThemeToQueue_thread()
 {
