@@ -56,6 +56,8 @@ int main()
 
     I2cbus1Control_join();
     UDP_join();
+
     UDP_cleanup();
+
     return 0;
 }

@@ -1,5 +1,6 @@
 #include "../include/audioMixer_helper.h"
 
+static double weighted = 0.001;
 
 void runCommand(char* command)
 {
@@ -93,6 +94,18 @@ int convertTempoIntoTime(int tempo)
 {
     float timeToSleep = ((60.0f / tempo) / 2.0f) * 1000.0f;
     return (int)timeToSleep;
+}
+
+
+double exponentialSmoothAvg(double current_avg, double previous_avg)
+{
+    return current_avg*weighted + previous_avg*(1-weighted);
+}
+
+
+double regularAvg(long current_size, double current_sum) 
+{
+    return current_sum/current_size;
 }
 
 //Source: ChatGPT

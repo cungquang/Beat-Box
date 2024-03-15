@@ -16,6 +16,8 @@ void readFromFileToBuffer(char *fileName, char *buff, int maxLength);
 void writeToFile(char * fileName);
 int folderExists(const char *folderPath);
 int convertTempoIntoTime(int tempo);
+double exponentialSmoothAvg(double current_avg, double previous_avg);
+double regularAvg(long current_size, double current_sum);
 void trimString(char* input);
 
 #endif

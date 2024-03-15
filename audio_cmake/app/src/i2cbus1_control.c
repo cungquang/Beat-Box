@@ -32,8 +32,9 @@ void* I2cbus1readZenH_thread();
 
 void I2cbus1Control_init(void)
 {
-    I2cbus1Control_init();
+    I2cbus1_init();
     I2cbus1Write_Reg1(TRIGGER_BIT);
+
     if(I2cbus1Read_Reg1() != TRIGGER_BIT) 
     {
         printf("ERROR: fail to switch power mode and enable sensor.\n");
@@ -110,4 +111,15 @@ void* I2cbus1readZenH_thread()
     }
 
     return NULL;
+}
+
+void I2cbus1_calculateSampleAvg()
+{
+    //Update previous average - this is overall average - not tight to the batch
+    if(count == 1){
+        current_avg = calculateSimpleAvg(count, accumulate_sum);
+    }
+    else{
+        current_avg = exponentSmoothAvg(calculateSimpleAvg(count, accumulate_sum), previous_avg);   
+    }
 }
