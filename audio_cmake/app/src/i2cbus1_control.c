@@ -5,8 +5,8 @@
 #define RESOLUTION_12_BITS 4096
 #define SELECT_SCALE 2
 #define REPEAT_BOUNCE_X 2
-#define REPEAT_BOUNCE_Y 2
-#define REPEAT_BOUNCE_Z 10
+#define REPEAT_BOUNCE_Y 1
+#define REPEAT_BOUNCE_Z 20
 
 static int isTerminate = 0;
 
@@ -66,6 +66,7 @@ int I2cbus1_triggerSound(double prevAvg, double prevRaw, double currAvg, double 
 
 void I2cbus1Control_init(void)
 {
+    printf("%f----%f----%f", THRESH_Z, THRESH_Y, THRESH_X);
     I2cbus1_init();
     I2cbus1Write_Reg1(TRIGGER_BIT);
 
@@ -143,7 +144,7 @@ void* I2cbus1readXenH_thread()
 
         if(repeat_x > REPEAT_BOUNCE_X)
         {
-            AudioMixerControl_addDrum(0);
+            AudioMixerControl_addDrum(2);
             repeat_x = 0;
         }
 
@@ -216,7 +217,7 @@ void* I2cbus1readZenH_thread()
 
         if(repeat_z > REPEAT_BOUNCE_Z)
         {   
-            AudioMixerControl_addDrum(2);
+            AudioMixerControl_addDrum(0);
             repeat_z = 0;
         }
         
@@ -250,6 +251,7 @@ double I2cbus1_calculateAvg(long long count, double accSum, double prevAvg)
 int I2cbus1_triggerSound(double prevAvg, double prevRaw, 
     double currAvg, double currRaw, double threshold, int* repeat)
 {
+    
     if((prevAvg - prevRaw > threshold) && (currAvg - currRaw > threshold))
     {
         *repeat += 1;
