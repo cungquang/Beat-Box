@@ -26,7 +26,6 @@ int isI2cConfigure_p917()
     memset(buffer, 0, sizeof(buffer));
     readFromFileToBuffer(P9_17_STATE_PATH, buffer, sizeof(buffer));
     trimString(buffer);
-    printf("i2c vs %s -> %d \n", buffer, strcmp(buffer, "i2c") );
     if(strcmp(buffer, "i2c") == 0)
     {
         return 1;
@@ -38,7 +37,7 @@ int isI2cConfigure_p918()
 {
     memset(buffer, 0, sizeof(buffer));
     readFromFileToBuffer(P9_18_STATE_PATH, buffer, sizeof(buffer));
-    printf("i2c P9_18 --> %s <--> %d \n", buffer, strcmp("i2c", buffer));
+    trimString(buffer);
     if(strcmp(buffer, "i2c") == 0)
     {
         return 1;
