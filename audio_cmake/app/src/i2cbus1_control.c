@@ -4,15 +4,25 @@
 #define BUFFER_SIZE 2
 #define RESOLUTION_12_BITS 4096
 #define SELECT_SCALE 2
-#define REPEAT_BOUNCE_X 2
-#define REPEAT_BOUNCE_Y 1
-#define REPEAT_BOUNCE_Z 20
+#define REPEAT_BOUNCE_X 8      // X - base
+#define REPEAT_BOUNCE_Y 8      // Y - snare
+#define REPEAT_BOUNCE_Z 2      // Z - hit 
 
+//Operation
 static int isTerminate = 0;
 
-static const double THRESH_X = 3.3;
-static const double THRESH_Y = 2.12;
-static const double THRESH_Z = 16.2;
+static Period_statistics_t stats;
+static double min_period = 0;
+static double max_period = 0;
+static double avg_period = 0;
+
+
+static const double THRESH_PREV_X = 0.3;
+static const double THRESH_CURR_X = 11.2;
+static const double THRESH_PREV_Y = 0.3;
+static const double THRESH_CURR_Y = 18.23;
+static const double THRESH_PREV_Z = 0.7;
+static const double THRESH_CURR_Z = 4.123;
 static int repeat_x = 0;
 static int repeat_y = 0;
 static int repeat_z = 0;
@@ -38,7 +48,6 @@ static double avg_x[BUFFER_SIZE];
 static double avg_y[BUFFER_SIZE];
 static double avg_z[BUFFER_SIZE];
 
-
 static pthread_t i2cbus1XenH_id;
 static pthread_t i2cbus1YenH_id;
 static pthread_t i2cbus1ZenH_id;
@@ -55,8 +64,8 @@ void* I2cbus1readZenH_thread();
 int16_t I2cbus1_getRawData(int8_t rawL, int8_t rawH);
 float I2cbus1_calculateGForce(int16_t rawData);
 double I2cbus1_calculateAvg(long long count, double accSum, double prevAvg);
-int I2cbus1_triggerSound(double prevAvg, double prevRaw, double currAvg, double currRaw, double threshold, int* repeat);
-
+int I2cbus1_triggerSound(double prevAvg, double prevRaw, 
+    double currAvg, double currRaw, double prevThresh, double currThresh, int* repeat);
 
 /*
 #########################
@@ -66,9 +75,12 @@ int I2cbus1_triggerSound(double prevAvg, double prevRaw, double currAvg, double 
 
 void I2cbus1Control_init(void)
 {
-    printf("%f----%f----%f", THRESH_Z, THRESH_Y, THRESH_X);
+    //Configure bus & register
     I2cbus1_init();
     I2cbus1Write_Reg1(TRIGGER_BIT);
+
+    //Initiate Period Timer
+    Period_init();
 
     if(I2cbus1Read_Reg1() != TRIGGER_BIT) 
     {
@@ -76,19 +88,29 @@ void I2cbus1Control_init(void)
         exit(EXIT_FAILURE);
     }
 
+    pthread_create(&i2cbus1ZenH_id, NULL, I2cbus1readZenH_thread, NULL);
+}
+
+void triggerX()
+{
     //Initiate pthread
     pthread_create(&i2cbus1XenH_id, NULL, I2cbus1readXenH_thread, NULL);
+}
 
+void triggerY()
+{
     pthread_create(&i2cbus1YenH_id, NULL, I2cbus1readYenH_thread, NULL);
+}
 
+void triggerZ()
+{
     pthread_create(&i2cbus1ZenH_id, NULL, I2cbus1readZenH_thread, NULL);
-
 }
 
 void I2cbus1Control_join(void)
 {
-    pthread_join(i2cbus1XenH_id, NULL);
-    pthread_join(i2cbus1YenH_id, NULL);
+    //pthread_join(i2cbus1XenH_id, NULL);
+    //pthread_join(i2cbus1YenH_id, NULL);
     pthread_join(i2cbus1ZenH_id, NULL);
 }
 
@@ -101,12 +123,26 @@ void I2cbus1Control_cleanup(void)
     xenH_curr = 0;
     yenH_curr = 0;
     zenH_curr = 0;
+
+    //Delete or clean period
+    Period_cleanup();
     
 }
 
 void I2cbusControl_terminate(void)
 {
     isTerminate = 1;
+}
+
+void I2cbusControl_getStats(void)
+{
+    //Reset & get statistic
+    Period_getStatisticsAndClear(PERIOD_ACCELEROMETER, &stats);
+
+    //get value
+    min_period = stats.minPeriodInMs;
+    max_period = stats.maxPeriodInMs;
+    avg_period = stats.avgPeriodInMs;
 }
 
 
@@ -125,6 +161,9 @@ void* I2cbus1readXenH_thread()
         pthread_mutex_lock(&xenH_mutex);
         xenH_prev = xenH_curr;
 
+        //Mark statistic event
+        Period_markEvent(PERIOD_ACCELEROMETER);
+
         //Convert raw to G force value
         buff_x[0] = I2cbus1Read_OutXL();
         buff_x[1] = I2cbus1Read_OutXH();
@@ -139,12 +178,12 @@ void* I2cbus1readXenH_thread()
         avg_x[1] = I2cbus1_calculateAvg(count_x, accSum_x, avg_x[0]);
         
         //Trigger sound
-        I2cbus1_triggerSound(avg_x[0], xenH_prev, avg_x[1], xenH_curr, THRESH_X, &repeat_x);
+        I2cbus1_triggerSound(avg_x[0], xenH_prev, avg_x[1], xenH_curr, THRESH_PREV_X, THRESH_CURR_X, &repeat_x);
         printf("Out_x: repeat-%d ; raw-%d ; %f\n", repeat_x, xenH_curr, avg_x[0]);
 
         if(repeat_x > REPEAT_BOUNCE_X)
         {
-            AudioMixerControl_addDrum(2);
+            AudioMixerControl_addDrum(0);
             repeat_x = 0;
         }
 
@@ -176,7 +215,7 @@ void* I2cbus1readYenH_thread()
         avg_y[1] = I2cbus1_calculateAvg(count_y, accSum_y, avg_y[0]);
 
         //Trigger the sound
-        I2cbus1_triggerSound(avg_y[0], yenH_prev, avg_y[1], yenH_curr, THRESH_Y, &repeat_y);
+        I2cbus1_triggerSound(avg_y[0], yenH_prev, avg_y[1], yenH_curr, THRESH_PREV_Y, THRESH_CURR_Y, &repeat_y);
         printf("Out_y: repeat-%d ; raw-%d ; %f\n", repeat_y, yenH_curr, avg_y[0]);
 
         if(repeat_y > REPEAT_BOUNCE_Y)
@@ -212,12 +251,12 @@ void* I2cbus1readZenH_thread()
         avg_z[1] = I2cbus1_calculateAvg(count_z, accSum_z, avg_z[0]);
 
         //Trigger the sound
-        I2cbus1_triggerSound(avg_z[0], zenH_prev, avg_z[1] ,zenH_curr, THRESH_Z, &repeat_z);
+        I2cbus1_triggerSound(avg_z[0], zenH_prev, avg_z[1] ,zenH_curr, THRESH_PREV_Z, THRESH_CURR_Z, &repeat_z);
         printf("Out_z: repeat-%d ; raw-%d ; %f\n", repeat_z, zenH_curr, avg_z[0]);
 
         if(repeat_z > REPEAT_BOUNCE_Z)
         {   
-            AudioMixerControl_addDrum(0);
+            AudioMixerControl_addDrum(2);
             repeat_z = 0;
         }
         
@@ -249,13 +288,16 @@ double I2cbus1_calculateAvg(long long count, double accSum, double prevAvg)
 }
 
 int I2cbus1_triggerSound(double prevAvg, double prevRaw, 
-    double currAvg, double currRaw, double threshold, int* repeat)
+    double currAvg, double currRaw, double prevThresh, double currThresh, int* repeat)
 {
-    
-    if((prevAvg - prevRaw > threshold) && (currAvg - currRaw > threshold))
+    int temp = (prevAvg - prevRaw < prevThresh);
+    if((prevAvg - prevRaw < prevThresh) && (currAvg - currRaw > currThresh))
     {
         *repeat += 1;
         return 1;
+    } else {
+        *repeat = 0;
     }
+    temp += 1;
     return 0;
 }

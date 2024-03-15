@@ -8,6 +8,7 @@
 #include <pthread.h>
 #include <limits.h>
 #include <alloca.h> // needed for mixer
+#include "./periodTimer.h"
 
 static snd_pcm_t *handle;
 
@@ -25,7 +26,7 @@ static snd_pcm_t *handle;
 
 static unsigned long playbackBufferSize = 0;
 static short *playbackBuffer = NULL;
-
+static Period_statistics_t stats;
 
 // Currently active (waiting to be played) sound bites
 #define MAX_SOUND_BITES 30
@@ -70,6 +71,9 @@ void AudioMixer_init(void)
 		soundBites[i].pSound = NULL;
 		soundBites[i].location = 0;
 	}
+
+	//Initiate Period Timer
+    Period_init();
 
 	// Open the PCM output
 	int err = snd_pcm_open(&handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
@@ -224,6 +228,9 @@ void AudioMixer_cleanup(void)
 	snd_pcm_drain(handle);
 	snd_pcm_close(handle);
 
+	//Delete or clean period
+    Period_cleanup();
+
 	// Free playback buffer
 	// (note that any wave files read into wavedata_t records must be freed
 	//  in addition to this by calling AudioMixer_freeWaveFileData() on that struct.)
@@ -247,6 +254,24 @@ int AudioMixer_isSoundBites(void)
 
 	return hasSound;
 }
+
+void AudioMixer_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod)
+{
+	//Criticals ection
+ 	pthread_mutex_lock(&audioMutex);
+
+    //Reset & get statistic
+    Period_getStatisticsAndClear(PERIOD_REFILL_BUFFER, &stats);
+
+    //get value
+    *minPeriod = stats.minPeriodInMs;
+    *maxPeriod = stats.maxPeriodInMs;
+    *avgPeriod = stats.avgPeriodInMs;
+
+	pthread_mutex_unlock(&audioMutex);
+}
+
+
 
 
 ///////////////////////////// Manul Process /////////////////////////////
@@ -398,6 +423,9 @@ static void fillPlaybackBuffer(short *buff, int size)
 	//Criticals ection
  	pthread_mutex_lock(&audioMutex);
 	
+	//Mark statistic event
+    Period_markEvent(PERIOD_REFILL_BUFFER);
+
 	//Reset the playbackBuffer -> number element * data type of each (short)
 	memset(buff, 0, size*SAMPLE_SIZE);
 
@@ -470,15 +498,6 @@ void* playbackThread()
 	}
 
 	return NULL;
-}
-
-//Debugging purpose
-void printPlayback(void)
-{
-	for(long unsigned i = 0; i < playbackBufferSize; i++)
-	{
-		printf("index-%lu ---> %hi\n", i, playbackBuffer[i]);
-	}
 }
 
 
