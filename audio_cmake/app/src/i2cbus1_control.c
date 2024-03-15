@@ -4,7 +4,9 @@
 #define BUFFER_SIZE 2
 #define RESOLUTION_12_BITS 4096
 #define SELECT_SCALE 2
-#define REPEAT_BOUNCE 5
+#define REPEAT_BOUNCE_X 1
+#define REPEAT_BOUNCE_Y 2
+#define REPEAT_BOUNCE_Z 10
 
 static int isTerminate = 0;
 
@@ -18,7 +20,6 @@ static int repeat_z = 0;
 uint8_t buff_x[BUFFER_SIZE];
 uint8_t buff_y[BUFFER_SIZE];
 uint8_t buff_z[BUFFER_SIZE];
-
 
 static int16_t xenH_prev;
 static int16_t yenH_prev;
@@ -139,7 +140,7 @@ void* I2cbus1readXenH_thread()
         //Trigger sound
         I2cbus1_triggerSound(avg_x[0], xenH_prev, avg_x[1], xenH_curr, THRESH_X, &repeat_x);
 
-        if(repeat_x > REPEAT_BOUNCE)
+        if(repeat_x > REPEAT_BOUNCE_X)
         {
             AudioMixerControl_addDrum(2);
             repeat_x = 0;
@@ -175,7 +176,7 @@ void* I2cbus1readYenH_thread()
         //Trigger the sound
         I2cbus1_triggerSound(avg_y[0], yenH_prev, avg_y[1], yenH_curr, THRESH_Y, &repeat_y);
 
-        if(repeat_y > REPEAT_BOUNCE)
+        if(repeat_y > REPEAT_BOUNCE_Y)
         {
             AudioMixerControl_addDrum(2);
             repeat_y = 0;
@@ -210,7 +211,7 @@ void* I2cbus1readZenH_thread()
         //Trigger the sound
         I2cbus1_triggerSound(avg_z[0], zenH_prev, avg_z[1] ,zenH_curr, THRESH_Z, &repeat_z);
 
-        if(repeat_z > REPEAT_BOUNCE)
+        if(repeat_z > REPEAT_BOUNCE_Z)
         {
             AudioMixerControl_addDrum(2);
             repeat_z = 0;
