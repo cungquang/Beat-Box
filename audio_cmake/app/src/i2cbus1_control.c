@@ -12,10 +12,6 @@
 static int isTerminate = 0;
 
 static Period_statistics_t stats;
-static double min_period = 0;
-static double max_period = 0;
-static double avg_period = 0;
-
 
 static const double THRESH_PREV_X = 0.3;
 static const double THRESH_CURR_X = 11.2;
@@ -134,15 +130,15 @@ void I2cbusControl_terminate(void)
     isTerminate = 1;
 }
 
-void I2cbusControl_getStats(void)
+void I2cbusControl_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod)
 {
     //Reset & get statistic
     Period_getStatisticsAndClear(PERIOD_ACCELEROMETER, &stats);
 
     //get value
-    min_period = stats.minPeriodInMs;
-    max_period = stats.maxPeriodInMs;
-    avg_period = stats.avgPeriodInMs;
+    *minPeriod = stats.minPeriodInMs;
+    *maxPeriod = stats.maxPeriodInMs;
+    *avgPeriod = stats.avgPeriodInMs;
 }
 
 
