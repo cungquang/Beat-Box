@@ -11,10 +11,10 @@ void Operation()
     AudioMixerControl_init();
     JoystickControl_init();
     ProcessTime_init();
-    //I2cbus1Control_init();
+    I2cbus1Control_init();
 
     ProcessTime_join();
-    //I2cbus1Control_join();
+    I2cbus1Control_join();
     JoystickControl_join();
     AudioMixerControl_join();
     UDP_join();
@@ -24,7 +24,7 @@ void Operation()
     AudioMixerControl_cleanup();
     JoystickControl_cleanup();
     ProcessTime_cleanup();
-    //I2cbus1Control_cleanup();
+    I2cbus1Control_cleanup();
 }
 
 int main() 
