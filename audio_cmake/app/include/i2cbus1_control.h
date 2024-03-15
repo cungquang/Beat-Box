@@ -1,6 +1,9 @@
 #ifndef _I2CBUS1_CONTROL_H_
 #define _I2CBUS1_CONTROL_H_
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 #include <stdint.h>
 #include <pthread.h>
 #include "./audioMixer_helper.h"

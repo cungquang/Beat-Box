@@ -11,9 +11,12 @@ uint8_t buff_x[BUFFER_SIZE];
 uint8_t buff_y[BUFFER_SIZE];
 uint8_t buff_z[BUFFER_SIZE];
 
-static int16_t xenH_value;
-static int16_t yenH_value;
-static int16_t zenH_value;
+static int16_t xenH_prev;
+static int16_t yenH_prev;
+static int16_t zenH_prev;
+static int16_t xenH_curr;
+static int16_t yenH_curr;
+static int16_t zenH_curr;
 
 static long long count_x;
 static long long count_y;
@@ -81,9 +84,13 @@ void I2cbus1Control_join(void)
 
 void I2cbus1Control_cleanup(void)
 {
-    xenH_value = 0;
-    yenH_value = 0;
-    zenH_value = 0;
+    xenH_prev = 0;
+    yenH_prev = 0;
+    zenH_prev = 0;
+    xenH_curr = 0;
+    yenH_curr = 0;
+    zenH_curr = 0;
+    
 }
 
 void I2cbusControl_terminate(void)
@@ -105,20 +112,22 @@ void* I2cbus1readXenH_thread()
     while(!isTerminate)
     {
         pthread_mutex_lock(&xenH_mutex);
+        xenH_prev = xenH_curr;
 
         //Convert raw to G force value
         buff_x[0] = I2cbus1Read_OutXL();
         buff_x[1] = I2cbus1Read_OutXH();
-        xenH_value = I2cbus1_calculateGForce(I2cbus1_getRawData(buff_x[0], buff_x[1]));
+        xenH_curr = I2cbus1_calculateGForce(I2cbus1_getRawData(buff_x[0], buff_x[1]));
 
         //Update count & accumulate sum
         count_x ++;
-        accSum_x += xenH_value;
+        accSum_x += xenH_curr;
 
         //Update previous average & current average
         avg_x[0] = avg_x[1];
         avg_x[1] = I2cbus1_calculateAvg(count_x, accSum_x, avg_x[0]);
-        printf("OUT_X_H ---> %f\n", avg_x[1]);
+        
+        //Trigger sound
 
         pthread_mutex_unlock(&xenH_mutex);
     }
@@ -132,20 +141,23 @@ void* I2cbus1readYenH_thread()
     while(!isTerminate)
     {
         pthread_mutex_lock(&yenH_mutex);
+        yenH_prev = yenH_curr;
 
         //Convert raw to G force value
         buff_y[0] = I2cbus1Read_OutYL();
         buff_y[1] = I2cbus1Read_OutYH();
-        yenH_value = I2cbus1_calculateGForce(I2cbus1_getRawData(buff_y[0], buff_y[1]));
+        yenH_curr = I2cbus1_calculateGForce(I2cbus1_getRawData(buff_y[0], buff_y[1]));
         
         //Update count & accumulate sum
         count_y ++;
-        accSum_y += yenH_value;
+        accSum_y += yenH_curr;
 
         //Update previous average & current average
         avg_y[0] = avg_y[1];
         avg_y[1] = I2cbus1_calculateAvg(count_y, accSum_y, avg_y[0]);
-        printf("OUT_X_H ---> %f\n", avg_y[1]);
+
+        //Trigger the sound
+        
         pthread_mutex_unlock(&yenH_mutex);
     }
 
@@ -157,19 +169,23 @@ void* I2cbus1readZenH_thread()
     while(!isTerminate)
     {
         pthread_mutex_lock(&zenH_mutex);
+        zenH_prev = zenH_curr;
+
+        //Convert raw data to G force
         buff_z[0] = I2cbus1Read_OutZL();
         buff_z[1] = I2cbus1Read_OutZH();
-        zenH_value = I2cbus1_calculateGForce(I2cbus1_getRawData(buff_z[0], buff_z[1]));
+        zenH_curr = I2cbus1_calculateGForce(I2cbus1_getRawData(buff_z[0], buff_z[1]));
 
         //Update count & accumulate sum
         count_z ++;
-        accSum_z += zenH_value;
+        accSum_z += zenH_curr;
 
         //Update previous average & current average
         avg_z[0] = avg_z[1];
         avg_z[1] = I2cbus1_calculateAvg(count_z, accSum_z, avg_z[0]);
+
+        //Trigger the sound
         
-        printf("OUT_Y_H---> %d\n", zenH_value);
         pthread_mutex_unlock(&zenH_mutex);
     }
 
@@ -195,4 +211,13 @@ double I2cbus1_calculateAvg(long long count, double accSum, double prevAvg)
     else{
         return exponentialAvg(regularAvg(count, accSum), prevAvg);   
     }
+}
+
+int I2cbus1_triggerSound(double prevAvg, double prevRaw, double currAvg, double currRaw)
+{
+    if((fabs(prevAvg - prevRaw) > 2) && (fabs(currAvg - currRaw) >= 0.1))
+    {
+        return 1;
+    }
+    return 0;
 }
