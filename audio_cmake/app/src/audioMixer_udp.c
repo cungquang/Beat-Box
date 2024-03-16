@@ -272,12 +272,7 @@ static void UDP_commandShowError(void)
 static void UDP_commandTerminate(int value)
 {
     isTerminated = value;
-    //Stop audio mixer
-    AudioMixer_stop();
-    JoystickControl_terminate();
-    AudioMixerControl_terminate();
-    ProcessTime_terminate();
-    I2cbusControl_terminate();
+    OperationControl_terminate();
 }
 
 

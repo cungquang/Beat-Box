@@ -20,6 +20,7 @@
         "i2c_configure.h": "c",
         "register_configure.h": "c",
         "wait.h": "c",
-        "audiomixer_template.h": "c"
+        "audiomixer_template.h": "c",
+        "shutdown_control.h": "c"
     }
 }

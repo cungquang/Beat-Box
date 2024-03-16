@@ -1,34 +1,8 @@
 #include <stdio.h>
-#include "../include/audioMixer_upd.h"
-#include "../include/joystick_control.h"
-#include "../include/processTime_control.h"
-#include "../../hal/include/register_configure.h"
-#include "../include/i2cbus1_control.h"
-
-void Operation() 
-{
-    UDP_initServer();
-    ProcessTime_init();
-    AudioMixerControl_init();
-    JoystickControl_init();
-    I2cbus1Control_init();
-
-    ProcessTime_join();
-    I2cbus1Control_join();
-    JoystickControl_join();
-    AudioMixerControl_join();
-    UDP_join();
-
-    //Cleanup -> later move to shutdown thread
-    UDP_cleanup();
-    AudioMixerControl_cleanup();
-    JoystickControl_cleanup();
-    ProcessTime_cleanup();
-    I2cbus1Control_cleanup();
-}
+#include "../include/shutdown_control.h"
 
 int main() 
 {
-    Operation();
+    OperationControl_start();
     return 0;
 }
