@@ -46,6 +46,9 @@ void ProcessTime_init(void)
 {
     isTerminate = 0;
 
+    //Initiate Period Timer
+    Period_init();
+
     //Create thread
     pthread_create(&processUpTime_id, NULL, processUpTime_thread, NULL);
 }
@@ -62,6 +65,9 @@ void ProcessTime_terminate(void)
 
 void ProcessTime_cleanup(void)
 {
+    //Period cleanup
+    Period_cleanup();
+
     //Clean data before use
     memset(buffer, 0, sizeof(buffer));
     memset(messageToSend, 0, sizeof(messageToSend));

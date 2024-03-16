@@ -26,7 +26,7 @@ static snd_pcm_t *handle;
 
 static unsigned long playbackBufferSize = 0;
 static short *playbackBuffer = NULL;
-static Period_statistics_t stats;
+static Period_statistics_t stats_refill;
 
 // Currently active (waiting to be played) sound bites
 #define MAX_SOUND_BITES 30
@@ -71,9 +71,6 @@ void AudioMixer_init(void)
 		soundBites[i].pSound = NULL;
 		soundBites[i].location = 0;
 	}
-
-	//Initiate Period Timer
-    Period_init();
 
 	// Open the PCM output
 	int err = snd_pcm_open(&handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
@@ -261,13 +258,13 @@ void AudioMixer_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod
  	pthread_mutex_lock(&audioMutex);
 
     //Reset & get statistic
-    Period_getStatisticsAndClear(PERIOD_REFILL_BUFFER, &stats);
+    Period_getStatisticsAndClear(PERIOD_EVENT_REFILL_BUFFER, &stats_refill);
 
     //get value
-    *minPeriod = stats.minPeriodInMs;
-    *maxPeriod = stats.maxPeriodInMs;
-    *avgPeriod = stats.avgPeriodInMs;
-	*countPeriod = stats.numSamples;
+    *minPeriod = stats_refill.minPeriodInMs;
+    *maxPeriod = stats_refill.maxPeriodInMs;
+    *avgPeriod = stats_refill.avgPeriodInMs;
+	*countPeriod = stats_refill.numSamples;
 
 	pthread_mutex_unlock(&audioMutex);
 }
@@ -425,7 +422,7 @@ static void fillPlaybackBuffer(short *buff, int size)
  	pthread_mutex_lock(&audioMutex);
 	
 	//Mark statistic event
-    Period_markEvent(PERIOD_REFILL_BUFFER);
+    Period_markEvent(PERIOD_EVENT_REFILL_BUFFER);
 
 	//Reset the playbackBuffer -> number element * data type of each (short)
 	memset(buff, 0, size*SAMPLE_SIZE);

@@ -75,9 +75,6 @@ void I2cbus1Control_init(void)
     I2cbus1_init();
     I2cbus1Write_Reg1(TRIGGER_BIT);
 
-    //Initiate Period Timer
-    Period_init();
-
     if(I2cbus1Read_Reg1() != TRIGGER_BIT) 
     {
         printf("ERROR: fail to switch power mode and enable sensor.\n");
@@ -119,10 +116,7 @@ void I2cbus1Control_cleanup(void)
     xenH_curr = 0;
     yenH_curr = 0;
     zenH_curr = 0;
-
-    //Delete or clean period
-    Period_cleanup();
-    
+   
 }
 
 void I2cbusControl_terminate(void)
@@ -132,14 +126,16 @@ void I2cbusControl_terminate(void)
 
 void I2cbusControl_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod, long *countPeriod)
 {
+    pthread_mutex_lock(&xenH_mutex);
     //Reset & get statistic
-    Period_getStatisticsAndClear(PERIOD_ACCELEROMETER, &stats);
+    Period_getStatisticsAndClear(PERIOD_EVENT_SAMPLE_LIGHT, &stats);
 
     //get value
     *minPeriod = stats.minPeriodInMs;
     *maxPeriod = stats.maxPeriodInMs;
     *avgPeriod = stats.avgPeriodInMs;
     *countPeriod = stats.numSamples;
+    pthread_mutex_unlock(&xenH_mutex);
 }
 
 
@@ -159,7 +155,7 @@ void* I2cbus1readXenH_thread()
         xenH_prev = xenH_curr;
 
         //Mark statistic event
-        Period_markEvent(PERIOD_ACCELEROMETER);
+        Period_markEvent(PERIOD_EVENT_SAMPLE_LIGHT);
 
         //Convert raw to G force value
         buff_x[0] = I2cbus1Read_OutXL();
