@@ -113,7 +113,7 @@ void* I2cbus1readXenH_thread()
         xen_L_H[1] = I2cbus1Read_OutXH();
         xenH_curr = I2cbus1_convertToGForce(I2cbus1_getRawData(xen_L_H[0], xen_L_H[1]));
         
-        printf("Outx:  %d\n", xen_L_H);
+        printf("Outx:  %hhu\n", xenH_curr);
         //Trigger the sound
         if(xenH_curr >= 2)
         {
