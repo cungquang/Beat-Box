@@ -55,18 +55,13 @@ void I2cbus1Control_init(void)
     }
 
     
-    
+    pthread_create(&i2cbus1YenH_id, NULL, I2cbus1readYenH_thread, NULL);
     pthread_create(&i2cbus1XenH_id, NULL, I2cbus1readXenH_thread, NULL);
 }
 
 void baseZ(void)
 {
     pthread_create(&i2cbus1ZenH_id, NULL, I2cbus1readZenH_thread, NULL);
-}
-
-void baseY(void)
-{
-    pthread_create(&i2cbus1YenH_id, NULL, I2cbus1readYenH_thread, NULL);
 }
 
 
@@ -113,16 +108,15 @@ void* I2cbus1readXenH_thread()
         xen_L_H[1] = I2cbus1Read_OutXH();
         xenH_curr = I2cbus1_convertToGForce(I2cbus1_getRawData(xen_L_H[0], xen_L_H[1]));
         
-        printf("Outx:  %hhu\n", xenH_curr);
         //Trigger the sound
         if(xenH_curr >= 2)
         {
             AudioMixerControl_addDrum(0);
-            sleepForMs(500);
+            sleepForMs(700);
         } else if(xenH_curr <= -2)
         {
             AudioMixerControl_addDrum(0);
-            sleepForMs(500);
+            sleepForMs(700);
         }
 
         pthread_mutex_unlock(&xenH_mutex);
@@ -147,11 +141,11 @@ void* I2cbus1readYenH_thread()
         if(yenH_curr >= 2)
         {
             AudioMixerControl_addDrum(1);
-            sleepForMs(500);
+            sleepForMs(700);
         } else if(yenH_curr <= -2)
         {
             AudioMixerControl_addDrum(1);
-            sleepForMs(500);
+            sleepForMs(700);
         }
         
         pthread_mutex_unlock(&yenH_mutex);
@@ -178,11 +172,11 @@ void* I2cbus1readZenH_thread()
         if(zenH_curr >= 2)
         {
             AudioMixerControl_addDrum(2);
-            sleepForMs(500);
+            sleepForMs(700);
         } else if(zenH_curr <= -2)
         {
             AudioMixerControl_addDrum(2);
-            sleepForMs(500);
+            sleepForMs(700);
         }
         
         pthread_mutex_unlock(&zenH_mutex);
