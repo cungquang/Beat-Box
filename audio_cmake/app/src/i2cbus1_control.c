@@ -111,8 +111,9 @@ void* I2cbus1readXenH_thread()
         //Convert raw to G force value
         xen_L_H[0] = I2cbus1Read_OutXL();
         xen_L_H[1] = I2cbus1Read_OutXH();
-        xenH_curr = I2cbus1_getRawData(xen_L_H[0], xen_L_H[1]);
+        xenH_curr = I2cbus1_convertToGForce(I2cbus1_getRawData(xen_L_H[0], xen_L_H[1]));
         
+        printf("Outx:  %d\n", xen_L_H);
         //Trigger the sound
         if(xenH_curr >= 2)
         {
@@ -140,7 +141,7 @@ void* I2cbus1readYenH_thread()
         //Convert raw to G force value
         yen_L_H[0] = I2cbus1Read_OutYL();
         yen_L_H[1] = I2cbus1Read_OutYH();
-        yenH_curr = I2cbus1_getRawData(yen_L_H[0], yen_L_H[1]);
+        yenH_curr = I2cbus1_convertToGForce(I2cbus1_getRawData(yen_L_H[0], yen_L_H[1]));
 
         //Trigger the sound
         if(yenH_curr >= 2)
