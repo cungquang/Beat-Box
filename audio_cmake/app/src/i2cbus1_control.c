@@ -54,10 +54,13 @@ void I2cbus1Control_init(void)
         exit(EXIT_FAILURE);
     }
 
-    pthread_create(&i2cbus1YenH_id, NULL, I2cbus1readYenH_thread, NULL);
-    pthread_create(&i2cbus1ZenH_id, NULL, I2cbus1readZenH_thread, NULL);
     pthread_create(&i2cbus1XenH_id, NULL, I2cbus1readXenH_thread, NULL);
-    
+}
+
+void test()
+{
+    pthread_create(&i2cbus1ZenH_id, NULL, I2cbus1readZenH_thread, NULL);
+    pthread_create(&i2cbus1YenH_id, NULL, I2cbus1readYenH_thread, NULL);
 }
 
 
@@ -103,6 +106,7 @@ void* I2cbus1readXenH_thread()
         xenH_curr = I2cbus1_convertToGForce(I2cbus1_getRawData(xen_L_H[0], xen_L_H[1]));
         
         //Trigger the sound
+        printf("Out_X:   %.3f\n", xenH_curr);
         if(xenH_curr > 2 || xenH_curr < -2)
         {
             pthread_mutex_lock(&shared_pipe_mutex);
