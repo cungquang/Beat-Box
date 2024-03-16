@@ -108,7 +108,7 @@ static void set_currentTempo(void)
 static void setStats_refillBuffer(void)
 {
     //Reset & get statistic
-    Period_getStatisticsAndClear(PERIOD_EVENT_SAMPLE_LIGHT, &stats_refill);
+    Period_getStatisticsAndClear(PERIOD_EVENT_REFILL_BUFFER, &stats_refill);
 
     stats_refillBuffer[0] = stats_refill.minPeriodInMs;
     stats_refillBuffer[1] = stats_refill.maxPeriodInMs;
