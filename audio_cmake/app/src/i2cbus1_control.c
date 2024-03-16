@@ -19,9 +19,6 @@ static float xenH_curr;
 static float yenH_curr;
 static float zenH_curr;
 
-static float xen_avg[BUFFER_SIZE];
-static long xen_count[BUFFER_SIZE];
-
 //Threads
 static pthread_t i2cbus1XenH_id;
 static pthread_t i2cbus1YenH_id;
@@ -102,27 +99,17 @@ void I2cbusControl_terminate(void)
 // X_axis move side by side 
 void* I2cbus1readXenH_thread()
 {  
-    memset(xen_avg, 0, sizeof(xen_avg));
-    memset(xen_count, 0, sizeof(xen_count));
     while(!isTerminate)
     {
+        //Mark statistic event
+        Period_markEvent(PERIOD_EVENT_ACCELEROMETER);
+
         //Convert raw to G force value
         xen_L_H[0] = I2cbus1Read_OutXL();
         xen_L_H[1] = I2cbus1Read_OutXH();
         xenH_curr = I2cbus1_convertToGForce(I2cbus1_getRawData(xen_L_H[0], xen_L_H[1]));
         
-        //Trigger the sound
-        if(xenH_curr < 0) 
-        {
-            xen_avg[0] += xenH_curr;
-            xen_count[0]++;
-        } else{
-            xen_avg[1] += xenH_curr;
-            xen_count[1]++;
-        }
-        printf("Out_X (raw): %.3f  neg_Avg: %.3f count: %ld  pos_Avg: %.3f  count: %ld\n", 
-            xenH_curr, xen_avg[0]/xen_count[0], xen_count[0], xen_avg[1]/xen_count[1], xen_count[1]);
-        
+        //Trigger the sound        
         if(xenH_curr > 2 || xenH_curr < -2)
         {
             pthread_mutex_lock(&shared_pipe_mutex);
@@ -141,9 +128,6 @@ void* I2cbus1readYenH_thread()
 {
     while(!isTerminate)
     {
-        //Mark statistic event
-        Period_markEvent(PERIOD_EVENT_ACCELEROMETER);
-
         //Convert raw to G force value
         yen_L_H[0] = I2cbus1Read_OutYL();
         yen_L_H[1] = I2cbus1Read_OutYH();

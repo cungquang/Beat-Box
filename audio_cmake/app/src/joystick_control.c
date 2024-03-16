@@ -183,13 +183,12 @@ void* press_execute_thread()
         if(pressContinue >= MAX_MODE1_BOUNCING && pressContinue < MAX_MODE2_BOUNCING && prevPressDir == 0)
         {
             newMode = 1;
-            printf("current mode: %d\n", newMode);
             AudioMixerControl_setMode(newMode);
-        } else if (pressContinue >= MAX_MODE2_BOUNCING && prevPressDir == 0)
+        } 
+        else if (pressContinue >= MAX_MODE2_BOUNCING && prevPressDir == 0)
         //User did not press button continously or does not meet bouncing condition
         {
             newMode = 2;
-            printf("current mode: %d\n", newMode);
             AudioMixerControl_setMode(newMode);
         }
         else
