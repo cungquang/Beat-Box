@@ -46,6 +46,6 @@ void AudioMixer_CleanUpQueue();
 void AudioMixer_CleanUpBuffer();
 
 //Get statistic
-void AudioMixer_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod);
+void AudioMixer_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod, long *countPeriod);
 
 #endif

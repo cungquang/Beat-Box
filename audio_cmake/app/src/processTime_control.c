@@ -8,7 +8,9 @@
 
 //Statistic
 static double stats_refillBuffer[3];
+static long count_refillBuffer;
 static double stats_accelerometer[3];
+static long count_accelerometer;
 static int curr_mode;
 static int curr_tempo;
 static int curr_volume;
@@ -78,29 +80,29 @@ void ProcessTime_cleanup(void)
 /////////////////////////////// GETTER /////////////////////////////// 
 
 
-static void get_currentMode(void) 
+static void set_currentMode(void) 
 {
     curr_mode = AudioMixerControl_getMode();   
 }
 
-static void get_currentVolume(void)
+static void set_currentVolume(void)
 {
     curr_volume = AudioMixerControl_getVolume();
 }
 
-static void get_currentTempo(void)
+static void set_currentTempo(void)
 {
     curr_tempo = AudioMixerControl_getTempo();
 }
 
-static void getStats_refillBuffer(void)
+static void setStats_refillBuffer(void)
 {
-    AudioMixerControl_getStats(&stats_refillBuffer[0], &stats_refillBuffer[1], &stats_refillBuffer[2]);
+    AudioMixerControl_getStats(&stats_refillBuffer[0], &stats_refillBuffer[1], &stats_refillBuffer[2], &count_refillBuffer);
 }
 
-static void getStats_accelerometer(void)
+static void setStats_accelerometer(void)
 {
-    I2cbusControl_getStats(&stats_accelerometer[0], &stats_accelerometer[1], &stats_accelerometer[2]);
+    I2cbusControl_getStats(&stats_accelerometer[0], &stats_accelerometer[1], &stats_accelerometer[2], &count_accelerometer);
 }
 
 
@@ -174,8 +176,9 @@ static void serverTextDisplay() {
     getStats_accelerometer();
     getStats_refillBuffer();
 
+    //need sample - count
     printf("M%d\t %dBpm\t vol%d\t Audio[%.3f, %.3f] avg %.3f\t Accel[%.3f, %.3f] avg %.3f\n", curr_mode, curr_tempo, curr_volume,
-        stats_refillBuffer[0], stats_refillBuffer[1], stats_refillBuffer[2], 
-        stats_accelerometer[0], stats_accelerometer[1], stats_accelerometer[2]);
+        stats_refillBuffer[0], stats_refillBuffer[1], stats_refillBuffer[2], ,
+        stats_accelerometer[0], stats_accelerometer[1], stats_accelerometer[2], 0);
 }
 

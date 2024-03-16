@@ -255,7 +255,7 @@ int AudioMixer_isSoundBites(void)
 	return hasSound;
 }
 
-void AudioMixer_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod)
+void AudioMixer_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod, long *countPeriod)
 {
 	//Criticals ection
  	pthread_mutex_lock(&audioMutex);
@@ -267,6 +267,7 @@ void AudioMixer_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod
     *minPeriod = stats.minPeriodInMs;
     *maxPeriod = stats.maxPeriodInMs;
     *avgPeriod = stats.avgPeriodInMs;
+	*countPeriod = stats.numSamples;
 
 	pthread_mutex_unlock(&audioMutex);
 }

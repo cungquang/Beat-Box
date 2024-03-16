@@ -19,7 +19,7 @@ static int isTerminate;
 static double minPeriod_refill;
 static double maxPeriod_refill;
 static double avgPeriod_refill;
-static double countPeriod_refill;
+static long countPeriod_refill;
 
 //Wave file
 static wavedata_t stdBeat[MAX_STD_BEAT];
@@ -162,11 +162,12 @@ int AudioMixerControl_getMode(void)
 /////////////////// Get Statistic ///////////////////
 
 
-void AudioMixerControl_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod)
+void AudioMixerControl_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod, long *countPeriod)
 {
     *minPeriod = minPeriod_refill;
     *maxPeriod = maxPeriod_refill;
     *avgPeriod = avgPeriod_refill;
+    *countPeriod = countPeriod_refill;
 }
 
 /*

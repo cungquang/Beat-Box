@@ -130,7 +130,7 @@ void I2cbusControl_terminate(void)
     isTerminate = 1;
 }
 
-void I2cbusControl_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod)
+void I2cbusControl_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod, long *countPeriod)
 {
     //Reset & get statistic
     Period_getStatisticsAndClear(PERIOD_ACCELEROMETER, &stats);
@@ -139,6 +139,7 @@ void I2cbusControl_getStats(double *minPeriod, double *maxPeriod, double *avgPer
     *minPeriod = stats.minPeriodInMs;
     *maxPeriod = stats.maxPeriodInMs;
     *avgPeriod = stats.avgPeriodInMs;
+    *countPeriod = stats.numSamples;
 }
 
 
