@@ -19,8 +19,8 @@ add_subdirectory(app)
 # Copy audio node folders
 # ---------------- NEW! ----------------
 # Copy the node_server folder to NFS
-add_custom_command(TARGET wave_player_cmake POST_BUILD 
+add_custom_target(copy_server_files ALL
   COMMAND "${CMAKE_COMMAND}" -E copy_directory
      "${CMAKE_SOURCE_DIR}/beatbox-server"
-     "~/cmpt433/public/myApps/beatbox-server-copy" 
-  COMMENT "Copying WAVE files to public NFS directory")
+     "$ENV{HOME}/cmpt433/public/myApps/beatbox-server-copy" 
+  COMMENT "Copying server files to public NFS directory")
