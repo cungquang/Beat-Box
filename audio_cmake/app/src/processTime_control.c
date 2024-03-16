@@ -24,14 +24,14 @@ static pthread_t processUpTime_id;
 
 //Initate Private function
 static void splitTimeToParts(char *input, char *intoParts[]);
-void* processUpTime_thread();
-void isAliveMessage(void);
-void readFromProcessUptime(void);
-void set_currentMode(void);
-void set_currentVolume(void);
-void set_currentTempo(void);
-void setStats_refillBuffer(void);
-void setStats_accelerometer(void);
+static void* processUpTime_thread();
+static void isAliveMessage(void);
+static void readFromProcessUptime(void);
+static void set_currentMode(void);
+static void set_currentVolume(void);
+static void set_currentTempo(void);
+static void setStats_refillBuffer(void);
+static void setStats_accelerometer(void);
 static void serverTextDisplay();
 
 
@@ -110,7 +110,7 @@ static void setStats_accelerometer(void)
 /////////////////////////////// MAJOR OPERATION ///////////////////////////////
 
 
-void* processUpTime_thread(void)
+static void* processUpTime_thread(void)
 {
     while(!isTerminate) 
     {
@@ -133,13 +133,13 @@ void* processUpTime_thread(void)
 /////////////////////////////// SUPPORT ///////////////////////////////
 
 
-void isAliveMessage(void)
+static void isAliveMessage(void)
 {
     memset(messageToSend, 0, sizeof(messageToSend));
     snprintf(messageToSend, MAX_SENDMSG_SIZE, "show_error,hide");
 }
 
-void readFromProcessUptime(void)
+static void readFromProcessUptime(void)
 {
     //Clean data before use
     memset(buffer, 0, sizeof(buffer));
@@ -171,7 +171,6 @@ static void splitTimeToParts(char *input, char *intoParts[])
     }
 }
 
-
 static void serverTextDisplay() {
     set_currentMode();
     set_currentTempo();
@@ -180,7 +179,7 @@ static void serverTextDisplay() {
     setStats_refillBuffer();
 
     //need sample - count
-    printf("M%d\t %dBpm\t vol%d\t Audio[%.3f, %.3f] avg %.3f/%d\t Accel[%.3f, %.3f] avg %.3f/%d\n", curr_mode, curr_tempo, curr_volume,
+    printf("M%d\t %dBpm\t vol%d\t Audio[%.3f, %.3f] avg %.3f/%ld\t Accel[%.3f, %.3f] avg %.3f/%ld\n", curr_mode, curr_tempo, curr_volume,
         stats_refillBuffer[0], stats_refillBuffer[1], stats_refillBuffer[2], count_refillBuffer,
         stats_accelerometer[0], stats_accelerometer[1], stats_accelerometer[2], count_accelerometer);
 }
