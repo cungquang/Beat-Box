@@ -32,6 +32,7 @@ void set_currentVolume(void);
 void set_currentTempo(void);
 void setStats_refillBuffer(void);
 void setStats_accelerometer(void);
+static void serverTextDisplay();
 
 
 /*
@@ -118,6 +119,8 @@ void* processUpTime_thread(void)
 
         isAliveMessage();
         UDP_sendToTarget(messageToSend);
+
+        serverTextDisplay();
         
         //Sleep for 1 second
         sleepForMs(1000);
