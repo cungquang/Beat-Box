@@ -1,9 +1,16 @@
 #include "../include/shutdown_control.h"
 
-static int isTerminate = 0;
 static int isTimeToCleanup = 0;
 
+//thread
 static pthread_t shutdown_id;
+
+//Initiate private function
+static void Shutdown_init(void);
+static void Shutdown_join(void);
+void *shutdown_thread();
+static void Shutdown_cleanup(void);
+
 
 /*
 #############################
@@ -12,7 +19,7 @@ static pthread_t shutdown_id;
 */
 
 //Start the entire application
-void OperationControl_start() 
+void OperationControl_start(void) 
 {
     Shutdown_init();
     UDP_initServer();
@@ -33,7 +40,7 @@ void OperationControl_start()
 }
 
 //Terminate all other processes
-void OperationControl_terminate()
+void OperationControl_terminate(void)
 {
     AudioMixer_stop();
     JoystickControl_terminate();
@@ -43,27 +50,29 @@ void OperationControl_terminate()
 }
 
 
+
 /*
 #############################
 #          PRIVATE          #
 #############################
 */
 
+
 //Init shutdown
-void Shutdown_init()
+static void Shutdown_init(void)
 {
     //Run server thread
-    pthread_create(&shutdown_id, NULL, shutdown_program, NULL);
+    pthread_create(&shutdown_id, NULL, shutdown_thread, NULL);
 }
 
 //Join shutdown thread
-void Shutdown_join()
+static void Shutdown_join(void)
 {
     pthread_join(shutdown_id, NULL);
 }
 
 //Shutdown thread 
-void *shutdown_program()
+void *shutdown_thread()
 {
     //Sleep until other process finish 
     while(!isTimeToCleanup)
@@ -73,10 +82,12 @@ void *shutdown_program()
 
     //Clean up start
     Shutdown_cleanup();
+
+    return NULL;
 }
 
 //Cleanup other process
-void Shutdown_cleanup()
+static void Shutdown_cleanup(void)
 {
     //Cleanup all other threads
     UDP_cleanup();
