@@ -4,13 +4,13 @@
 
 #define MAX_STD_BEAT 3
 
-#define STDBEAT_DRUM "/mnt/remote/myApps/beatbox-wave-files/100051__menegass__gui-drum-bd-hard.wav"
-#define STDBEAT_HIT_HAT "/mnt/remote/myApps/beatbox-wave-files/100053__menegass__gui-drum-cc.wav"
-#define STDBEAT_SNARE "/mnt/remote/myApps/beatbox-wave-files/100059__menegass__gui-drum-snare-soft.wav"
+#define STDBEAT_DRUM "/mnt/remote/myApps/beatbox-wav-files/100051__menegass__gui-drum-bd-hard.wav"
+#define STDBEAT_HIT_HAT "/mnt/remote/myApps/beatbox-wav-files/100053__menegass__gui-drum-cc.wav"
+#define STDBEAT_SNARE "/mnt/remote/myApps/beatbox-wav-files/100059__menegass__gui-drum-snare-soft.wav"
 
-#define ACCBEAT_CYN "/mnt/remote/myApps/beatbox-wave-files/100056__menegass__gui-drum-cyn-hard.wav"
-#define ACCBEAT_SNARE "/mnt/remote/myApps/beatbox-wave-files/100060__menegass__gui-drum-splash-hard.wav"
-#define ACCBEAT_HIT_HAT "/mnt/remote/myApps/beatbox-wave-files/100062__menegass__gui-drum-tom-hi-hard.wav"
+#define ACCBEAT_CYN "/mnt/remote/myApps/beatbox-wav-files/100056__menegass__gui-drum-cyn-hard.wav"
+#define ACCBEAT_SNARE "/mnt/remote/myApps/beatbox-wav-files/100060__menegass__gui-drum-splash-hard.wav"
+#define ACCBEAT_HIT_HAT "/mnt/remote/myApps/beatbox-wav-files/100062__menegass__gui-drum-tom-hi-hard.wav"
 
 //Manage operation
 static int isTerminate;

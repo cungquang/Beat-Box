@@ -15,3 +15,12 @@ add_compile_options(-fdiagnostics-color)
 # What folders to build
 add_subdirectory(hal)  
 add_subdirectory(app)
+
+
+# Copy the node server folder to specified directory
+add_custom_target(copy_server_files ALL
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+          ${CMAKE_SOURCE_DIR}/../beatbox-server
+          $ENV{HOME}/cmpt433/public/myApps/beatbox-server-copy
+  COMMENT "Copying beatbox-server folder to public NFS directory"
+)
