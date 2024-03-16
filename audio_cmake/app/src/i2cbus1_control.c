@@ -52,14 +52,13 @@ void I2cbus1Control_init(void)
         exit(EXIT_FAILURE);
     }
 
-    pthread_create(&i2cbus1ZenH_id, NULL, I2cbus1readZenH_thread, NULL);
     pthread_create(&i2cbus1YenH_id, NULL, I2cbus1readYenH_thread, NULL);
     
 }
 
 void baseZ(void)
-{
-    
+{   
+    pthread_create(&i2cbus1ZenH_id, NULL, I2cbus1readZenH_thread, NULL);
     pthread_create(&i2cbus1XenH_id, NULL, I2cbus1readXenH_thread, NULL);
 }
 
@@ -113,7 +112,7 @@ void* I2cbus1readXenH_thread()
             I2cbus1_playSound(0);
         }
 
-        sleepForMs(240);
+        sleepForMs(200);
     }
 
     return NULL;
@@ -124,19 +123,20 @@ void* I2cbus1readYenH_thread()
 {
     while(!isTerminate)
     {
+        //Mark statistic event
+        Period_markEvent(PERIOD_EVENT_ACCELEROMETER);
+
         //Convert raw to G force value
         yen_L_H[0] = I2cbus1Read_OutYL();
         yen_L_H[1] = I2cbus1Read_OutYH();
         yenH_curr = I2cbus1_convertToGForce(I2cbus1_getRawData(yen_L_H[0], yen_L_H[1]));
 
         //Trigger the sound - critical section
-        printf("Out_Y:  %.3f\n", yenH_curr);
+        //printf("Out_Y:  %.3f\n", yenH_curr);
         if(yenH_curr >= 2 || yenH_curr <= -2)
         {
             I2cbus1_playSound(1);
         } 
-
-        sleepForMs(240);
     }
 
     return NULL;
@@ -146,9 +146,6 @@ void* I2cbus1readZenH_thread()
 {
     while(!isTerminate)
     {
-         //Mark statistic event
-        Period_markEvent(PERIOD_EVENT_ACCELEROMETER);
-
         //Convert raw data to G force
         zen_L_H[0] = I2cbus1Read_OutZL();
         zen_L_H[1] = I2cbus1Read_OutZH();
@@ -156,12 +153,12 @@ void* I2cbus1readZenH_thread()
 
         //Trigger the sound - critical section
         printf("Out_Z:  %.3f\n", zenH_curr);
-        if(zenH_curr >= 2 || zenH_curr <= -2)
+        if(zenH_curr >= 1.7 || zenH_curr <= -1.7)
         {
             I2cbus1_playSound(2);
         } 
 
-        sleepForMs(240);
+        sleepForMs(200);
     }
 
     return NULL;
