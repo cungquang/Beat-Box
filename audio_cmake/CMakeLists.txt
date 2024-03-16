@@ -16,4 +16,11 @@ add_compile_options(-fdiagnostics-color)
 add_subdirectory(hal)  
 add_subdirectory(app)
 
-# Copy audio folders
+# Copy audio node folders
+# ---------------- NEW! ----------------
+# Copy the node_server folder to NFS
+add_custom_command(TARGET wave_player_cmake POST_BUILD 
+  COMMAND "${CMAKE_COMMAND}" -E copy_directory
+     "${CMAKE_SOURCE_DIR}/beatbox-server"
+     "~/cmpt433/public/myApps/beatbox-server-copy" 
+  COMMENT "Copying WAVE files to public NFS directory")
