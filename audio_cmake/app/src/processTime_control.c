@@ -185,7 +185,7 @@ static void serverTextDisplay() {
     setStats_refillBuffer();
 
     //need sample - count
-    printf("M%d\t %dBpm\t vol%d\t Audio[%.3f, %.3f] avg %.3f/%ld\t Accel[%.3f, %.3f] avg %.3f/%ld\n", curr_mode, curr_tempo, curr_volume,
+    printf("M%d %dBpm vol%d   Audio[%.3f, %.3f] avg %.3f/%ld   Accel[%.3f, %.3f] avg %.3f/%ld\n", curr_mode, curr_tempo, curr_volume,
         stats_refillBuffer[0], stats_refillBuffer[1], stats_refillBuffer[2], count_refillBuffer,
         stats_accelerometer[0], stats_accelerometer[1], stats_accelerometer[2], count_accelerometer);
 }
