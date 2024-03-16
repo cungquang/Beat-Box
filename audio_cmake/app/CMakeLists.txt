@@ -31,3 +31,12 @@ add_custom_command(TARGET wave_player_cmake POST_BUILD
      "${CMAKE_SOURCE_DIR}/beatbox-wav-files"
      "~/cmpt433/public/myApps/beatbox-wav-files/" 
   COMMENT "Copying WAVE files to public NFS directory")
+
+
+# ---------------- NEW! ----------------
+# Copy the node_server folder to NFS
+add_custom_command(TARGET wave_player_cmake POST_BUILD 
+  COMMAND "${CMAKE_COMMAND}" -E copy_directory
+     "${CMAKE_SOURCE_DIR}/beatbox-wav-files"
+     "~/cmpt433/public/myApps/beatbox-wav-files/" 
+  COMMENT "Copying WAVE files to public NFS directory")
