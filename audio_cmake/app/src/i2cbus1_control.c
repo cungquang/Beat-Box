@@ -54,10 +54,21 @@ void I2cbus1Control_init(void)
         exit(EXIT_FAILURE);
     }
 
-    pthread_create(&i2cbus1ZenH_id, NULL, I2cbus1readZenH_thread, NULL);
-    pthread_create(&i2cbus1YenH_id, NULL, I2cbus1readYenH_thread, NULL);
+    
+    
+    pthread_create(&i2cbus1XenH_id, NULL, I2cbus1readXenH_thread, NULL);
+}
+
+void baseZ(void)
+{
     pthread_create(&i2cbus1ZenH_id, NULL, I2cbus1readZenH_thread, NULL);
 }
+
+void baseY(void)
+{
+    pthread_create(&i2cbus1YenH_id, NULL, I2cbus1readYenH_thread, NULL);
+}
+
 
 void I2cbus1Control_join(void)
 {
