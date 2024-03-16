@@ -12,9 +12,9 @@ unsigned char xen_L_H[BUFFER_SIZE];
 unsigned char yen_L_H[BUFFER_SIZE];
 unsigned char zen_L_H[BUFFER_SIZE];
 
-static int16_t xenH_curr;
-static int16_t yenH_curr;
-static int16_t zenH_curr;
+static float xenH_curr;
+static float yenH_curr;
+static float zenH_curr;
 
 //Threads
 static pthread_t i2cbus1XenH_id;
@@ -22,10 +22,7 @@ static pthread_t i2cbus1YenH_id;
 static pthread_t i2cbus1ZenH_id;
 
 //Mutex
-static pthread_mutex_t xenH_mutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t yenH_mutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t zenH_mutex = PTHREAD_MUTEX_INITIALIZER;
-
+static pthread_mutex_t shared_pipe_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 //Initiate private function
 void* I2cbus1readXenH_thread();
@@ -56,12 +53,13 @@ void I2cbus1Control_init(void)
 
     
     pthread_create(&i2cbus1YenH_id, NULL, I2cbus1readYenH_thread, NULL);
-    pthread_create(&i2cbus1XenH_id, NULL, I2cbus1readXenH_thread, NULL);
+    
 }
 
 void baseZ(void)
 {
     pthread_create(&i2cbus1ZenH_id, NULL, I2cbus1readZenH_thread, NULL);
+    pthread_create(&i2cbus1XenH_id, NULL, I2cbus1readXenH_thread, NULL);
 }
 
 
@@ -101,25 +99,21 @@ void* I2cbus1readXenH_thread()
 {
     while(!isTerminate)
     {
-        pthread_mutex_lock(&xenH_mutex);
-
+        
         //Convert raw to G force value
         xen_L_H[0] = I2cbus1Read_OutXL();
         xen_L_H[1] = I2cbus1Read_OutXH();
         xenH_curr = I2cbus1_convertToGForce(I2cbus1_getRawData(xen_L_H[0], xen_L_H[1]));
         
         //Trigger the sound
-        if(xenH_curr >= 2)
+        if(xenH_curr > 2 || xenH_curr < -2)
         {
+            pthread_mutex_lock(&shared_pipe_mutex);
             AudioMixerControl_addDrum(0);
-            sleepForMs(700);
-        } else if(xenH_curr <= -2)
-        {
-            AudioMixerControl_addDrum(0);
-            sleepForMs(700);
+            pthread_mutex_unlock(&shared_pipe_mutex);
         }
 
-        pthread_mutex_unlock(&xenH_mutex);
+        sleepForMs(240);
     }
 
     return NULL;
@@ -130,25 +124,20 @@ void* I2cbus1readYenH_thread()
 {
     while(!isTerminate)
     {
-        pthread_mutex_lock(&yenH_mutex);
-
         //Convert raw to G force value
         yen_L_H[0] = I2cbus1Read_OutYL();
         yen_L_H[1] = I2cbus1Read_OutYH();
         yenH_curr = I2cbus1_convertToGForce(I2cbus1_getRawData(yen_L_H[0], yen_L_H[1]));
 
-        //Trigger the sound
-        if(yenH_curr >= 2)
+        //Trigger the sound - critical section
+        if(yenH_curr >= 2 || yenH_curr <= -2)
         {
+            pthread_mutex_lock(&shared_pipe_mutex);
             AudioMixerControl_addDrum(1);
-            sleepForMs(700);
-        } else if(yenH_curr <= -2)
-        {
-            AudioMixerControl_addDrum(1);
-            sleepForMs(700);
-        }
-        
-        pthread_mutex_unlock(&yenH_mutex);
+            pthread_mutex_unlock(&shared_pipe_mutex);
+        } 
+
+        sleepForMs(240);
     }
 
     return NULL;
@@ -158,8 +147,6 @@ void* I2cbus1readZenH_thread()
 {
     while(!isTerminate)
     {
-        pthread_mutex_lock(&zenH_mutex);
-
          //Mark statistic event
         Period_markEvent(PERIOD_EVENT_ACCELEROMETER);
 
@@ -168,18 +155,15 @@ void* I2cbus1readZenH_thread()
         zen_L_H[1] = I2cbus1Read_OutZH();
         zenH_curr = I2cbus1_convertToGForce(I2cbus1_getRawData(zen_L_H[0], zen_L_H[1]));
 
-        //Trigger the sound
-        if(zenH_curr >= 2)
+        //Trigger the sound - critical section
+        if(zenH_curr >= 2 || zenH_curr <= -2)
         {
+            pthread_mutex_lock(&shared_pipe_mutex);
             AudioMixerControl_addDrum(2);
-            sleepForMs(700);
-        } else if(zenH_curr <= -2)
-        {
-            AudioMixerControl_addDrum(2);
-            sleepForMs(700);
-        }
-        
-        pthread_mutex_unlock(&zenH_mutex);
+            pthread_mutex_unlock(&shared_pipe_mutex);
+        } 
+
+        sleepForMs(240);
     }
 
     return NULL;
