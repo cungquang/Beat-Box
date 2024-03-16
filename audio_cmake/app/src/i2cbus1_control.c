@@ -30,6 +30,7 @@ void* I2cbus1readYenH_thread();
 void* I2cbus1readZenH_thread();
 int16_t I2cbus1_getRawData(int8_t rawL, int8_t rawH);
 float I2cbus1_convertToGForce(int16_t rawData);
+void I2cbus1_playSound(int soundIndex);
 
 
 
@@ -109,9 +110,7 @@ void* I2cbus1readXenH_thread()
         printf("Out_X:  %.3f\n", xenH_curr);
         if(xenH_curr > 2 || xenH_curr < -2)
         {
-            pthread_mutex_lock(&shared_pipe_mutex);
-            AudioMixerControl_addDrum(0);
-            pthread_mutex_unlock(&shared_pipe_mutex);
+            I2cbus1_playSound(0);
         }
 
         sleepForMs(240);
@@ -134,9 +133,7 @@ void* I2cbus1readYenH_thread()
         printf("Out_Y:  %.3f\n", yenH_curr);
         if(yenH_curr >= 2 || yenH_curr <= -2)
         {
-            pthread_mutex_lock(&shared_pipe_mutex);
-            AudioMixerControl_addDrum(1);
-            pthread_mutex_unlock(&shared_pipe_mutex);
+            I2cbus1_playSound(1);
         } 
 
         sleepForMs(240);
@@ -161,9 +158,7 @@ void* I2cbus1readZenH_thread()
         printf("Out_Z:  %.3f\n", zenH_curr);
         if(zenH_curr >= 2 || zenH_curr <= -2)
         {
-            pthread_mutex_lock(&shared_pipe_mutex);
-            AudioMixerControl_addDrum(2);
-            pthread_mutex_unlock(&shared_pipe_mutex);
+            I2cbus1_playSound(2);
         } 
 
         sleepForMs(240);
@@ -180,4 +175,11 @@ int16_t I2cbus1_getRawData(int8_t rawL, int8_t rawH)
 float I2cbus1_convertToGForce(int16_t rawData)
 {
     return (float)rawData/RESOLUTION_8BITS_SHIFT;
+}
+
+void I2cbus1_playSound(int soundIndex)
+{
+    pthread_mutex_lock(&shared_pipe_mutex);
+    AudioMixerControl_addDrum(soundIndex);
+    pthread_mutex_unlock(&shared_pipe_mutex);
 }
