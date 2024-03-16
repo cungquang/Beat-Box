@@ -4,8 +4,8 @@
 #define BUFFER_SIZE 2
 #define RESOLUTION_8BITS_SHIFT 16000
 #define SELECT_SCALE 2
-#define X_FREQUENCY 50
-#define Y_FREQUENCY 150
+#define X_FREQUENCY 100
+#define Y_FREQUENCY 125
 #define Z_FREQUENCY 100
 
 //Operation
@@ -57,13 +57,14 @@ void I2cbus1Control_init(void)
         exit(EXIT_FAILURE);
     }
 
+    pthread_create(&i2cbus1YenH_id, NULL, I2cbus1readYenH_thread, NULL);
+    pthread_create(&i2cbus1ZenH_id, NULL, I2cbus1readZenH_thread, NULL);
     pthread_create(&i2cbus1XenH_id, NULL, I2cbus1readXenH_thread, NULL);
 }
 
 void test()
 {
-    pthread_create(&i2cbus1ZenH_id, NULL, I2cbus1readZenH_thread, NULL);
-    pthread_create(&i2cbus1YenH_id, NULL, I2cbus1readYenH_thread, NULL);
+
 }
 
 
@@ -98,7 +99,7 @@ void I2cbusControl_terminate(void)
 #########################
 */
 
-
+// X_axis move side by side 
 void* I2cbus1readXenH_thread()
 {  
     memset(xen_avg, 0, sizeof(xen_avg));
@@ -120,7 +121,7 @@ void* I2cbus1readXenH_thread()
             xen_count[1]++;
         }
         printf("Out_X (raw): %.3f  neg_Avg: %.3f count: %ld  pos_Avg: %.3f  count: %ld\n", 
-            xenH_curr, xen_avg[0], xen_count[0], xen_avg[1], xen_count[1]);
+            xenH_curr, xen_avg[0]/xen_count[0], xen_count[0], xen_avg[1]/xen_count[1], xen_count[1]);
         
         if(xenH_curr > 2 || xenH_curr < -2)
         {
@@ -135,7 +136,7 @@ void* I2cbus1readXenH_thread()
     return NULL;
 }
 
-
+// Y_axis move front to back  
 void* I2cbus1readYenH_thread()
 {
     while(!isTerminate)
@@ -149,7 +150,7 @@ void* I2cbus1readYenH_thread()
         yenH_curr = I2cbus1_convertToGForce(I2cbus1_getRawData(yen_L_H[0], yen_L_H[1]));
 
         //Trigger the sound - critical section
-        if(yenH_curr >= 2 || yenH_curr <= -2)
+        if(yenH_curr >= 1.7 || yenH_curr <= -1.7)
         {
             pthread_mutex_lock(&shared_pipe_mutex);
             AudioMixerControl_addDrum(1);
@@ -162,6 +163,7 @@ void* I2cbus1readYenH_thread()
     return NULL;
 }
 
+// Z_axis move up to down
 void* I2cbus1readZenH_thread()
 {
     while(!isTerminate)
