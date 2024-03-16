@@ -35,7 +35,7 @@ static void set_currentVolume(void);
 static void set_currentTempo(void);
 static void setStats_refillBuffer(void);
 static void setStats_accelerometer(void);
-static void serverTextDisplay();
+static void displayServerText();
 
 
 /*
@@ -119,7 +119,7 @@ static void setStats_refillBuffer(void)
 static void setStats_accelerometer(void)
 {
      //Reset & get statistic
-    Period_getStatisticsAndClear(PERIOD_EVENT_SAMPLE_LIGHT, &stats_accelerometer);
+    Period_getStatisticsAndClear(PERIOD_EVENT_ACCELEROMETER, &stats_accelerometer);
 
     stats_accelerBuffer[0] = stats_accelerometer.minPeriodInMs;
     stats_accelerBuffer[1] = stats_accelerometer.maxPeriodInMs;
@@ -141,7 +141,7 @@ static void* processUpTime_thread(void)
         isAliveMessage();
         UDP_sendToTarget(messageToSend);
 
-        serverTextDisplay();
+        displayServerText();
         
         //Sleep for 1 second
         sleepForMs(1000);
@@ -192,7 +192,7 @@ static void splitTimeToParts(char *input, char *intoParts[])
     }
 }
 
-static void serverTextDisplay() {
+static void displayServerText(void) {
     set_currentMode();
     set_currentTempo();
     set_currentVolume();

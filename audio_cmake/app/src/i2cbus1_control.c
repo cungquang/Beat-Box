@@ -137,9 +137,6 @@ void* I2cbus1readXenH_thread()
         pthread_mutex_lock(&xenH_mutex);
         xenH_prev = xenH_curr;
 
-        //Mark statistic event
-        Period_markEvent(PERIOD_EVENT_SAMPLE_LIGHT);
-
         //Convert raw to G force value
         buff_x[0] = I2cbus1Read_OutXL();
         buff_x[1] = I2cbus1Read_OutXH();
@@ -212,6 +209,9 @@ void* I2cbus1readZenH_thread()
     {
         pthread_mutex_lock(&zenH_mutex);
         zenH_prev = zenH_curr;
+
+         //Mark statistic event
+        Period_markEvent(PERIOD_EVENT_ACCELEROMETER);
 
         //Convert raw data to G force
         buff_z[0] = I2cbus1Read_OutZL();
