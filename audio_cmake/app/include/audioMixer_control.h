@@ -33,7 +33,5 @@ int AudioMixerControl_getTempo();
 //Drum control - add drum to queue
 void AudioMixerControl_addDrum(int soundIndex);
 
-//Get statistic data
-void AudioMixerControl_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod, long *countPeriod);
 
 #endif

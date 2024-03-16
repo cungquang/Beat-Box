@@ -26,7 +26,6 @@ static snd_pcm_t *handle;
 
 static unsigned long playbackBufferSize = 0;
 static short *playbackBuffer = NULL;
-static Period_statistics_t stats_refill;
 
 // Currently active (waiting to be played) sound bites
 #define MAX_SOUND_BITES 30
@@ -251,25 +250,6 @@ int AudioMixer_isSoundBites(void)
 
 	return hasSound;
 }
-
-void AudioMixer_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod, long *countPeriod)
-{
-	//Criticals ection
- 	pthread_mutex_lock(&audioMutex);
-
-    //Reset & get statistic
-    Period_getStatisticsAndClear(PERIOD_EVENT_REFILL_BUFFER, &stats_refill);
-
-    //get value
-    *minPeriod = stats_refill.minPeriodInMs;
-    *maxPeriod = stats_refill.maxPeriodInMs;
-    *avgPeriod = stats_refill.avgPeriodInMs;
-	*countPeriod = stats_refill.numSamples;
-
-	pthread_mutex_unlock(&audioMutex);
-}
-
-
 
 
 ///////////////////////////// Manul Process /////////////////////////////

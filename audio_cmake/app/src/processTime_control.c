@@ -7,9 +7,12 @@
 #define PROC_UPTIME_PATH "/proc/uptime"
 
 //Statistic
+static Period_statistics_t stats_refill;
+static Period_statistics_t stats_accelerometer;
+
 static double stats_refillBuffer[3];
 static long count_refillBuffer;
-static double stats_accelerometer[3];
+static double stats_accelerBuffer[3];
 static long count_accelerometer;
 static int curr_mode;
 static int curr_tempo;
@@ -104,12 +107,24 @@ static void set_currentTempo(void)
 
 static void setStats_refillBuffer(void)
 {
-    AudioMixerControl_getStats(&stats_refillBuffer[0], &stats_refillBuffer[1], &stats_refillBuffer[2], &count_refillBuffer);
+    //Reset & get statistic
+    Period_getStatisticsAndClear(PERIOD_EVENT_SAMPLE_LIGHT, &stats_refill);
+
+    stats_refillBuffer[0] = stats_refill.minPeriodInMs;
+    stats_refillBuffer[1] = stats_refill.maxPeriodInMs;
+    stats_refillBuffer[2] = stats_refill.avgPeriodInMs;
+    count_refillBuffer = stats_refill.numSamples;
 }
 
 static void setStats_accelerometer(void)
 {
-    I2cbusControl_getStats(&stats_accelerometer[0], &stats_accelerometer[1], &stats_accelerometer[2], &count_accelerometer);
+     //Reset & get statistic
+    Period_getStatisticsAndClear(PERIOD_EVENT_SAMPLE_LIGHT, &stats_accelerometer);
+
+    stats_accelerBuffer[0] = stats_accelerometer.minPeriodInMs;
+    stats_accelerBuffer[1] = stats_accelerometer.maxPeriodInMs;
+    stats_accelerBuffer[2] = stats_accelerometer.avgPeriodInMs;
+    count_accelerometer = stats_accelerometer.numSamples;
 }
 
 
@@ -187,6 +202,6 @@ static void serverTextDisplay() {
     //need sample - count
     printf("M%d %dBpm vol%d   Audio[%.3f, %.3f] avg %.3f/%ld   Accel[%.3f, %.3f] avg %.3f/%ld\n", curr_mode, curr_tempo, curr_volume,
         stats_refillBuffer[0], stats_refillBuffer[1], stats_refillBuffer[2], count_refillBuffer,
-        stats_accelerometer[0], stats_accelerometer[1], stats_accelerometer[2], count_accelerometer);
+        stats_accelerBuffer[0], stats_accelerBuffer[1], stats_accelerBuffer[2], count_accelerometer);
 }
 

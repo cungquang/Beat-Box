@@ -11,8 +11,6 @@
 //Operation
 static int isTerminate = 0;
 
-static Period_statistics_t stats;
-
 static const double THRESH_PREV_X = 0.3;
 static const double THRESH_CURR_X = 11.2;
 static const double THRESH_PREV_Y = 0.3;
@@ -123,21 +121,6 @@ void I2cbusControl_terminate(void)
 {
     isTerminate = 1;
 }
-
-void I2cbusControl_getStats(double *minPeriod, double *maxPeriod, double *avgPeriod, long *countPeriod)
-{
-    pthread_mutex_lock(&xenH_mutex);
-    //Reset & get statistic
-    Period_getStatisticsAndClear(PERIOD_EVENT_SAMPLE_LIGHT, &stats);
-
-    //get value
-    *minPeriod = stats.minPeriodInMs;
-    *maxPeriod = stats.maxPeriodInMs;
-    *avgPeriod = stats.avgPeriodInMs;
-    *countPeriod = stats.numSamples;
-    pthread_mutex_unlock(&xenH_mutex);
-}
-
 
 
 /*

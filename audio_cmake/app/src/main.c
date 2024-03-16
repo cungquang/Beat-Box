@@ -8,9 +8,9 @@
 void Operation() 
 {
     UDP_initServer();
+    ProcessTime_init();
     AudioMixerControl_init();
     JoystickControl_init();
-    ProcessTime_init();
     I2cbus1Control_init();
 
     ProcessTime_join();
