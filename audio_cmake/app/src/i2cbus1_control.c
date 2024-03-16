@@ -103,11 +103,11 @@ void* I2cbus1readXenH_thread()
         xenH_curr = I2cbus1_getRawData(xen_L_H[0], xen_L_H[1]);
         
         //Trigger the sound
-        if(zenH_curr >= 2)
+        if(xenH_curr >= 2)
         {
             AudioMixerControl_addDrum(0);
             sleepForMs(500);
-        } else if(zenH_curr <= -2)
+        } else if(xenH_curr <= -2)
         {
             AudioMixerControl_addDrum(0);
             sleepForMs(500);
@@ -132,11 +132,11 @@ void* I2cbus1readYenH_thread()
         yenH_curr = I2cbus1_getRawData(yen_L_H[0], yen_L_H[1]);
 
         //Trigger the sound
-        if(zenH_curr >= 2)
+        if(yenH_curr >= 2)
         {
             AudioMixerControl_addDrum(1);
             sleepForMs(500);
-        } else if(zenH_curr <= -2)
+        } else if(yenH_curr <= -2)
         {
             AudioMixerControl_addDrum(1);
             sleepForMs(500);
