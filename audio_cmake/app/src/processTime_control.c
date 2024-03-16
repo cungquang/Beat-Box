@@ -27,11 +27,11 @@ static void splitTimeToParts(char *input, char *intoParts[]);
 void* processUpTime_thread();
 void isAliveMessage(void);
 void readFromProcessUptime(void);
-void get_currentMode(void);
-void get_currentVolume(void);
-void get_currentTempo(void);
-void getStats_refillBuffer(void);
-void getStats_accelerometer(void);
+void set_currentMode(void);
+void set_currentVolume(void);
+void set_currentTempo(void);
+void setStats_refillBuffer(void);
+void setStats_accelerometer(void);
 
 
 /*
@@ -170,15 +170,15 @@ static void splitTimeToParts(char *input, char *intoParts[])
 
 
 static void serverTextDisplay() {
-    get_currentMode();
-    get_currentTempo();
-    get_currentVolume();
-    getStats_accelerometer();
-    getStats_refillBuffer();
+    set_currentMode();
+    set_currentTempo();
+    set_currentVolume();
+    setStats_accelerometer();
+    setStats_refillBuffer();
 
     //need sample - count
-    printf("M%d\t %dBpm\t vol%d\t Audio[%.3f, %.3f] avg %.3f\t Accel[%.3f, %.3f] avg %.3f\n", curr_mode, curr_tempo, curr_volume,
-        stats_refillBuffer[0], stats_refillBuffer[1], stats_refillBuffer[2], ,
-        stats_accelerometer[0], stats_accelerometer[1], stats_accelerometer[2], 0);
+    printf("M%d\t %dBpm\t vol%d\t Audio[%.3f, %.3f] avg %.3f/%d\t Accel[%.3f, %.3f] avg %.3f/%d\n", curr_mode, curr_tempo, curr_volume,
+        stats_refillBuffer[0], stats_refillBuffer[1], stats_refillBuffer[2], count_refillBuffer,
+        stats_accelerometer[0], stats_accelerometer[1], stats_accelerometer[2], count_accelerometer);
 }
 
