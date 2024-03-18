@@ -1,3 +1,26 @@
 {
-    "cmake.sourceDirectory": "/home/hcung/cmpt433/work/assignment3/audio_cmake"
+    "cmake.sourceDirectory": "/home/hcung/cmpt433/work/assignment3/audio_cmake",
+    "files.associations": {
+        "hal_buttonup.h": "c",
+        "stdio.h": "c",
+        "stdbool.h": "c",
+        "socket.h": "c",
+        "inet.h": "c",
+        "audiomixer_upd.h": "c",
+        "hal_helper.h": "c",
+        "joystick_gpioup.h": "c",
+        "joystick_gpioright.h": "c",
+        "joystick_gpiopress.h": "c",
+        "type_traits": "c",
+        "audiomixer_helper.h": "c",
+        "fcntl.h": "c",
+        "joystick_gpioleft.h": "c",
+        "joystick_gpiodown.h": "c",
+        "stdlib.h": "c",
+        "i2c_configure.h": "c",
+        "register_configure.h": "c",
+        "wait.h": "c",
+        "audiomixer_template.h": "c",
+        "shutdown_control.h": "c"
+    }
 }
