@@ -1,4 +1,4 @@
-# Beat-Box Application - (ALSA Library)
+# Beat-Box Mixer - (ALSA Library)
 
 ## Project Description
 The BeagleBone Drum Controller project aims to provide an interactive and customizable drumming experience using the BeagleBone platform. Leveraging its capabilities, this project offers users the ability to play background drum beats as well as generate standalone drum sounds by simply manipulating the BeagleBone in three-dimensional space.
