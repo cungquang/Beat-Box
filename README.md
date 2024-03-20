@@ -11,9 +11,9 @@ The BeagleBone Drum Controller project aims to provide an interactive and custom
   - Bass Drum: Raise or lower the BeagleBone vertically along the Z-axis.
 - **Adjust Tempo and Volume via Joysticks**: Users can fine-tune the volume (0 - 100) and tempo (40 - 300 bpm) using either the Joystick (Zen Cape Red).
 - **Web application**: The web application was constructed using Node.js, providing robust support for communication through UDP, HTTP, and Websocket protocols.
-  - HTTP: This server facilitates communication with the frontend via HTTP, ensuring seamless interaction between the user interface and the backend functionality.
-  - Websocket: Websocket implementation ensures low-latency communication between the server and client, enhancing real-time responsiveness and interactivity within the application.
-  - UDP: The UDP server primarily facilitates communication between the hardware (BeagleBone) and the web server. This protocol is optimized for efficient data transmission, enabling rapid exchange of information between the two components.
+  - _HTTP_: This server facilitates communication with the frontend via HTTP, ensuring seamless interaction between the user interface and the backend functionality.
+  - _Websocket_: Websocket implementation ensures low-latency communication between the server and client, enhancing real-time responsiveness and interactivity within the application.
+  - _UDP_: The UDP server primarily facilitates communication between the hardware (BeagleBone) and the web server. This protocol is optimized for efficient data transmission, enabling rapid exchange of information between the two components.
 
 ## Devices & OS
 - Devices:
