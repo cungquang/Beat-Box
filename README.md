@@ -6,13 +6,18 @@ The BeagleBone Drum Controller project aims to provide an interactive and custom
 ## Key Features
 - **Background Drum Beats**: The current version supports two different types of rock beats.
 - **Standalone Drum Sounds via Accelerometer**: The application enables users to shake the BeagleBone in three dimensions to generate three distinct types of sounds as follows:
-  - Hi-Hat: Move the BeagleBone forward and backward along the Y-axis.
-  - Snare: Shift the BeagleBone horizontally along the X-axis.
-  - Bass Drum: Raise or lower the BeagleBone vertically along the Z-axis.
+  - _Hit-Hat_: Move the BeagleBone forward and backward along the Y-axis.
+
+  - _Snare_: Shift the BeagleBone horizontally along the X-axis.
+
+  - _Bass Drum_: Raise or lower the BeagleBone vertically along the Z-axis.
+ 
 - **Adjust Tempo and Volume via Joysticks**: Users can fine-tune the volume (0 - 100) and tempo (40 - 300 bpm) using either the Joystick (Zen Cape Red).
 - **Web application**: The web application was constructed using Node.js, providing robust support for communication through UDP, HTTP, and Websocket protocols.
   - _HTTP_: This server facilitates communication with the frontend via HTTP, ensuring seamless interaction between the user interface and the backend functionality.
+ 
   - _Websocket_: Websocket implementation ensures low-latency communication between the server and client, enhancing real-time responsiveness and interactivity within the application.
+
   - _UDP_: The UDP server primarily facilitates communication between the hardware (BeagleBone) and the web server. This protocol is optimized for efficient data transmission, enabling rapid exchange of information between the two components.
 
 ## Devices & OS
