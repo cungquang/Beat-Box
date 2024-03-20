@@ -1,10 +1,20 @@
 # Beat-Box Application - (ALSA Library)
 
+## Project Description
+The BeagleBone Drum Controller project aims to provide an interactive and customizable drumming experience using the BeagleBone platform. Leveraging its capabilities, this project offers users the ability to play background drum beats as well as generate standalone drum sounds by simply manipulating the BeagleBone in three-dimensional space.
+
+## Key Features
+- Background Drum Beats: The current version supports two different types of rock beats.
+- Standalone Drum Sounds: The application enables users to shake the BeagleBone in three dimensions to generate three distinct types of sounds as follows:
+  - Hi-Hat: Move the BeagleBone forward and backward along the Y-axis.
+  - Snare: Shift the BeagleBone horizontally along the X-axis.
+  - Bass Drum: Raise or lower the BeagleBone vertically along the Z-axis.
+- Adjust Tempo and Volume: Users can fine-tune the volume (0 - 100) and tempo (40 - 300 bpm) using either the Joystick (Zen Cape Red) or the web interface.
 
 ## Devices & OS
 - Devices:
   - Beagle Bone: Opern-source hardware platform (produced by Texas Instrument)
-  - Accelerometer: LIS331DLH datasheet attached on Zen Cape Red
+  - Accelerometer: LIS331DLH datasheet attached on Zen Cape Red (detect acceleration)
   - Joystick: attached on Zen Cape Red
 - Operating System: Linux - Debian 11
    
@@ -12,7 +22,7 @@
 
 - `hal/`: Contains all low-level hardware abstraction layer (HAL) modules
 - `app/`: Contains all application-specific code. Broken into modules and a main file
-- `beat-box-server: Contains all code for web application (front end and backend)
+- `beat-box-server: Contains all (NodeJS) code for web application (front end and backend)
 
 ```
   .
@@ -30,6 +40,7 @@
   │   ├── src
   │   │   └── button.c
   │   └── CMakeLists.txt           # Sub CMake file, just for hal/
+  ├── beat-box-server
   ├── CMakeLists.txt               # Main CMake file for the project
   └── README.md
 ```  
@@ -65,14 +76,6 @@
 - "Output Colourizer" by IBM 
     --> Adds colour to the OUTPUT panel in VS Code; useful for seeing CMake messages
 
-## Other Suggestions
-
-- If you are trying to build with 3rd party libraries, you may want to consider the 
-  build setup suggested at the following link. Specificall, see the part on 
-  extracting the BB image to a folder, and then using chroot to run commands like
-  `apt` on that image, which allows you to get libraries for the target on the build system.
-  https://takeofftechnical.com/x-compile-cpp-bbb/
-
 ## Manually Running CMake
 
 To manually run CMake from the command line use:
@@ -85,11 +88,3 @@ To manually run CMake from the command line use:
   # Build (compile & link) the project
   cmake --build build
 ```
-
-## Finer Points
-
-- When using the header files in HAL, you'll need to:  
-  `#include "hal/myfile.h`  
-  This extra "hal/..." helps distinguish the low-level access from the higher-level code.
-- One only need to run the CMake build the first time the project loads, and each time the .h and .c file names change, or new ones are added, or ones are removed. This regenerates the `build/Makefile`. Otherwise, just run a normal build (ctrl+shift+B)
-- If desired, one could provide an alternative implementation for the HAL modules that provides a software simulation of the hardware! This could be a useful idea if you have some complex hardware, or limited access to some hardware.
