@@ -4,13 +4,13 @@
 The BeagleBone Drum Controller project aims to provide an interactive and customizable drumming experience using the BeagleBone platform. Leveraging its capabilities, this project offers users the ability to play background drum beats as well as generate standalone drum sounds by simply manipulating the BeagleBone in three-dimensional space.
 
 ## Key Features
-- Background Drum Beats: The current version supports two different types of rock beats.
-- Standalone Drum Sounds: The application enables users to shake the BeagleBone in three dimensions to generate three distinct types of sounds as follows:
+- **Background Drum Beats**: The current version supports two different types of rock beats.
+- **Standalone Drum Sounds via Accelerometer**: The application enables users to shake the BeagleBone in three dimensions to generate three distinct types of sounds as follows:
   - Hi-Hat: Move the BeagleBone forward and backward along the Y-axis.
   - Snare: Shift the BeagleBone horizontally along the X-axis.
   - Bass Drum: Raise or lower the BeagleBone vertically along the Z-axis.
-- Adjust Tempo and Volume via Joysticks: Users can fine-tune the volume (0 - 100) and tempo (40 - 300 bpm) using either the Joystick (Zen Cape Red).
-- Web application: The web application was constructed using Node.js, providing robust support for communication through UDP, HTTP, and Websocket protocols.
+- **Adjust Tempo and Volume via Joysticks**: Users can fine-tune the volume (0 - 100) and tempo (40 - 300 bpm) using either the Joystick (Zen Cape Red).
+- **Web application**: The web application was constructed using Node.js, providing robust support for communication through UDP, HTTP, and Websocket protocols.
   - HTTP: This server facilitates communication with the frontend via HTTP, ensuring seamless interaction between the user interface and the backend functionality.
   - Websocket: Websocket implementation ensures low-latency communication between the server and client, enhancing real-time responsiveness and interactivity within the application.
   - UDP: The UDP server primarily facilitates communication between the hardware (BeagleBone) and the web server. This protocol is optimized for efficient data transmission, enabling rapid exchange of information between the two components.
